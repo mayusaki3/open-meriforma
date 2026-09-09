@@ -1,6 +1,15 @@
-# Open MeriForma 機構・AI利用 基本方針
+<!--
+HLDocS:LLM-MANAGED
+doc_id: doc-20260909-143000Z-MAIP
+lang: ja-JP
+canonical_title: Open MeriForma 機構・AI利用 基本方針
+document_type: spec
+canonical_document: true
+-->
 
-> Open MeriForma > 基本方針 > 機構・AI利用
+[目次](../目次.md) > 基本方針 > 機構・AI利用
+
+# Open MeriForma 機構・AI利用 基本方針
 
 ## 1. 位置付け
 
@@ -204,4 +213,6 @@ AI・制御系はその変化へ適応する一方、過去の基準状態を保
 
 Open MeriFormaを、単にAIを搭載したロボットではなく、身体の構成と状態を認識し、その身体に適応しながら人間と関わる、修理・改造可能なPhysical AIプラットフォームとして構築する。
 
-> Open MeriForma > 基本方針 > 機構・AI利用
+---
+
+[目次](../目次.md) > 基本方針 > 機構・AI利用

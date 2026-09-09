@@ -1,8 +1,6 @@
 [日本語](./README.md) | [English](./README_en-US.md)
 
-# Open MeriForma
-
-**読み方：オープン・メリフォルマ**
+# Open MeriForma（オープン・メリフォルマ）
 
 **オープンでモジュール化された Physical AI ロボットプラットフォーム**
 
@@ -158,7 +156,7 @@ Open MeriForma は、
 
 ## ドキュメント
 
-- [機構・AI利用 基本方針](./docs/ja-JP/基本方針/機構・AI利用.md)
+- [ドキュメント目次](./docs/ja-JP/目次.md)
 
 プロジェクト構成の整備に合わせて、技術ドキュメントについても日本語・英語対応を進めます。
 
