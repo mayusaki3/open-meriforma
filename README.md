@@ -1,8 +1,6 @@
 [日本語](./README.md) | [English](./README_en-US.md)
 
-# Open MeriForma
-
-**読み方：オープン・メリフォルマ**
+# Open MeriForma（オープン・メリフォルマ）
 
 **オープンでモジュール化された Physical AI ロボットプラットフォーム**
 
