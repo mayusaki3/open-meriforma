@@ -152,7 +152,7 @@ The goal is a repairable and modifiable Physical AI platform that can adapt to c
 
 ## Documentation
 
-- [Mechanical and AI Usage Principles (Japanese)](./docs/ja-JP/基本方針/機構・AI利用.md)
+- [Documentation Table of Contents (Japanese)](./docs/ja-JP/目次.md)
 
 English technical documentation will be added as the project structure develops.
 
