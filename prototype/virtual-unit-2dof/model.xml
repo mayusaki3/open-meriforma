@@ -1,0 +1,34 @@
+<mujoco model="open_meriforma_virtual_unit_2dof">
+  <compiler angle="degree" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <default>
+    <joint damping="0.2" armature="0.01"/>
+    <geom density="500" friction="0.8 0.1 0.01"/>
+  </default>
+
+  <worldbody>
+    <light pos="0 0 2" dir="0 0 -1" diffuse="1 1 1"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.2 0.2 0.2 1"/>
+
+    <body name="base" pos="0 0 0.8">
+      <geom type="box" size="0.08 0.08 0.05" rgba="0.35 0.35 0.35 1"/>
+
+      <body name="link_a" pos="0 0 -0.05">
+        <joint name="joint_a" type="hinge" axis="0 1 0" range="-80 80"/>
+        <geom type="capsule" fromto="0 0 0 0 0 -0.28" size="0.035" rgba="0.3 0.55 0.8 1"/>
+
+        <body name="link_b" pos="0 0 -0.28">
+          <joint name="joint_b" type="hinge" axis="0 1 0" range="-100 100"/>
+          <geom type="capsule" fromto="0 0 0 0 0 -0.24" size="0.03" rgba="0.4 0.75 0.5 1"/>
+          <site name="indicator_light" pos="0 0 -0.25" type="sphere" size="0.045" rgba="0.15 0.15 0.15 1"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="actuator_a" joint="joint_a" kp="24" ctrlrange="-1.3962634 1.3962634"/>
+    <position name="actuator_b" joint="joint_b" kp="20" ctrlrange="-1.7453293 1.7453293"/>
+  </actuator>
+</mujoco>
