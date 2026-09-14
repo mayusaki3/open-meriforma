@@ -17,8 +17,14 @@ Forma Unit Standard の概念検証用 Virtual Unit です。
   - `coordinated` と `joint_a_independent` を周期的に切り替える
   - 切替時にTransition状態を挟む
   - Indicator Lightの色で現在状態を表示
+- `requirements.txt`
+  - Python依存パッケージ
+- `ENVIRONMENT_SETUP.md`
+  - Windows / Linux / macOS 向け環境構築・動作確認・トラブル切り分け手順
 
-## 実行環境
+## 環境構築
+
+初回実行時は、先に [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) を参照してください。
 
 Python 3.10以降を想定します。
 
