@@ -174,4 +174,4 @@ Open MeriForma は現在、基本構想・要件検討段階です。
 
 ## ライセンス
 
-プロジェクトのライセンスは今後決定します。
+Open MeriForma は [MIT License](./LICENSE) の下で公開します。
