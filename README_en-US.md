@@ -170,4 +170,4 @@ These will be evaluated individually without unnecessarily constraining the basi
 
 ## License
 
-The project license has not yet been finalized.
+Open MeriForma is released under the [MIT License](./LICENSE).
