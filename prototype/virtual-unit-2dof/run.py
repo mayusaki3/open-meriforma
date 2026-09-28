@@ -34,12 +34,8 @@ def main() -> None:
     joint_b = unit["elements"]["joint_b"]["mapping"]
     light = unit["elements"]["indicator_light"]["mapping"]
 
-    actuator_a_id = require_id(
-        model, mujoco.mjtObj.mjOBJ_ACTUATOR, joint_a["mujoco_actuator"]
-    )
-    actuator_b_id = require_id(
-        model, mujoco.mjtObj.mjOBJ_ACTUATOR, joint_b["mujoco_actuator"]
-    )
+    actuator_a_id = require_id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, joint_a["mujoco_actuator"])
+    actuator_b_id = require_id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, joint_b["mujoco_actuator"])
     joint_a_id = require_id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_a["mujoco_joint"])
     joint_b_id = require_id(model, mujoco.mjtObj.mjOBJ_JOINT, joint_b["mujoco_joint"])
     light_site_id = require_id(model, mujoco.mjtObj.mjOBJ_SITE, light["mujoco_site"])
@@ -58,6 +54,9 @@ def main() -> None:
     with mujoco.viewer.launch_passive(model, data) as viewer:
         start = time.monotonic()
         last_report = -1
+        previous_mode = None
+        transition_start_a = 0.0
+        transition_start_b = 0.0
 
         while viewer.is_running():
             frame_start = time.monotonic()
@@ -66,28 +65,48 @@ def main() -> None:
 
             if phase < mode_duration:
                 mode = "coordinated"
-                t = phase
-                data.ctrl[actuator_a_id] = math.radians(35.0) * math.sin(t * 1.3)
-                data.ctrl[actuator_b_id] = math.radians(50.0) * math.sin(t * 1.3 + 0.8)
-                model.site_rgba[light_site_id] = (0.2, 0.8, 0.25, 1.0)
-
             elif phase < mode_duration + transition_duration:
                 mode = "transition_to_independent"
-                data.ctrl[actuator_a_id] = data.qpos[qpos_a]
-                data.ctrl[actuator_b_id] = data.qpos[qpos_b]
-                model.site_rgba[light_site_id] = (0.9, 0.65, 0.1, 1.0)
-
             elif phase < mode_duration * 2 + transition_duration:
                 mode = "joint_a_independent"
+            else:
+                mode = "transition_to_coordinated"
+
+            if mode != previous_mode:
+                if mode.startswith("transition_"):
+                    transition_start_a = data.qpos[qpos_a]
+                    transition_start_b = data.qpos[qpos_b]
+                previous_mode = mode
+
+            if mode == "coordinated":
+                # Both targets start at neutral, matching the preceding transition.
+                t = phase
+                data.ctrl[actuator_a_id] = math.radians(35.0) * math.sin(t * 1.3)
+                data.ctrl[actuator_b_id] = math.radians(50.0) * math.sin(t * 1.3)
+                model.site_rgba[light_site_id] = (0.2, 0.8, 0.25, 1.0)
+
+            elif mode == "transition_to_independent":
+                alpha = (phase - mode_duration) / transition_duration
+                alpha = max(0.0, min(1.0, alpha))
+                smooth = alpha * alpha * (3.0 - 2.0 * alpha)
+                data.ctrl[actuator_a_id] = transition_start_a * (1.0 - smooth)
+                data.ctrl[actuator_b_id] = transition_start_b * (1.0 - smooth)
+                model.site_rgba[light_site_id] = (0.9, 0.65, 0.1, 1.0)
+
+            elif mode == "joint_a_independent":
+                # Joint B stays neutral while Joint A is independently controlled.
                 t = phase - mode_duration - transition_duration
                 data.ctrl[actuator_a_id] = math.radians(55.0) * math.sin(t * 1.8)
                 data.ctrl[actuator_b_id] = 0.0
                 model.site_rgba[light_site_id] = (0.2, 0.45, 1.0, 1.0)
 
             else:
-                mode = "transition_to_coordinated"
-                data.ctrl[actuator_a_id] = data.qpos[qpos_a]
-                data.ctrl[actuator_b_id] = data.qpos[qpos_b]
+                # Return to neutral before coordinated control resumes.
+                alpha = (phase - (mode_duration * 2 + transition_duration)) / transition_duration
+                alpha = max(0.0, min(1.0, alpha))
+                smooth = alpha * alpha * (3.0 - 2.0 * alpha)
+                data.ctrl[actuator_a_id] = transition_start_a * (1.0 - smooth)
+                data.ctrl[actuator_b_id] = transition_start_b * (1.0 - smooth)
                 model.site_rgba[light_site_id] = (0.9, 0.65, 0.1, 1.0)
 
             mujoco.mj_step(model, data)
