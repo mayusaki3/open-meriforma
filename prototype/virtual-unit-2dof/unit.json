@@ -6,9 +6,16 @@
   "elements": {
     "joint_a": {
       "kind": "joint",
-      "capabilities": ["rotate"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
+      "capabilities": [
+        "rotate"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
       "mapping": {
         "mujoco_joint": "joint_a",
         "mujoco_actuator": "actuator_a"
@@ -16,9 +23,16 @@
     },
     "joint_b": {
       "kind": "joint",
-      "capabilities": ["rotate"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
+      "capabilities": [
+        "rotate"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
       "mapping": {
         "mujoco_joint": "joint_b",
         "mujoco_actuator": "actuator_b"
@@ -26,8 +40,12 @@
     },
     "indicator_light": {
       "kind": "indicator",
-      "capabilities": ["emit_light"],
-      "control": ["enabled"],
+      "capabilities": [
+        "emit_light"
+      ],
+      "control": [
+        "enabled"
+      ],
       "mapping": {
         "mujoco_site": "indicator_light"
       }
@@ -35,22 +53,37 @@
   },
   "functional_groups": {
     "coordinated_motion": {
-      "resources": ["joint_a", "joint_b"]
+      "resources": [
+        "joint_a",
+        "joint_b"
+      ],
+      "owner": "coordinated_controller"
     },
     "joint_a_independent": {
-      "resources": ["joint_a"]
+      "resources": [
+        "joint_a"
+      ],
+      "owner": "joint_a_controller"
     }
   },
   "constraints": [
     {
       "id": "joint_a_range",
-      "scope": ["joint_a"],
-      "kind": "joint_range"
+      "scope": [
+        "joint_a"
+      ],
+      "kind": "joint_range",
+      "min_deg": -80,
+      "max_deg": 80
     },
     {
       "id": "joint_b_range",
-      "scope": ["joint_b"],
-      "kind": "joint_range"
+      "scope": [
+        "joint_b"
+      ],
+      "kind": "joint_range",
+      "min_deg": -100,
+      "max_deg": 100
     }
   ]
 }
