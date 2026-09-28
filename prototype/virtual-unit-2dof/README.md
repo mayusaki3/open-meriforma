@@ -12,6 +12,8 @@ Forma Unit Standard の概念検証用 Virtual Unit です。
   - MuJoCoへのMapping
 - `model.xml`
   - 2-DOFのMuJoCoモデル
+- `runtime.py`
+  - Resource OwnershipとConstraintを扱う最小Virtual Unit Runtime
 - `run.py`
   - Definitionを読み込み、論理ElementからMuJoCoオブジェクトを解決
   - `coordinated` と `joint_a_independent` を周期的に切り替える
@@ -56,7 +58,7 @@ python run.py
   - Joint Aを個別制御
   - Joint Bは中立位置へ保持
 
-状態は自動的に循環します。
+状態はMuJoCo simulation timeを基準に自動的に循環します。通常モードではResource Ownershipを取得し、Transition中はいったんOwnershipを解放して次モードへ安全に引き渡します。コンソールには現在のOwnershipとConstraint適用回数も表示します。
 
 ```text
 coordinated
