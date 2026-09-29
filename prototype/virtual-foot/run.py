@@ -147,11 +147,14 @@ def main():
             contact_value = float(data.sensordata[sensor_adr])
             support_declared = bool(unit["capabilities"]["support"]["declared"])
             support_observable = "support" in runtime.observers.get("sole_contact", set())
-            support_available = (
-                support_declared
-                and support_observable
-                and contact_value > 0.001
-            )
+            if not support_declared:
+                support_availability = "absent"
+            elif not support_observable:
+                support_availability = "unknown"
+            elif contact_value > 0.001:
+                support_availability = "available"
+            else:
+                support_availability = "unavailable"
 
             second = int(t)
             if second != last_report:
@@ -165,7 +168,7 @@ def main():
                     f"contact={contact_value:.3f} "
                     f"support=declared:{str(support_declared).lower()}"
                     f"/observable:{str(support_observable).lower()}"
-                    f"/available:{str(support_available).lower()} "
+                    f"/availability:{support_availability} "
                     f"owner=[{runtime.owner_summary()}] "
                     f"observe=[{runtime.observation_summary()}]"
                 )
