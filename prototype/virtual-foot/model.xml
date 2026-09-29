@@ -1,0 +1,41 @@
+<mujoco model="open_meriforma_virtual_foot">
+  <compiler angle="degree" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+  <default>
+    <joint damping="0.25" armature="0.01"/>
+    <geom density="450" friction="0.9 0.1 0.01"/>
+  </default>
+  <worldbody>
+    <light pos="0 0 2" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.2 0.2 0.2 1"/>
+    <body name="mount" pos="0 0 0.42">
+      <geom type="box" size="0.05 0.05 0.08" rgba="0.35 0.35 0.35 1"/>
+      <body name="ankle_pitch_body" pos="0 0 -0.08">
+        <joint name="ankle_pitch" type="hinge" axis="0 1 0" range="-30 30"/>
+        <body name="ankle_roll_body">
+          <joint name="ankle_roll" type="hinge" axis="1 0 0" range="-20 20"/>
+          <geom name="sole" type="box" pos="0.07 0 -0.06" size="0.16 0.10 0.025" rgba="0.35 0.65 0.85 1"/>
+          <site name="indicator_light" pos="0.04 0 -0.025" type="sphere" size="0.025" rgba="0.2 0.8 0.25 1"/>
+          <site name="sole_contact_site" pos="0.07 0 -0.09" type="box" size="0.11 0.07 0.005"/>
+          <body name="toe_left_body" pos="0.23 0.055 -0.06">
+            <joint name="toe_left" type="hinge" axis="0 1 0" range="-10 55"/>
+            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025" rgba="0.45 0.8 0.5 1"/>
+          </body>
+          <body name="toe_right_body" pos="0.23 -0.055 -0.06">
+            <joint name="toe_right" type="hinge" axis="0 1 0" range="-10 55"/>
+            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025" rgba="0.45 0.8 0.5 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position name="actuator_ankle_pitch" joint="ankle_pitch" kp="35" ctrlrange="-0.523599 0.523599"/>
+    <position name="actuator_ankle_roll" joint="ankle_roll" kp="35" ctrlrange="-0.349066 0.349066"/>
+    <position name="actuator_toe_left" joint="toe_left" kp="18" ctrlrange="-0.174533 0.959931"/>
+    <position name="actuator_toe_right" joint="toe_right" kp="18" ctrlrange="-0.174533 0.959931"/>
+  </actuator>
+  <sensor>
+    <touch name="sole_contact" site="sole_contact_site"/>
+  </sensor>
+</mujoco>
