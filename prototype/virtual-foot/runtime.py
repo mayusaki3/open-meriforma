@@ -45,6 +45,16 @@ class VirtualUnitRuntime:
         self.ownership = ResourceOwnership()
         self.active_groups: set[str] = set()
         self.observers: dict[str, set[str]] = {}
+        self.observation_sources: set[str] = set()
+
+    def set_observation_source_available(self, resource: str, available: bool = True) -> None:
+        if available:
+            self.observation_sources.add(resource)
+        else:
+            self.observation_sources.discard(resource)
+
+    def observation_source_available(self, resource: str) -> bool:
+        return resource in self.observation_sources
 
     def group(self, name: str) -> dict:
         return self.definition["functional_groups"][name]
