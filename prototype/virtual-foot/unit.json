@@ -164,5 +164,23 @@
       "min_deg": -10,
       "max_deg": 55
     }
-  ]
+  ],
+  "capabilities": {
+    "support": {
+      "declared": true,
+      "observation_requirements": [
+        {
+          "resource": "sole_contact",
+          "condition": "greater_than",
+          "threshold": 0.001
+        }
+      ]
+    },
+    "toe_grip": {
+      "declared": true
+    },
+    "foot_motion": {
+      "declared": true
+    }
+  }
 }
