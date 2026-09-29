@@ -42,3 +42,27 @@ Viewerやホスト側処理が停止・遅延すると状態区間を飛び越�
 - simulation-time based state progression
 
 > このプロトタイプのJSON構造や用語はForma Unit Standardの確定仕様ではなく、検証のための暫定表現である。
+
+
+## Phase 2: 最小Virtual Unit Runtime 正常系
+
+### 結果
+
+- Functional GroupからResourceを解決できた。
+- `coordinated_motion` ではJoint A / Bを `coordinated_controller` が所有した。
+- Transition中はResource Ownershipを解放した。
+- `joint_a_independent` ではJoint Aのみを `joint_a_controller` が所有した。
+- Joint Bは独立モードでOwnershipを持たず、中立位置付近へ保持された。
+- 通常の制御目標ではConstraint違反は発生せず、`constraint_hits=0` を確認した。
+- 状態進行をMuJoCo simulation timeへ変更後、観測ログ上で状態時刻が連続して進むことを確認した。
+- Transition切替時の急動作は目視で発生しなかった。
+
+### 次の検証
+
+`test_runtime.py` で以下の異常系を検証する。
+
+1. 既に所有されているResourceを別Controllerが取得しようとした場合、競合として拒否されること。
+2. Joint Aへ120度を要求した場合、80度のConstraintを超えたことが検出されること。
+3. Joint Aへ55度を要求した場合、正常値として変更されないこと。
+
+Constraint違反時の最終的な製品動作（拒否、停止、Fault化等）は本試作では確定しない。現在のclamp処理はConstraint検出機構を試すための暫定実装である。
