@@ -42,3 +42,40 @@ ankle hubを非衝突Geomとして扱う修正後、物理暴走と巨大な偽�
 現在の足は床から浮かせて固定しているため、`sole_contact=0` は正常である。
 
 したがって現段階の `support` はResource Ownership上の名称であり、物理的な支持成立を証明していない。後続検証では接地・荷重状態を導入し、Capabilityの宣言とRuntime Availabilityを分離して検証する。
+
+
+## Phase 2: Explicit Control Handoff
+
+Transition中にResourceを無Owner状態へ置く方式から、`transition_controller` が可動Resourceを一時所有する方式へ変更して検証した。
+
+### 結果
+
+- `support + toe_grip -> transition_controller -> foot_motion` のOwnership移管を確認した。
+- `foot_motion -> transition_controller -> support` のOwnership移管を確認した。
+- `support -> support + toe_grip` ではsupportを解放せず、toe_gripのみを追加できた。
+- handoff_to_support中、toeは中立姿勢へ収束し、次のsupport開始時には約0度となった。
+- support開始後、toeはOwnerなしでも中立姿勢を維持した。
+
+観測例:
+
+- 13.0 s: handoff_to_support, toe ≈ 8.36 deg, owner=transition_controller
+- 14.0 s: support, toe ≈ 0.10 deg, toe ownerなし
+- 22.0 s: handoff_to_foot_motion, moving resources owner=transition_controller
+- 23.0 s: foot_motion, moving resources owner=foot_motion_controller
+
+これにより、Transitionを単なる待ち時間やOwnership空白期間として扱うより、明示的なControl Handoffとして表現する方式が有効であることを確認した。
+
+ただし、Transition Controllerを標準上の必須実装とすることはまだ確定しない。Source ControllerまたはTarget Controllerがhandoff処理を担う方式も引き続き成立し得る。
+
+## Phase 2で判明した次の課題: Control ResourceとObservation Resource
+
+ログでは `sole_contact` がsupport_controllerに所有されたまま、handoffおよびfoot_motionへ移行している。
+
+`sole_contact` は操作対象ではなく観測対象であり、複数の機能やControllerが同時に参照できることが自然である。
+
+したがって、現在の単一Resource Ownershipモデルは少なくとも次を区別する必要がある可能性が高い。
+
+- Control Resource: actuator等。競合する書込みを調停する。
+- Observation Resource: sensor/state等。複数Consumerからの参照を許容する。
+
+これは従来検討していたShared Resourceを直ちに一般化するものではない。まずControlとObservationを分離し、その後、同一Control Resourceの協調利用が必要なシナリオでShared/Coordinated Controlを別途検証する。
