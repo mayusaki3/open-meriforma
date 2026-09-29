@@ -8,7 +8,7 @@
   <worldbody>
     <light pos="0 0 2" dir="0 0 -1"/>
     <geom name="floor" type="plane" size="2 2 0.1" rgba="0.2 0.2 0.2 1"/>
-    <body name="mount" pos="0 0 0.195">
+    <body name="mount" pos="0 0 0.190">
       <geom type="box" size="0.05 0.05 0.08" rgba="0.35 0.35 0.35 1"/>
       <body name="ankle_pitch_body" pos="0 0 -0.08">
         <joint name="ankle_pitch" type="hinge" axis="0 1 0" range="-30 30"/>
@@ -21,7 +21,7 @@
           <geom name="sole" type="box" pos="0.07 0 -0.06" size="0.16 0.10 0.025"
                 contype="1" conaffinity="1" rgba="0.35 0.65 0.85 1"/>
           <site name="indicator_light" pos="0.04 0 -0.025" type="sphere" size="0.025" rgba="0.2 0.8 0.25 1"/>
-          <site name="sole_contact_site" pos="0.07 0 -0.09" type="box" size="0.11 0.07 0.005"/>
+          <site name="sole_contact_site" pos="0.07 0 -0.085" type="box" size="0.16 0.10 0.025" rgba="1 0.2 0.2 0.15"/>
           <body name="toe_left_body" pos="0.23 0.055 -0.06">
             <joint name="toe_left" type="hinge" axis="0 1 0" range="-10 55"/>
             <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025"
