@@ -75,6 +75,19 @@ class VirtualUnitRuntime:
         for name in list(self.active_groups):
             self.deactivate(name)
 
+    def relinquish_group_control(self, name: str) -> None:
+        """Remove a group lifecycle state without releasing transferred control resources."""
+        if name not in self.active_groups:
+            return
+        group = self.group(name)
+        for resource in group.get("observation_resources", []):
+            consumers = self.observers.get(resource)
+            if consumers is not None:
+                consumers.discard(name)
+                if not consumers:
+                    del self.observers[resource]
+        self.active_groups.remove(name)
+
     def observation_summary(self) -> str:
         if not self.observers:
             return "-"
