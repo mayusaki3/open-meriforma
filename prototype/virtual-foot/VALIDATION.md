@@ -105,3 +105,25 @@ Virtual Footを床面付近へ配置し、`support` CapabilityをDefinition上�
 - Available: 必要なObservationが利用可能で、Availability条件を満たす。
 
 現段階の `contact > 0.001` はCapability Availability概念を検証するための仮条件であり、最終的なsupport判定条件ではない。
+
+
+## Phase 4: AvailabilityのUnknown分離
+
+Phase 3修正版の実行で、`foot_motion` 中にMuJoCo上の生のsole contact値が非ゼロ（観測例: 7.072）になっても、support側のObservation Subscriptionが存在しないため `observable=false` となり、support Availability判定へ直接利用されないことを確認した。
+
+これにより次を分離できた。
+
+- Sensor Value Exists: 下位系に値が存在する。
+- Observable for Capability: 当該Capabilityの判定系がそのObservationを現在利用できる。
+- Availability: 利用可能なObservation等に基づいてCapabilityの現在利用可否を評価する。
+
+また、`observable=false` は「利用不可が確認された」ことを意味しないため、Availabilityを単純なbooleanではなく状態として扱う検証へ進む。
+
+Prototype上の暫定状態:
+
+- `absent`: Capability自体が宣言されていない。
+- `unknown`: Capabilityは宣言されているが、必要なObservationを現在利用できず判定不能。
+- `available`: 必要なObservationを利用でき、暫定Availability条件を満たす。
+- `unavailable`: 必要なObservationを利用でき、暫定Availability条件を満たさない。
+
+この4語はPrototype上の検証用であり、Forma Unit Standardの最終列挙値としてはまだ確定しない。
