@@ -14,19 +14,23 @@
         <joint name="ankle_pitch" type="hinge" axis="0 1 0" range="-30 30"/>
         <!-- Minimal physical mass for the moving intermediate gimbal body. -->
         <geom name="ankle_pitch_hub" type="cylinder" size="0.04 0.025"
-              euler="90 0 0" density="450" rgba="0.55 0.55 0.55 1"/>
+              euler="90 0 0" density="450" contype="0" conaffinity="0"
+              rgba="0.55 0.55 0.55 1"/>
         <body name="ankle_roll_body">
           <joint name="ankle_roll" type="hinge" axis="1 0 0" range="-20 20"/>
-          <geom name="sole" type="box" pos="0.07 0 -0.06" size="0.16 0.10 0.025" rgba="0.35 0.65 0.85 1"/>
+          <geom name="sole" type="box" pos="0.07 0 -0.06" size="0.16 0.10 0.025"
+                contype="1" conaffinity="1" rgba="0.35 0.65 0.85 1"/>
           <site name="indicator_light" pos="0.04 0 -0.025" type="sphere" size="0.025" rgba="0.2 0.8 0.25 1"/>
           <site name="sole_contact_site" pos="0.07 0 -0.09" type="box" size="0.11 0.07 0.005"/>
           <body name="toe_left_body" pos="0.23 0.055 -0.06">
             <joint name="toe_left" type="hinge" axis="0 1 0" range="-10 55"/>
-            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025" rgba="0.45 0.8 0.5 1"/>
+            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025"
+                  contype="1" conaffinity="1" rgba="0.45 0.8 0.5 1"/>
           </body>
           <body name="toe_right_body" pos="0.23 -0.055 -0.06">
             <joint name="toe_right" type="hinge" axis="0 1 0" range="-10 55"/>
-            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025" rgba="0.45 0.8 0.5 1"/>
+            <geom type="capsule" fromto="0 0 0 0.11 0 0" size="0.025"
+                  contype="1" conaffinity="1" rgba="0.45 0.8 0.5 1"/>
           </body>
         </body>
       </body>
