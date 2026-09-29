@@ -94,7 +94,8 @@ def main():
                         transition_owner,
                         ["toe_left", "toe_right"],
                     )
-                    runtime.active_groups.clear()
+                    runtime.relinquish_group_control("support")
+                    runtime.relinquish_group_control("toe_grip")
 
                 elif phase == "foot_motion":
                     runtime.ownership.release_resources(transition_owner, joint_resources)
@@ -106,7 +107,7 @@ def main():
                         transition_owner,
                         list(joint_resources),
                     )
-                    runtime.active_groups.clear()
+                    runtime.relinquish_group_control("foot_motion")
 
                 previous_phase = phase
 
