@@ -15,8 +15,12 @@ runtime.activate("toe_grip")
 assert runtime.active_groups == {"support", "toe_grip"}
 assert runtime.ownership.owners["ankle_pitch"] == "support_controller"
 assert runtime.ownership.owners["toe_left"] == "toe_grip_controller"
+assert "sole_contact" not in runtime.ownership.owners
+assert runtime.observers["sole_contact"] == {"support"}
 print("PASS support + toe_grip concurrent activation")
 print(f"     owner=[{runtime.owner_summary()}]")
+print(f"     observe=[{runtime.observation_summary()}]")
+print("PASS observation resource is not exclusively owned")
 
 try:
     runtime.activate("foot_motion")
@@ -31,6 +35,8 @@ assert "toe_left" not in runtime.ownership.owners
 print("PASS partial group release keeps support active")
 
 runtime.deactivate("support")
+assert "sole_contact" not in runtime.observers
+print("PASS observation subscription released independently")
 runtime.activate("foot_motion")
 assert runtime.active_groups == {"foot_motion"}
 print("PASS foot_motion activates after resources are released")
