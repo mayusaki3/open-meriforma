@@ -144,6 +144,10 @@ def main():
             mujoco.mj_step(model, data)
             viewer.sync()
 
+            contact_value = float(data.sensordata[sensor_adr])
+            support_declared = bool(unit["capabilities"]["support"]["declared"])
+            support_available = support_declared and contact_value > 0.001
+
             second = int(t)
             if second != last_report:
                 last_report = second
@@ -153,7 +157,8 @@ def main():
                     f"roll={math.degrees(data.qpos[joints['ankle_roll']]):6.2f} "
                     f"toeL={math.degrees(data.qpos[joints['toe_left']]):6.2f} "
                     f"toeR={math.degrees(data.qpos[joints['toe_right']]):6.2f} "
-                    f"contact={data.sensordata[sensor_adr]:.3f} "
+                    f"contact={contact_value:.3f} "
+                    f"support=declared:{str(support_declared).lower()}/available:{str(support_available).lower()} "
                     f"owner=[{runtime.owner_summary()}] "
                     f"observe=[{runtime.observation_summary()}]"
                 )
