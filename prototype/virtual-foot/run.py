@@ -28,7 +28,8 @@ def main():
 
     joints = {}
     actuators = {}
-    for name in ("ankle_pitch", "ankle_roll", "toe_left", "toe_right"):
+    joint_resources = ("ankle_pitch", "ankle_roll", "toe_left", "toe_right")
+    for name in joint_resources:
         mapping = unit["elements"][name]["mapping"]
         jid = require_id(model, mujoco.mjtObj.mjOBJ_JOINT, mapping["mujoco_joint"])
         aid = require_id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, mapping["mujoco_actuator"])
@@ -47,35 +48,66 @@ def main():
 
     previous_phase = None
     last_report = -1
+    transition_owner = "transition_controller"
 
     print(f"Definition : {unit['definition_id']}")
-    print("Scenario   : support -> support + toe_grip -> transition -> foot_motion")
+    print("Scenario   : support -> support + toe_grip -> handoff -> foot_motion -> handoff")
     print("Clock      : MuJoCo simulation time")
 
     with mujoco.viewer.launch_passive(model, data) as viewer:
         while viewer.is_running():
             frame_start = time.monotonic()
             t = data.time
-            phase_time = t % 12.0
+            phase_time = t % 14.0
 
             if phase_time < 4.0:
                 phase = "support"
             elif phase_time < 8.0:
                 phase = "support+toe_grip"
             elif phase_time < 9.0:
-                phase = "transition"
-            else:
+                phase = "handoff_to_foot_motion"
+            elif phase_time < 13.0:
                 phase = "foot_motion"
+            else:
+                phase = "handoff_to_support"
 
             if phase != previous_phase:
-                runtime.deactivate_all()
                 if phase == "support":
+                    if previous_phase == "handoff_to_support":
+                        runtime.ownership.release_resources(transition_owner, joint_resources)
+                    runtime.deactivate_all()
                     runtime.activate("support")
+
                 elif phase == "support+toe_grip":
-                    runtime.activate("support")
+                    # Preserve support ownership; only add the disjoint toe resources.
                     runtime.activate("toe_grip")
+
+                elif phase == "handoff_to_foot_motion":
+                    # Transfer currently controlled resources to a temporary handoff owner.
+                    runtime.ownership.transfer(
+                        unit["functional_groups"]["support"]["owner"],
+                        transition_owner,
+                        ["ankle_pitch", "ankle_roll"],
+                    )
+                    runtime.ownership.transfer(
+                        unit["functional_groups"]["toe_grip"]["owner"],
+                        transition_owner,
+                        ["toe_left", "toe_right"],
+                    )
+                    runtime.active_groups.clear()
+
                 elif phase == "foot_motion":
+                    runtime.ownership.release_resources(transition_owner, joint_resources)
                     runtime.activate("foot_motion")
+
+                elif phase == "handoff_to_support":
+                    runtime.ownership.transfer(
+                        unit["functional_groups"]["foot_motion"]["owner"],
+                        transition_owner,
+                        list(joint_resources),
+                    )
+                    runtime.active_groups.clear()
+
                 previous_phase = phase
 
             if phase == "support":
@@ -93,7 +125,9 @@ def main():
                 data.ctrl[actuators["toe_right"]] = grip
                 model.site_rgba[light] = (0.6, 0.3, 1.0, 1)
 
-            elif phase == "transition":
+            elif phase.startswith("handoff_"):
+                # Transition Controller owns every moving joint and drives it to
+                # a known neutral handoff pose before the next controller starts.
                 for aid in actuators.values():
                     data.ctrl[aid] = 0
                 model.site_rgba[light] = (0.9, 0.65, 0.1, 1)
@@ -113,7 +147,7 @@ def main():
             if second != last_report:
                 last_report = second
                 print(
-                    f"{t:6.1f}s {phase:18s} "
+                    f"{t:6.1f}s {phase:22s} "
                     f"pitch={math.degrees(data.qpos[joints['ankle_pitch']]):6.2f} "
                     f"roll={math.degrees(data.qpos[joints['ankle_roll']]):6.2f} "
                     f"toeL={math.degrees(data.qpos[joints['toe_left']]):6.2f} "
