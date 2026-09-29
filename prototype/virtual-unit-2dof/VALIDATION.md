@@ -66,3 +66,19 @@ Viewerやホスト側処理が停止・遅延すると状態区間を飛び越�
 3. Joint Aへ55度を要求した場合、正常値として変更されないこと。
 
 Constraint違反時の最終的な製品動作（拒否、停止、Fault化等）は本試作では確定しない。現在のclamp処理はConstraint検出機構を試すための暫定実装である。
+
+
+## Phase 2から判明したRuntimeモデル上の不足
+
+現在の最小Runtimeは、1つの `active_group` と排他的なResource Ownershipだけを持つ。
+
+この構造は2-DOF試作のモード切替には十分だが、以下を表現できない。
+
+- 複数Functional Groupの同時活動
+- Resourceを共有しながら協調する制御
+- 一部Resourceだけを別Controllerへ引き渡す制御
+- 支持を維持したまま別Capabilityを使用する状態
+
+これは実装上のバグではなく、最小試作によって明らかになった概念モデルの不足として扱う。
+
+次のVirtual Foot Unitでは、足首・つま先等を別Elementとして持たせ、支持系Functional Groupとつま先操作Functional Groupの関係を使って、同時活動・部分的Resource利用・Transitionを検証する。
