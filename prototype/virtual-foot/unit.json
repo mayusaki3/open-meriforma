@@ -6,63 +6,163 @@
   "elements": {
     "ankle_pitch": {
       "kind": "joint",
-      "capabilities": ["rotate"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
-      "mapping": {"mujoco_joint": "ankle_pitch", "mujoco_actuator": "actuator_ankle_pitch"}
+      "capabilities": [
+        "rotate"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
+      "mapping": {
+        "mujoco_joint": "ankle_pitch",
+        "mujoco_actuator": "actuator_ankle_pitch"
+      }
     },
     "ankle_roll": {
       "kind": "joint",
-      "capabilities": ["rotate"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
-      "mapping": {"mujoco_joint": "ankle_roll", "mujoco_actuator": "actuator_ankle_roll"}
+      "capabilities": [
+        "rotate"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
+      "mapping": {
+        "mujoco_joint": "ankle_roll",
+        "mujoco_actuator": "actuator_ankle_roll"
+      }
     },
     "toe_left": {
       "kind": "joint",
-      "capabilities": ["rotate", "grip_component"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
-      "mapping": {"mujoco_joint": "toe_left", "mujoco_actuator": "actuator_toe_left"}
+      "capabilities": [
+        "rotate",
+        "grip_component"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
+      "mapping": {
+        "mujoco_joint": "toe_left",
+        "mujoco_actuator": "actuator_toe_left"
+      }
     },
     "toe_right": {
       "kind": "joint",
-      "capabilities": ["rotate", "grip_component"],
-      "control": ["target_position"],
-      "observation": ["position", "velocity"],
-      "mapping": {"mujoco_joint": "toe_right", "mujoco_actuator": "actuator_toe_right"}
+      "capabilities": [
+        "rotate",
+        "grip_component"
+      ],
+      "control": [
+        "target_position"
+      ],
+      "observation": [
+        "position",
+        "velocity"
+      ],
+      "mapping": {
+        "mujoco_joint": "toe_right",
+        "mujoco_actuator": "actuator_toe_right"
+      }
     },
     "sole_contact": {
       "kind": "sensor",
-      "capabilities": ["observe_contact"],
-      "observation": ["contact"],
-      "mapping": {"mujoco_sensor": "sole_contact"}
+      "capabilities": [
+        "observe_contact"
+      ],
+      "observation": [
+        "contact"
+      ],
+      "mapping": {
+        "mujoco_sensor": "sole_contact"
+      }
     },
     "indicator_light": {
       "kind": "indicator",
-      "capabilities": ["emit_light"],
-      "control": ["enabled"],
-      "mapping": {"mujoco_site": "indicator_light"}
+      "capabilities": [
+        "emit_light"
+      ],
+      "control": [
+        "enabled"
+      ],
+      "mapping": {
+        "mujoco_site": "indicator_light"
+      }
     }
   },
   "functional_groups": {
     "support": {
       "owner": "support_controller",
-      "resources": ["ankle_pitch", "ankle_roll", "sole_contact"]
+      "control_resources": [
+        "ankle_pitch",
+        "ankle_roll"
+      ],
+      "observation_resources": [
+        "sole_contact"
+      ]
     },
     "toe_grip": {
       "owner": "toe_grip_controller",
-      "resources": ["toe_left", "toe_right"]
+      "control_resources": [
+        "toe_left",
+        "toe_right"
+      ]
     },
     "foot_motion": {
       "owner": "foot_motion_controller",
-      "resources": ["ankle_pitch", "ankle_roll", "toe_left", "toe_right"]
+      "control_resources": [
+        "ankle_pitch",
+        "ankle_roll",
+        "toe_left",
+        "toe_right"
+      ]
     }
   },
   "constraints": [
-    {"id": "ankle_pitch_range", "scope": ["ankle_pitch"], "kind": "joint_range", "min_deg": -30, "max_deg": 30},
-    {"id": "ankle_roll_range", "scope": ["ankle_roll"], "kind": "joint_range", "min_deg": -20, "max_deg": 20},
-    {"id": "toe_left_range", "scope": ["toe_left"], "kind": "joint_range", "min_deg": -10, "max_deg": 55},
-    {"id": "toe_right_range", "scope": ["toe_right"], "kind": "joint_range", "min_deg": -10, "max_deg": 55}
+    {
+      "id": "ankle_pitch_range",
+      "scope": [
+        "ankle_pitch"
+      ],
+      "kind": "joint_range",
+      "min_deg": -30,
+      "max_deg": 30
+    },
+    {
+      "id": "ankle_roll_range",
+      "scope": [
+        "ankle_roll"
+      ],
+      "kind": "joint_range",
+      "min_deg": -20,
+      "max_deg": 20
+    },
+    {
+      "id": "toe_left_range",
+      "scope": [
+        "toe_left"
+      ],
+      "kind": "joint_range",
+      "min_deg": -10,
+      "max_deg": 55
+    },
+    {
+      "id": "toe_right_range",
+      "scope": [
+        "toe_right"
+      ],
+      "kind": "joint_range",
+      "min_deg": -10,
+      "max_deg": 55
+    }
   ]
 }
