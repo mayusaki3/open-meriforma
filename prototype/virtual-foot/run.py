@@ -153,7 +153,8 @@ def main():
                     f"toeL={math.degrees(data.qpos[joints['toe_left']]):6.2f} "
                     f"toeR={math.degrees(data.qpos[joints['toe_right']]):6.2f} "
                     f"contact={data.sensordata[sensor_adr]:.3f} "
-                    f"owner=[{runtime.owner_summary()}]"
+                    f"owner=[{runtime.owner_summary()}] "
+                    f"observe=[{runtime.observation_summary()}]"
                 )
 
             remaining = model.opt.timestep - (time.monotonic() - frame_start)
