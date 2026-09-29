@@ -45,6 +45,7 @@ def main():
         unit["elements"]["sole_contact"]["mapping"]["mujoco_sensor"]
     )
     sensor_adr = model.sensor_adr[sensor]
+    runtime.set_observation_source_available("sole_contact", True)
 
     previous_phase = None
     last_report = -1
@@ -146,7 +147,8 @@ def main():
 
             contact_value = float(data.sensordata[sensor_adr])
             support_declared = bool(unit["capabilities"]["support"]["declared"])
-            support_observable = "support" in runtime.observers.get("sole_contact", set())
+            support_observable = runtime.observation_source_available("sole_contact")
+            support_subscribed = "support" in runtime.observers.get("sole_contact", set())
             if not support_declared:
                 support_availability = "absent"
             elif not support_observable:
@@ -168,6 +170,7 @@ def main():
                     f"contact={contact_value:.3f} "
                     f"support=declared:{str(support_declared).lower()}"
                     f"/observable:{str(support_observable).lower()}"
+                    f"/subscribed:{str(support_subscribed).lower()}"
                     f"/availability:{support_availability} "
                     f"owner=[{runtime.owner_summary()}] "
                     f"observe=[{runtime.observation_summary()}]"
