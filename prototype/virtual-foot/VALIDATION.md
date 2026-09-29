@@ -79,3 +79,29 @@ Transition中にResourceを無Owner状態へ置く方式から、`transition_con
 - Observation Resource: sensor/state等。複数Consumerからの参照を許容する。
 
 これは従来検討していたShared Resourceを直ちに一般化するものではない。まずControlとObservationを分離し、その後、同一Control Resourceの協調利用が必要なシナリオでShared/Coordinated Controlを別途検証する。
+
+
+## Phase 3: Capability Declaration vs Runtime Availability
+
+Virtual Footを床面付近へ配置し、`support` CapabilityをDefinition上の宣言とRuntime Availabilityに分離して検証した。
+
+### 結果
+
+- `support` は接触状態にかかわらず `declared=true` を維持した。
+- sole touch sensorは実接触時に非ゼロ値を返した。
+- 観測例では `contact=7.072` のとき、初期実装で `available=true` へ変化した。
+- これにより「Capabilityが存在すること」と「現在そのCapabilityを利用できること」を別状態として扱えることを確認した。
+
+### 検証中に判明した問題
+
+初期実装では、`foot_motion` 中に `observe=[-]` であるにもかかわらず、run.pyがMuJoCo sensorを直接参照したため `available=true` になった。
+
+これはObservation Subscriptionを迂回しており、Runtimeモデルとして不整合である。
+
+次の修正では少なくとも以下を区別する。
+
+- Declared: Definition上Capabilityが存在する。
+- Observable: Availability判定に必要なObservationを現在取得できる。
+- Available: 必要なObservationが利用可能で、Availability条件を満たす。
+
+現段階の `contact > 0.001` はCapability Availability概念を検証するための仮条件であり、最終的なsupport判定条件ではない。
