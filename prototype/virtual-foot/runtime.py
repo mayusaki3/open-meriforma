@@ -22,6 +22,22 @@ class ResourceOwnership:
         for resource in [key for key, value in self.owners.items() if value == owner]:
             del self.owners[resource]
 
+    def transfer(self, from_owner: str, to_owner: str, resources: list[str]) -> None:
+        for resource in resources:
+            current = self.owners.get(resource)
+            if current != from_owner:
+                raise RuntimeError(
+                    f"resource transfer mismatch: {resource} is owned by {current!r}, "
+                    f"expected {from_owner!r}"
+                )
+        for resource in resources:
+            self.owners[resource] = to_owner
+
+    def release_resources(self, owner: str, resources: list[str]) -> None:
+        for resource in resources:
+            if self.owners.get(resource) == owner:
+                del self.owners[resource]
+
 
 class VirtualUnitRuntime:
     def __init__(self, definition: dict) -> None:
