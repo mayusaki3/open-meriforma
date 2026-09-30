@@ -25,3 +25,20 @@ print("-- reconnect leg_foot --")
 print(f"Connection        : {graph.summary()}")
 print(f"reach  thigh-foot : {graph.reachable('thigh', 'foot')}")
 print(f"stance            : {graph.capability_available('stance')}")
+
+print("-- cross-unit resource ownership --")
+stance_resources = [
+    "thigh:hip_pitch",
+    "leg:knee_pitch",
+    "foot:ankle_pitch",
+    "foot:ankle_roll",
+]
+graph.acquire_resources("stance_controller", stance_resources)
+print(f"owner              : {graph.ownership_summary()}")
+try:
+    graph.acquire_resources("foot_motion_controller", ["foot:ankle_pitch"])
+except RuntimeError as exc:
+    print(f"conflict           : {exc}")
+graph.release_resources("stance_controller")
+graph.acquire_resources("foot_motion_controller", ["foot:ankle_pitch", "foot:ankle_roll"])
+print(f"after release      : {graph.ownership_summary()}")
