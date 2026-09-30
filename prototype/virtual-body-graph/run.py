@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from runtime import BodyGraph
+from runtime import BodyGraph, CapabilityExecution
 
 ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
@@ -83,4 +83,29 @@ print(
     "same requester      : "
     + str(graph.evaluate_capability_readiness("stance", "foot_motion_controller"))
 )
+graph.release_resources("foot_motion_controller")
+
+print("-- capability execution lifecycle --")
+execution = CapabilityExecution(graph, "stance", "stance_execution")
+execution.start()
+print(f"started             : state={execution.state}")
+print(f"owner               : {graph.ownership_summary()}")
+print(f"validate            : {execution.validate()}")
+
+graph.disconnect("leg_foot")
+print(f"after disconnect    : valid={execution.validate()} state={execution.state}")
+print(f"reasons             : {execution.reasons}")
+print(f"owner retained      : {graph.ownership_summary()}")
+
+graph.connect(connections["leg_foot"])
+print(f"after reconnect     : state={execution.state}")
+execution.finish()
+print(f"after finish        : state={execution.state} owner={graph.ownership_summary()}")
+
+graph.acquire_resources("foot_motion_controller", ["foot:ankle_pitch"])
+blocked = CapabilityExecution(graph, "stance", "blocked_stance")
+try:
+    blocked.start()
+except RuntimeError as exc:
+    print(f"blocked start       : state={blocked.state} error={exc}")
 graph.release_resources("foot_motion_controller")
