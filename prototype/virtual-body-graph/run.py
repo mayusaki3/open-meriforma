@@ -57,6 +57,8 @@ print(
     "after reconnect    : "
     + str(graph.disconnected_owned_resources("stance_controller", "thigh"))
 )
+graph.release_resources("stance_controller")
+print(f"after cleanup       : {graph.ownership_summary()}")
 
 print("-- capability evaluation reason --")
 print(f"evaluation          : {graph.evaluate_capability('stance')}")
