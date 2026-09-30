@@ -32,6 +32,29 @@ class BodyGraph:
                 return True
         return False
 
+    def reachable(self, start: str, target: str) -> bool:
+        if start == target:
+            return True
+        visited = {start}
+        pending = [start]
+        while pending:
+            current = pending.pop()
+            for item in self.connections.values():
+                a = item["a"]["unit"]
+                b = item["b"]["unit"]
+                if a == current:
+                    neighbor = b
+                elif b == current:
+                    neighbor = a
+                else:
+                    continue
+                if neighbor == target:
+                    return True
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    pending.append(neighbor)
+        return False
+
     def resource_exists(self, qualified: str) -> bool:
         unit_name, resource = qualified.split(":", 1)
         unit = self.definition["units"].get(unit_name)
@@ -46,7 +69,7 @@ class BodyGraph:
         required_units = capability.get("required_units", [])
         if len(required_units) > 1:
             root = required_units[0]
-            if not all(self.connected(root, other) for other in required_units[1:]):
+            if not all(self.reachable(root, other) for other in required_units[1:]):
                 return False
         return True
 
