@@ -79,10 +79,9 @@ assert graph.ownership.owners == {}
 print("PASS reconnect restores ownership reachability")
 print("PASS scenario cleanup releases ownership before next evaluation")
 
-assert graph.evaluate_capability("stance") == {
-    "available": True,
-    "reasons": [],
-}
+evaluation = graph.evaluate_capability("stance")
+assert evaluation["available"] is True
+assert evaluation["reasons"] == []
 graph.disconnect("leg_foot")
 evaluation = graph.evaluate_capability("stance")
 assert evaluation["available"] is False
@@ -216,6 +215,28 @@ observation_eval = graph.evaluate_capability("stance")
 assert observation_eval["available"] is False
 assert "observation_unavailable:foot:sole_contact" in observation_eval["reasons"]
 print(f"PASS capability availability reports observation reason: {observation_eval}")
+graph.set_observation_source_available("foot:sole_contact", True)
+
+structured = graph.evaluate_capability("stance")
+categories = {item["category"] for item in structured["conditions"]}
+assert {"resource", "topology", "observation"}.issubset(categories)
+assert all(item["satisfied"] for item in structured["conditions"])
+print(f"PASS capability evaluation exposes structured condition categories: {sorted(categories)}")
+
+graph.disconnect("leg_foot")
+graph.set_observation_source_available("foot:sole_contact", False)
+multi_failure = graph.evaluate_capability("stance")
+failed = [item for item in multi_failure["conditions"] if not item["satisfied"]]
+failed_categories = {item["category"] for item in failed}
+assert "topology" in failed_categories
+assert "observation" in failed_categories
+assert "unreachable_unit:foot" in multi_failure["reasons"]
+assert "observation_unavailable:foot:sole_contact" in multi_failure["reasons"]
+print(
+    "PASS one evaluation preserves multiple failed condition categories: "
+    f"{sorted(failed_categories)}"
+)
+graph.connect(connections["leg_foot"])
 graph.set_observation_source_available("foot:sole_contact", True)
 
 print("PASS all virtual-body-graph checks")
