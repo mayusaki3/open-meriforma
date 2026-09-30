@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from runtime import BodyGraph
+from runtime import BodyGraph, CapabilityExecution
 
 ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
@@ -114,5 +114,41 @@ assert same_owner["available"] is True
 assert same_owner["ready"] is True
 print("PASS resources already owned by requester do not block readiness")
 graph.release_resources("foot_motion_controller")
+
+execution = CapabilityExecution(graph, "stance", "stance_execution")
+execution.start()
+assert execution.state == "active"
+assert graph.ownership.owners["thigh:hip_pitch"] == "stance_execution"
+assert graph.ownership.owners["foot:ankle_roll"] == "stance_execution"
+print("PASS capability execution atomically acquires cross-unit control resources")
+
+assert execution.validate() is True
+graph.disconnect("leg_foot")
+assert execution.validate() is False
+assert execution.state == "invalidated"
+assert "unreachable_unit:foot" in execution.reasons
+assert graph.ownership.owners["foot:ankle_pitch"] == "stance_execution"
+print(f"PASS active execution detects topology invalidation: {execution.reasons}")
+print("PASS invalidation does not silently release owned resources")
+
+graph.connect(connections["leg_foot"])
+assert execution.state == "invalidated"
+print("PASS topology recovery does not silently reactivate invalidated execution")
+execution.finish()
+assert execution.state == "finished"
+assert graph.ownership.owners == {}
+print("PASS explicit finish releases execution resources")
+
+blocked_owner = "foot_motion_controller"
+graph.acquire_resources(blocked_owner, ["foot:ankle_pitch"])
+rejected = CapabilityExecution(graph, "stance", "blocked_stance")
+try:
+    rejected.start()
+except RuntimeError as exc:
+    assert rejected.state == "rejected"
+    print(f"PASS execution request rejected when not ready: {exc}")
+else:
+    raise AssertionError("blocked execution unexpectedly started")
+graph.release_resources(blocked_owner)
 
 print("PASS all virtual-body-graph checks")
