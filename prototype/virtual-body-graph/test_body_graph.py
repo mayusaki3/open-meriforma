@@ -74,7 +74,9 @@ print("PASS detection does not silently release ownership")
 graph.connect(connections["leg_foot"])
 assert graph.disconnected_owned_resources("stance_controller", "thigh") == []
 graph.release_resources("stance_controller")
+assert graph.ownership.owners == {}
 print("PASS reconnect restores ownership reachability")
+print("PASS scenario cleanup releases ownership before next evaluation")
 
 assert graph.evaluate_capability("stance") == {
     "available": True,
