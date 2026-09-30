@@ -151,4 +151,43 @@ else:
     raise AssertionError("blocked execution unexpectedly started")
 graph.release_resources(blocked_owner)
 
+race = CapabilityExecution(graph, "stance", "race_stance")
+precheck = graph.evaluate_capability_readiness("stance", "race_stance")
+assert precheck["available"] is True and precheck["ready"] is True
+graph.acquire_resources("late_controller", ["foot:ankle_pitch"])
+try:
+    race.start()
+except RuntimeError as exc:
+    assert race.state == "rejected"
+    assert any(reason.startswith("resource_owned:") for reason in race.reasons)
+    print(f"PASS start rechecks readiness after stale external precheck: {exc}")
+else:
+    raise AssertionError("execution started after resource changed following precheck")
+graph.release_resources("late_controller")
+
+original_acquire = graph.acquire_resources
+injected = {"done": False}
+
+def acquire_with_interleaving(owner: str, resources: list[str]) -> None:
+    if owner == "atomic_stance" and not injected["done"]:
+        injected["done"] = True
+        original_acquire("interleaving_controller", ["foot:ankle_pitch"])
+    original_acquire(owner, resources)
+
+graph.acquire_resources = acquire_with_interleaving
+atomic = CapabilityExecution(graph, "stance", "atomic_stance")
+try:
+    atomic.start()
+except RuntimeError as exc:
+    assert atomic.state == "rejected"
+    assert any(reason.startswith("acquire_failed:") for reason in atomic.reasons)
+    assert "thigh:hip_pitch" not in graph.ownership.owners
+    assert graph.ownership.owners["foot:ankle_pitch"] == "interleaving_controller"
+    print(f"PASS atomic acquire is final execution-start commit point: {exc}")
+else:
+    raise AssertionError("execution started despite acquire-time ownership conflict")
+finally:
+    graph.acquire_resources = original_acquire
+    graph.release_resources("interleaving_controller")
+
 print("PASS all virtual-body-graph checks")
