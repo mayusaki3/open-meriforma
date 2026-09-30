@@ -64,3 +64,21 @@ graph.disconnect("leg_foot")
 print(f"after disconnect    : {graph.evaluate_capability('stance')}")
 graph.connect(connections["leg_foot"])
 print(f"after reconnect     : {graph.evaluate_capability('stance')}")
+
+print("-- availability vs resource readiness --")
+print(
+    "free resources      : "
+    + str(graph.evaluate_capability_readiness("stance", "stance_controller"))
+)
+graph.acquire_resources(
+    "foot_motion_controller", ["foot:ankle_pitch", "foot:ankle_roll"]
+)
+print(
+    "owned by other      : "
+    + str(graph.evaluate_capability_readiness("stance", "stance_controller"))
+)
+print(
+    "same requester      : "
+    + str(graph.evaluate_capability_readiness("stance", "foot_motion_controller"))
+)
+graph.release_resources("foot_motion_controller")
