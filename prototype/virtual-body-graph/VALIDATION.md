@@ -221,3 +221,41 @@ Virtual Body GraphではこれらのうちTopologyとcross-unit Resourceに対�
 実行中Connection喪失に対する最終Safety動作は、この段階では確定しない。
 
 External Object、Health/Constraint/Safety統合、Physical/Virtual Mappingは、このライフサイクル検証後に扱う。
+
+
+## 11. Cross-unit Capability Execution Lifecycle
+
+`stance` を複数Unitにまたがる実行対象として、Capability Executionの最小Lifecycleを検証した。
+
+開始時:
+
+1. Capability Availabilityを評価する。
+2. Resource Readinessを評価する。
+3. Control Resourceを取得する。
+4. ExecutionをActiveとする。
+
+実行中に `leg_foot` Connectionを切断すると、再評価によって `unreachable_unit:foot` を検出し、ExecutionをInvalidatedとした。
+
+確認結果:
+
+- Active Executionは複数UnitのControl Resourceを所有できる。
+- Topology成立条件を失うとExecution invalidationを検出できる。
+- InvalidationだけではOwnershipを暗黙releaseしない。
+- Topologyが復旧してもInvalidated Executionを暗黙reactivateしない。
+- 明示的なfinishでOwnershipをreleaseできる。
+- 開始前に必要Resourceが別Controllerに所有されている場合、Execution開始を拒否できる。
+- Observation用途の `sole_contact` はControl Ownership対象に含めない。
+
+### 結論
+
+CapabilityのDeclaration、Availability、Resource Readiness、Execution stateは別概念として扱える。
+
+Topology recoveryはExecution recoveryを意味しない。
+
+Invalidation後にSTOP、Limp、retry、resume、abort等のどのPolicyを適用するかは、このPrototypeでは確定しない。
+
+### 次の確認事項
+
+現在のstart処理はAvailability/Readiness評価後にResource acquireを行うため、評価とacquireの間にResource状態が変化する可能性がある。
+
+次段階では、事前評価は説明・早期reject用途としつつ、atomic Resource acquireそのものをExecution開始可否の最終判定点として扱う。
