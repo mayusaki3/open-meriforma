@@ -70,6 +70,12 @@
         "foot:ankle_pitch",
         "foot:ankle_roll",
         "foot:sole_contact"
+      ],
+      "control_resources": [
+        "thigh:hip_pitch",
+        "leg:knee_pitch",
+        "foot:ankle_pitch",
+        "foot:ankle_roll"
       ]
     }
   }
