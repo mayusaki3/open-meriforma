@@ -1,10 +1,31 @@
 from __future__ import annotations
 
 
+class ResourceOwnership:
+    def __init__(self) -> None:
+        self.owners: dict[str, str] = {}
+
+    def acquire(self, owner: str, resources: list[str]) -> None:
+        conflicts = {
+            resource: self.owners[resource]
+            for resource in resources
+            if resource in self.owners and self.owners[resource] != owner
+        }
+        if conflicts:
+            raise RuntimeError(f"resource ownership conflict: {conflicts}")
+        for resource in resources:
+            self.owners[resource] = owner
+
+    def release(self, owner: str) -> None:
+        for resource in [key for key, value in self.owners.items() if value == owner]:
+            del self.owners[resource]
+
+
 class BodyGraph:
     def __init__(self, definition: dict) -> None:
         self.definition = definition
         self.connections = {item["id"]: item for item in definition.get("connections", [])}
+        self.ownership = ResourceOwnership()
 
     def connect(self, connection: dict) -> None:
         if connection["id"] in self.connections:
@@ -60,6 +81,15 @@ class BodyGraph:
         unit = self.definition["units"].get(unit_name)
         return unit is not None and resource in unit.get("resources", [])
 
+    def acquire_resources(self, owner: str, resources: list[str]) -> None:
+        missing = [item for item in resources if not self.resource_exists(item)]
+        if missing:
+            raise RuntimeError(f"unknown resources: {missing}")
+        self.ownership.acquire(owner, resources)
+
+    def release_resources(self, owner: str) -> None:
+        self.ownership.release(owner)
+
     def capability_available(self, name: str) -> bool:
         capability = self.definition["capabilities"][name]
         if not capability.get("declared", False):
@@ -79,4 +109,12 @@ class BodyGraph:
         return ",".join(
             f"{c['a']['unit']}:{c['a']['port']}<->{c['b']['unit']}:{c['b']['port']}"
             for c in self.connections.values()
+        )
+
+    def ownership_summary(self) -> str:
+        if not self.ownership.owners:
+            return "-"
+        return ",".join(
+            f"{resource}:{owner}"
+            for resource, owner in sorted(self.ownership.owners.items())
         )
