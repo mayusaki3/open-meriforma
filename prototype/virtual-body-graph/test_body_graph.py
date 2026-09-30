@@ -39,4 +39,28 @@ except RuntimeError as exc:
 else:
     raise AssertionError("invalid port was accepted")
 
+stance_resources = [
+    "thigh:hip_pitch",
+    "leg:knee_pitch",
+    "foot:ankle_pitch",
+    "foot:ankle_roll",
+]
+graph.acquire_resources("stance_controller", stance_resources)
+assert all(graph.ownership.owners[item] == "stance_controller" for item in stance_resources)
+print("PASS one controller owns resources across three units")
+
+try:
+    graph.acquire_resources("foot_motion_controller", ["foot:ankle_pitch"])
+except RuntimeError as exc:
+    print(f"PASS cross-unit ownership conflict rejected: {exc}")
+else:
+    raise AssertionError("ownership conflict was accepted")
+
+graph.release_resources("stance_controller")
+graph.acquire_resources(
+    "foot_motion_controller", ["foot:ankle_pitch", "foot:ankle_roll"]
+)
+assert graph.ownership.owners["foot:ankle_pitch"] == "foot_motion_controller"
+print("PASS released cross-unit resources can be reacquired by another controller")
+
 print("PASS all virtual-body-graph checks")
