@@ -76,6 +76,9 @@
         "leg:knee_pitch",
         "foot:ankle_pitch",
         "foot:ankle_roll"
+      ],
+      "required_observations": [
+        "foot:sole_contact"
       ]
     }
   }
