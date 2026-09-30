@@ -6,6 +6,7 @@ from runtime import BodyGraph, CapabilityExecution
 ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
+graph.set_observation_source_available("foot:sole_contact", True)
 connections = {item["id"]: item for item in definition["connections"]}
 
 print(f"Body       : {definition['body_id']}")
@@ -109,3 +110,22 @@ try:
 except RuntimeError as exc:
     print(f"blocked start       : state={blocked.state} error={exc}")
 graph.release_resources("foot_motion_controller")
+
+print("-- generic condition invalidation: observation source --")
+observation_execution = CapabilityExecution(
+    graph, "stance", "observation_stance"
+)
+observation_execution.start()
+print(f"started             : state={observation_execution.state}")
+graph.set_observation_source_available("foot:sole_contact", False)
+print(
+    "source unavailable  : "
+    f"valid={observation_execution.validate()} "
+    f"state={observation_execution.state}"
+)
+print(f"reasons             : {observation_execution.reasons}")
+print(f"owner retained      : {graph.ownership_summary()}")
+graph.set_observation_source_available("foot:sole_contact", True)
+print(f"source restored     : state={observation_execution.state}")
+observation_execution.finish()
+print(f"after finish        : state={observation_execution.state} owner={graph.ownership_summary()}")
