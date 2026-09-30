@@ -57,3 +57,10 @@ print(
     "after reconnect    : "
     + str(graph.disconnected_owned_resources("stance_controller", "thigh"))
 )
+
+print("-- capability evaluation reason --")
+print(f"evaluation          : {graph.evaluate_capability('stance')}")
+graph.disconnect("leg_foot")
+print(f"after disconnect    : {graph.evaluate_capability('stance')}")
+graph.connect(connections["leg_foot"])
+print(f"after reconnect     : {graph.evaluate_capability('stance')}")
