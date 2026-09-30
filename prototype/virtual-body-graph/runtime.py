@@ -90,6 +90,21 @@ class BodyGraph:
     def release_resources(self, owner: str) -> None:
         self.ownership.release(owner)
 
+    def owned_resources(self, owner: str) -> list[str]:
+        return [
+            resource
+            for resource, current_owner in self.ownership.owners.items()
+            if current_owner == owner
+        ]
+
+    def disconnected_owned_resources(self, owner: str, anchor_unit: str) -> list[str]:
+        disconnected: list[str] = []
+        for qualified in self.owned_resources(owner):
+            unit_name, _ = qualified.split(":", 1)
+            if not self.reachable(anchor_unit, unit_name):
+                disconnected.append(qualified)
+        return sorted(disconnected)
+
     def capability_available(self, name: str) -> bool:
         capability = self.definition["capabilities"][name]
         if not capability.get("declared", False):
