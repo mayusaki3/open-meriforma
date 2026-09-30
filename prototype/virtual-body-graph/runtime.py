@@ -21,6 +21,52 @@ class ResourceOwnership:
             del self.owners[resource]
 
 
+class CapabilityExecution:
+    def __init__(self, graph: "BodyGraph", capability: str, controller: str) -> None:
+        self.graph = graph
+        self.capability = capability
+        self.controller = controller
+        self.state = "idle"
+        self.reasons: list[str] = []
+
+    def start(self) -> None:
+        readiness = self.graph.evaluate_capability_readiness(
+            self.capability, self.controller
+        )
+        if not readiness["available"] or not readiness["ready"]:
+            self.state = "rejected"
+            self.reasons = list(readiness["reasons"])
+            raise RuntimeError(
+                f"capability execution rejected: {self.capability}: {self.reasons}"
+            )
+
+        resources = self.graph.definition["capabilities"][self.capability].get(
+            "control_resources",
+            self.graph.definition["capabilities"][self.capability].get(
+                "required_resources", []
+            ),
+        )
+        self.graph.acquire_resources(self.controller, resources)
+        self.state = "active"
+        self.reasons = []
+
+    def validate(self) -> bool:
+        if self.state != "active":
+            return self.state == "active"
+        evaluation = self.graph.evaluate_capability(self.capability)
+        if not evaluation["available"]:
+            self.state = "invalidated"
+            self.reasons = list(evaluation["reasons"])
+            return False
+        return True
+
+    def finish(self) -> None:
+        if self.state not in {"active", "invalidated"}:
+            raise RuntimeError(f"cannot finish execution in state: {self.state}")
+        self.graph.release_resources(self.controller)
+        self.state = "finished"
+
+
 class BodyGraph:
     def __init__(self, definition: dict) -> None:
         self.definition = definition
