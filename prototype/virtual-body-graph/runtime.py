@@ -46,7 +46,16 @@ class CapabilityExecution:
                 "required_resources", []
             ),
         )
-        self.graph.acquire_resources(self.controller, resources)
+        try:
+            self.graph.acquire_resources(self.controller, resources)
+        except RuntimeError as exc:
+            self.state = "rejected"
+            self.reasons = [f"acquire_failed:{exc}"]
+            raise RuntimeError(
+                f"capability execution acquire failed: "
+                f"{self.capability}: {self.reasons}"
+            ) from exc
+
         self.state = "active"
         self.reasons = []
 
