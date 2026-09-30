@@ -63,4 +63,17 @@ graph.acquire_resources(
 assert graph.ownership.owners["foot:ankle_pitch"] == "foot_motion_controller"
 print("PASS released cross-unit resources can be reacquired by another controller")
 
+graph.release_resources("foot_motion_controller")
+graph.acquire_resources("stance_controller", stance_resources)
+graph.disconnect("leg_foot")
+isolated = graph.disconnected_owned_resources("stance_controller", "thigh")
+assert isolated == ["foot:ankle_pitch", "foot:ankle_roll"]
+assert graph.ownership.owners["foot:ankle_pitch"] == "stance_controller"
+print(f"PASS graph disconnect detects isolated owned resources: {isolated}")
+print("PASS detection does not silently release ownership")
+graph.connect(connections["leg_foot"])
+assert graph.disconnected_owned_resources("stance_controller", "thigh") == []
+graph.release_resources("stance_controller")
+print("PASS reconnect restores ownership reachability")
+
 print("PASS all virtual-body-graph checks")
