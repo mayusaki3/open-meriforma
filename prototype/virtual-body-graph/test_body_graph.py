@@ -6,6 +6,7 @@ from runtime import BodyGraph, CapabilityExecution
 ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
+graph.set_observation_source_available("foot:sole_contact", True)
 connections = {item["id"]: item for item in definition["connections"]}
 
 assert graph.connected("thigh", "leg")
@@ -189,5 +190,32 @@ else:
 finally:
     graph.acquire_resources = original_acquire
     graph.release_resources("interleaving_controller")
+
+observation_execution = CapabilityExecution(
+    graph, "stance", "observation_stance"
+)
+observation_execution.start()
+assert observation_execution.state == "active"
+graph.set_observation_source_available("foot:sole_contact", False)
+assert observation_execution.validate() is False
+assert observation_execution.state == "invalidated"
+assert "observation_unavailable:foot:sole_contact" in observation_execution.reasons
+assert graph.ownership.owners["foot:ankle_pitch"] == "observation_stance"
+print(
+    "PASS generic execution validation detects observation condition loss: "
+    f"{observation_execution.reasons}"
+)
+graph.set_observation_source_available("foot:sole_contact", True)
+assert observation_execution.state == "invalidated"
+print("PASS observation recovery does not silently reactivate execution")
+observation_execution.finish()
+assert graph.ownership.owners == {}
+
+graph.set_observation_source_available("foot:sole_contact", False)
+observation_eval = graph.evaluate_capability("stance")
+assert observation_eval["available"] is False
+assert "observation_unavailable:foot:sole_contact" in observation_eval["reasons"]
+print(f"PASS capability availability reports observation reason: {observation_eval}")
+graph.set_observation_source_available("foot:sole_contact", True)
 
 print("PASS all virtual-body-graph checks")
