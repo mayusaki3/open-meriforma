@@ -105,18 +105,30 @@ class BodyGraph:
                 disconnected.append(qualified)
         return sorted(disconnected)
 
-    def capability_available(self, name: str) -> bool:
-        capability = self.definition["capabilities"][name]
-        if not capability.get("declared", False):
-            return False
-        if not all(self.resource_exists(item) for item in capability["required_resources"]):
-            return False
+    def evaluate_capability(self, name: str) -> dict:
+        capability = self.definition["capabilities"].get(name)
+        if capability is None or not capability.get("declared", False):
+            return {"available": False, "reasons": ["not_declared"]}
+
+        reasons: list[str] = []
+        missing_resources = [
+            item
+            for item in capability.get("required_resources", [])
+            if not self.resource_exists(item)
+        ]
+        reasons.extend(f"missing_resource:{item}" for item in missing_resources)
+
         required_units = capability.get("required_units", [])
         if len(required_units) > 1:
-            root = required_units[0]
-            if not all(self.reachable(root, other) for other in required_units[1:]):
-                return False
-        return True
+            anchor = required_units[0]
+            for unit_name in required_units[1:]:
+                if not self.reachable(anchor, unit_name):
+                    reasons.append(f"unreachable_unit:{unit_name}")
+
+        return {"available": not reasons, "reasons": reasons}
+
+    def capability_available(self, name: str) -> bool:
+        return self.evaluate_capability(name)["available"]
 
     def summary(self) -> str:
         if not self.connections:
