@@ -6,21 +6,26 @@ from runtime import BodyGraph
 ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
-connection = definition["connections"][0]
+connections = {item["id"]: item for item in definition["connections"]}
 
+assert graph.connected("thigh", "leg")
 assert graph.connected("leg", "foot")
+assert not graph.connected("thigh", "foot")
+assert graph.reachable("thigh", "foot")
 assert graph.capability_available("stance")
-print("PASS connected leg + foot provides cross-unit stance capability")
+print("PASS three-unit chain provides cross-unit stance capability")
+print("PASS thigh and foot are reachable without direct connection")
 
 graph.disconnect("leg_foot")
-assert not graph.connected("leg", "foot")
+assert graph.connected("thigh", "leg")
+assert not graph.reachable("thigh", "foot")
 assert not graph.capability_available("stance")
-print("PASS disconnect removes cross-unit stance availability")
+print("PASS middle-chain disconnect splits body component and removes stance")
 
-graph.connect(connection)
-assert graph.connected("leg", "foot")
+graph.connect(connections["leg_foot"])
+assert graph.reachable("thigh", "foot")
 assert graph.capability_available("stance")
-print("PASS reconnect restores cross-unit stance availability")
+print("PASS reconnect restores body component and stance")
 
 bad = {
     "id": "bad",
