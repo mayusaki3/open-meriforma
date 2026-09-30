@@ -130,6 +130,34 @@ class BodyGraph:
     def capability_available(self, name: str) -> bool:
         return self.evaluate_capability(name)["available"]
 
+    def evaluate_capability_readiness(self, name: str, requester: str) -> dict:
+        evaluation = self.evaluate_capability(name)
+        if not evaluation["available"]:
+            return {
+                "available": False,
+                "ready": False,
+                "reasons": list(evaluation["reasons"]),
+                "blocked_resources": {},
+            }
+
+        capability = self.definition["capabilities"][name]
+        blocked = {
+            resource: self.ownership.owners[resource]
+            for resource in capability.get("required_resources", [])
+            if resource in self.ownership.owners
+            and self.ownership.owners[resource] != requester
+        }
+        reasons = [
+            f"resource_owned:{resource}:{owner}"
+            for resource, owner in sorted(blocked.items())
+        ]
+        return {
+            "available": True,
+            "ready": not blocked,
+            "reasons": reasons,
+            "blocked_resources": blocked,
+        }
+
     def summary(self) -> str:
         if not self.connections:
             return "-"
