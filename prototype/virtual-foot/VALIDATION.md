@@ -150,3 +150,54 @@ Observation Sourceの利用可能性と、Functional GroupによるRuntime Subsc
 - Availability: Observableな情報を用いたCapabilityの現在状態評価。
 
 次はObservation Sourceを意図的にUnavailableへ変化させ、`availability=unknown`への遷移を検証する。
+
+
+## Phase 6: Virtual Foot 基礎検証の整理
+
+Virtual Footで実施した基礎検証を、標準候補・Runtime実装・未確定事項に整理する。
+
+### 標準概念へ反映する有力候補
+
+- Capability DeclarationとRuntime Availabilityは分離する。
+- Availabilityはbooleanだけでなく、少なくとも判定不能（Unknown）を表現できる必要がある。
+- Observation Sourceの利用可能性とObservation Subscriptionは別概念である。
+- Capability AvailabilityはFunctional GroupのActive状態から独立して事前評価できる。
+- Control ResourceとObservation Resourceは別に扱う。
+- Control OwnershipとObservation Subscriptionは別のRuntime状態である。
+- 複数Functional GroupはControl Resourceが競合しなければ同時にActiveになれる。
+- Control Resourceのhandoffでは、Ownership移譲と物理状態の安全な遷移を分けて考える必要がある。
+- Ownershipを解放しただけではResourceが安全状態になったことを意味しない。
+- Runtime lifecycleは関連状態の整合性を保つAPI経由で変更する。
+
+### Runtime実装として検証できた事項
+
+- ExclusiveなControl Ownership。
+- 非ExclusiveなObservation Subscription。
+- Functional Groupの部分的なActivate / Deactivate。
+- Transition Controllerを用いた明示的Control Handoff。
+- Observation Source availabilityのRuntime管理。
+- Capability Availabilityの事前評価。
+
+Transition Controllerそのものを標準必須要素とするかは未確定であり、handoff手順をsource/target controllerが実装する構成もあり得る。
+
+### Prototype固有であり標準化しない事項
+
+- `contact > 0.001` をsupport Availabilityとする条件。
+- 現在の14秒シナリオ。
+- 1秒固定のhandoff時間。
+- 現在の関節角度・制御波形。
+- 現在のMuJoCo形状・寸法。
+- `absent / unknown / available / unavailable` という最終的な列挙名。
+
+### 次段階で検証すべき事項
+
+Virtual Foot単体で状態を追加し続けるのではなく、次のVirtual Unit / 複数Unit構成では以下を優先する。
+
+1. Unit間Connectionを含むBody Graph。
+2. 複数UnitにまたがるCapability / Functional Group。
+3. UnitをまたぐResource利用とControl Ownership。
+4. External ObjectとのRelationによる一時的なCapability拡張。
+5. Health / Constraint / Safetyを含むAvailability評価。
+6. Physical UnitとVirtual UnitのMapping。
+
+Virtual Footは、単一Unit内部のElement、Functional Group、Control/Observation、Capability Availability、handoffの基礎検証用Reference Prototypeとして扱う。
