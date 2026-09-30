@@ -76,4 +76,17 @@ assert graph.disconnected_owned_resources("stance_controller", "thigh") == []
 graph.release_resources("stance_controller")
 print("PASS reconnect restores ownership reachability")
 
+assert graph.evaluate_capability("stance") == {
+    "available": True,
+    "reasons": [],
+}
+graph.disconnect("leg_foot")
+evaluation = graph.evaluate_capability("stance")
+assert evaluation["available"] is False
+assert "unreachable_unit:foot" in evaluation["reasons"]
+print(f"PASS capability reports topology reason: {evaluation}")
+graph.connect(connections["leg_foot"])
+assert graph.evaluate_capability("stance")["available"] is True
+print("PASS capability reason clears after topology recovery")
+
 print("PASS all virtual-body-graph checks")
