@@ -60,6 +60,8 @@ def main():
             frame_start = time.monotonic()
             t = data.time
             phase_time = t % 14.0
+            source_available = not (11.0 <= phase_time < 12.0)
+            runtime.set_observation_source_available("sole_contact", source_available)
 
             if phase_time < 4.0:
                 phase = "support"
