@@ -323,3 +323,50 @@ Execution開始の最終確定はatomic Resource acquire成功によって行う
 次の検証ではExecution invalidationをTopology専用処理として増築せず、Capability Availabilityの継続再評価による一般的なExecution condition monitoringとして扱えるかを確認する。
 
 Health、Safety、Constraint、Environment等の具体的条件体系は、その共通機構を確認してから段階的に追加する。
+
+
+## 14. Generic Capability Condition Monitoring
+
+Capability AvailabilityへObservation Source conditionを追加し、Execution lifecycleを変更せずに非Topology条件によるinvalidationを検証した。
+
+`stance` は `foot:sole_contact` Observation Sourceを要求する。
+
+確認結果:
+
+- Observation Source available時にExecutionを開始できる。
+- Active中にObservation Sourceをunavailableへ変更すると、既存の `validate()` 経路だけでExecutionをInvalidatedにできる。
+- reasonとして `observation_unavailable:foot:sole_contact` を取得できる。
+- Invalidation時にControl Ownershipを暗黙releaseしない。
+- Observation Sourceが復旧してもInvalidated Executionを暗黙reactivateしない。
+- Topology conditionとObservation conditionでExecution固有の分岐を追加する必要はなかった。
+
+### 結論
+
+Executionは個別のTopology/Observation条件を直接監視するのではなく、Capability Availabilityの継続再評価結果を監視する構成にできる。
+
+## 15. Structured Condition Results
+
+Availability reasonを文字列だけで扱うと、上位Runtimeがreason文字列の解析に依存する。
+
+そのためPrototype evaluatorで各判定をcondition resultとして構造化した。
+
+現在のPrototype field:
+
+- `category`
+- `condition`
+- `subject`
+- `satisfied`
+- `reason`
+
+Category例:
+
+- declaration
+- resource
+- topology
+- observation
+
+文字列 `reasons` は表示・既存Prototype互換用として維持する。
+
+複数条件が同時に失敗した場合も、一回のAvailability評価で複数categoryの失敗を保持できることを検証対象とする。
+
+Field名、category名、reason形式は標準仕様として未確定。
