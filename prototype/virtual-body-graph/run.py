@@ -42,3 +42,18 @@ except RuntimeError as exc:
 graph.release_resources("stance_controller")
 graph.acquire_resources("foot_motion_controller", ["foot:ankle_pitch", "foot:ankle_roll"])
 print(f"after release      : {graph.ownership_summary()}")
+
+graph.release_resources("foot_motion_controller")
+graph.acquire_resources("stance_controller", stance_resources)
+graph.disconnect("leg_foot")
+print("-- disconnect while stance owns resources --")
+print(f"owner              : {graph.ownership_summary()}")
+print(
+    "isolated           : "
+    + str(graph.disconnected_owned_resources("stance_controller", "thigh"))
+)
+graph.connect(connections["leg_foot"])
+print(
+    "after reconnect    : "
+    + str(graph.disconnected_owned_resources("stance_controller", "thigh"))
+)
