@@ -259,3 +259,67 @@ Invalidation後にSTOP、Limp、retry、resume、abort等のどのPolicyを適�
 現在のstart処理はAvailability/Readiness評価後にResource acquireを行うため、評価とacquireの間にResource状態が変化する可能性がある。
 
 次段階では、事前評価は説明・早期reject用途としつつ、atomic Resource acquireそのものをExecution開始可否の最終判定点として扱う。
+
+
+## 12. Readiness Race and Atomic Acquire
+
+Capability Execution開始時のResource競合について、2種類のraceを検証した。
+
+### 12.1 外部precheck後の状態変化
+
+Execution外部でReadinessを確認した直後に、別Controllerが必要Resourceを取得するケースを検証した。
+
+結果:
+
+- 外部precheckの `ready=true` はExecution開始を保証しない。
+- `start()` は現在状態を再評価し、Resource競合を検出して開始をrejectできた。
+
+### 12.2 start内評価後・acquire直前の状態変化
+
+`start()` 内部のReadiness評価後、atomic acquire直前に別ControllerがResourceを取得するケースを注入した。
+
+結果:
+
+- Readiness評価時点では開始可能だった。
+- acquire時点のOwnership conflictによって開始はrejectされた。
+- acquire失敗時に一部Resourceだけが新Executionへ所有される状態は残らなかった。
+
+### 結論
+
+```text
+Availability / Readiness
+        |
+        | query / planning information
+        v
+atomic Resource acquire
+        |
+        | execution-start commit point
+        v
+Active Execution
+```
+
+ReadinessはResource予約ではない。
+
+Execution開始の最終確定はatomic Resource acquire成功によって行う。
+
+現在のatomic性は単一Runtime内のPrototype実装で確認したものであり、分散Controller間transaction protocolを規定するものではない。
+
+## 13. Body Graph Prototype Current Boundary
+
+現時点でBody Graph Prototypeは以下を確認した。
+
+- multi-hop Unit reachability
+- cross-unit Capability Availability
+- cross-unit Resource Ownership
+- Topology変更とOwnershipの独立性
+- Availability reason reporting
+- AvailabilityとResource Readinessの分離
+- cross-unit Capability Execution lifecycle
+- Active ExecutionのTopology invalidation
+- Topology recoveryとExecution recoveryの分離
+- Resource contentionによるstart rejection
+- Readiness raceとatomic acquire
+
+次の検証ではExecution invalidationをTopology専用処理として増築せず、Capability Availabilityの継続再評価による一般的なExecution condition monitoringとして扱えるかを確認する。
+
+Health、Safety、Constraint、Environment等の具体的条件体系は、その共通機構を確認してから段階的に追加する。
