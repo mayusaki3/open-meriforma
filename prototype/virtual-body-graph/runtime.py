@@ -172,28 +172,78 @@ class BodyGraph:
     def evaluate_capability(self, name: str) -> dict:
         capability = self.definition["capabilities"].get(name)
         if capability is None or not capability.get("declared", False):
-            return {"available": False, "reasons": ["not_declared"]}
+            condition_results = [
+                {
+                    "category": "declaration",
+                    "condition": "declared",
+                    "subject": name,
+                    "satisfied": False,
+                    "reason": "not_declared",
+                }
+            ]
+            return {
+                "available": False,
+                "reasons": ["not_declared"],
+                "conditions": condition_results,
+            }
 
-        reasons: list[str] = []
-        missing_resources = [
-            item
-            for item in capability.get("required_resources", [])
-            if not self.resource_exists(item)
-        ]
-        reasons.extend(f"missing_resource:{item}" for item in missing_resources)
+        condition_results: list[dict] = []
+
+        for item in capability.get("required_resources", []):
+            exists = self.resource_exists(item)
+            condition_results.append(
+                {
+                    "category": "resource",
+                    "condition": "exists",
+                    "subject": item,
+                    "satisfied": exists,
+                    "reason": None if exists else f"missing_resource:{item}",
+                }
+            )
 
         required_units = capability.get("required_units", [])
         if len(required_units) > 1:
             anchor = required_units[0]
             for unit_name in required_units[1:]:
-                if not self.reachable(anchor, unit_name):
-                    reasons.append(f"unreachable_unit:{unit_name}")
+                reachable = self.reachable(anchor, unit_name)
+                condition_results.append(
+                    {
+                        "category": "topology",
+                        "condition": "reachable",
+                        "subject": unit_name,
+                        "satisfied": reachable,
+                        "reason": (
+                            None if reachable else f"unreachable_unit:{unit_name}"
+                        ),
+                    }
+                )
 
         for observation in capability.get("required_observations", []):
-            if not self.observation_source_available(observation):
-                reasons.append(f"observation_unavailable:{observation}")
+            source_available = self.observation_source_available(observation)
+            condition_results.append(
+                {
+                    "category": "observation",
+                    "condition": "source_available",
+                    "subject": observation,
+                    "satisfied": source_available,
+                    "reason": (
+                        None
+                        if source_available
+                        else f"observation_unavailable:{observation}"
+                    ),
+                }
+            )
 
-        return {"available": not reasons, "reasons": reasons}
+        reasons = [
+            item["reason"]
+            for item in condition_results
+            if not item["satisfied"] and item["reason"] is not None
+        ]
+        return {
+            "available": not reasons,
+            "reasons": reasons,
+            "conditions": condition_results,
+        }
 
     def capability_available(self, name: str) -> bool:
         return self.evaluate_capability(name)["available"]
