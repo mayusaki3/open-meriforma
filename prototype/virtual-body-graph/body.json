@@ -4,6 +4,7 @@
     "leg": {
       "definition_id": "open-meriforma.reference.virtual-leg",
       "ports": [
+        "proximal",
         "distal"
       ],
       "resources": [
@@ -20,9 +21,29 @@
         "ankle_roll",
         "sole_contact"
       ]
+    },
+    "thigh": {
+      "definition_id": "open-meriforma.reference.virtual-thigh",
+      "ports": [
+        "distal"
+      ],
+      "resources": [
+        "hip_pitch"
+      ]
     }
   },
   "connections": [
+    {
+      "id": "thigh_leg",
+      "a": {
+        "unit": "thigh",
+        "port": "distal"
+      },
+      "b": {
+        "unit": "leg",
+        "port": "proximal"
+      }
+    },
     {
       "id": "leg_foot",
       "a": {
@@ -39,10 +60,12 @@
     "stance": {
       "declared": true,
       "required_units": [
+        "thigh",
         "leg",
         "foot"
       ],
       "required_resources": [
+        "thigh:hip_pitch",
         "leg:knee_pitch",
         "foot:ankle_pitch",
         "foot:ankle_roll",
