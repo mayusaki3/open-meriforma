@@ -127,3 +127,26 @@ Prototype上の暫定状態:
 - `unavailable`: 必要なObservationを利用でき、暫定Availability条件を満たさない。
 
 この4語はPrototype上の検証用であり、Forma Unit Standardの最終列挙値としてはまだ確定しない。
+
+
+## Phase 5: Observation Source Availability と Subscription の分離
+
+Observation Sourceの利用可能性と、Functional GroupによるRuntime Subscriptionを分離して検証した。
+
+### 結果
+
+- `support` Active時は `observable=true / subscribed=true`。
+- handoff / `foot_motion` 中は `observable=true / subscribed=false`。
+- `foot_motion` 中でもsole contactをCapability Availabilityの事前評価に利用できた。
+- 観測例:
+  - 10.0 s: `contact=7.072`, `availability=available`
+  - 25.0 s: `contact=16.083`, `availability=available`
+- よってCapability AvailabilityはFunctional GroupのActive/Subscription状態から独立して評価できる。
+
+### 現時点の意味
+
+- Observable: 必要なObservation SourceがRuntimeから利用可能。
+- Subscribed: 現在のFunctional GroupがそのObservationを継続利用中。
+- Availability: Observableな情報を用いたCapabilityの現在状態評価。
+
+次はObservation Sourceを意図的にUnavailableへ変化させ、`availability=unknown`への遷移を検証する。
