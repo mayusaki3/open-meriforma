@@ -81,6 +81,7 @@ class BodyGraph:
         self.definition = definition
         self.connections = {item["id"]: item for item in definition.get("connections", [])}
         self.ownership = ResourceOwnership()
+        self.observation_sources: dict[str, bool] = {}
 
     def connect(self, connection: dict) -> None:
         if connection["id"] in self.connections:
@@ -136,6 +137,14 @@ class BodyGraph:
         unit = self.definition["units"].get(unit_name)
         return unit is not None and resource in unit.get("resources", [])
 
+    def set_observation_source_available(self, qualified: str, available: bool) -> None:
+        if not self.resource_exists(qualified):
+            raise RuntimeError(f"unknown observation source: {qualified}")
+        self.observation_sources[qualified] = available
+
+    def observation_source_available(self, qualified: str) -> bool:
+        return self.observation_sources.get(qualified, False)
+
     def acquire_resources(self, owner: str, resources: list[str]) -> None:
         missing = [item for item in resources if not self.resource_exists(item)]
         if missing:
@@ -179,6 +188,10 @@ class BodyGraph:
             for unit_name in required_units[1:]:
                 if not self.reachable(anchor, unit_name):
                     reasons.append(f"unreachable_unit:{unit_name}")
+
+        for observation in capability.get("required_observations", []):
+            if not self.observation_source_available(observation):
+                reasons.append(f"observation_unavailable:{observation}")
 
         return {"available": not reasons, "reasons": reasons}
 
