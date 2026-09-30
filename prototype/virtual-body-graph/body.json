@@ -1,0 +1,53 @@
+{
+  "body_id": "open-meriforma.reference.virtual-body-graph",
+  "units": {
+    "leg": {
+      "definition_id": "open-meriforma.reference.virtual-leg",
+      "ports": [
+        "distal"
+      ],
+      "resources": [
+        "knee_pitch"
+      ]
+    },
+    "foot": {
+      "definition_id": "open-meriforma.reference.virtual-foot",
+      "ports": [
+        "proximal"
+      ],
+      "resources": [
+        "ankle_pitch",
+        "ankle_roll",
+        "sole_contact"
+      ]
+    }
+  },
+  "connections": [
+    {
+      "id": "leg_foot",
+      "a": {
+        "unit": "leg",
+        "port": "distal"
+      },
+      "b": {
+        "unit": "foot",
+        "port": "proximal"
+      }
+    }
+  ],
+  "capabilities": {
+    "stance": {
+      "declared": true,
+      "required_units": [
+        "leg",
+        "foot"
+      ],
+      "required_resources": [
+        "leg:knee_pitch",
+        "foot:ankle_pitch",
+        "foot:ankle_roll",
+        "foot:sole_contact"
+      ]
+    }
+  }
+}
