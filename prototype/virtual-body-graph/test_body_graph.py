@@ -89,4 +89,28 @@ graph.connect(connections["leg_foot"])
 assert graph.evaluate_capability("stance")["available"] is True
 print("PASS capability reason clears after topology recovery")
 
+ready = graph.evaluate_capability_readiness("stance", "stance_controller")
+assert ready["available"] is True
+assert ready["ready"] is True
+assert ready["blocked_resources"] == {}
+print("PASS available capability is ready when required resources are free")
+
+graph.acquire_resources(
+    "foot_motion_controller", ["foot:ankle_pitch", "foot:ankle_roll"]
+)
+blocked = graph.evaluate_capability_readiness("stance", "stance_controller")
+assert blocked["available"] is True
+assert blocked["ready"] is False
+assert blocked["blocked_resources"] == {
+    "foot:ankle_pitch": "foot_motion_controller",
+    "foot:ankle_roll": "foot_motion_controller",
+}
+print(f"PASS resource contention blocks readiness without removing availability: {blocked}")
+
+same_owner = graph.evaluate_capability_readiness("stance", "foot_motion_controller")
+assert same_owner["available"] is True
+assert same_owner["ready"] is True
+print("PASS resources already owned by requester do not block readiness")
+graph.release_resources("foot_motion_controller")
+
 print("PASS all virtual-body-graph checks")
