@@ -30,3 +30,18 @@ The meaning and schema of `scope`, conflict resolution between overlapping mappi
 ### Regression note: mapping removal
 
 After introducing parallel mappings, removing one mapping no longer implies that a Unit has no remaining mappings. Validation therefore checks relation identity directly: the selected mapping disappears, both endpoint Units remain, and unrelated parallel mappings remain intact.
+
+
+## Runtime command authority experiment
+
+Command-capable mappings are candidates in the mapping definition. Their coexistence does not mean they are simultaneously active.
+
+The prototype keeps runtime command authority separately:
+
+- a command mapping may be activated for its scoped Physical subjects;
+- another candidate cannot silently seize an already active subject;
+- an explicit handoff may transfer overlapping authority;
+- authority outside the target mapping scope is released rather than implicitly retained;
+- removing an active mapping clears authority held by that mapping.
+
+This validates the separation between mapping existence and current command authority. Handoff safety procedure, transition timing, command blending, distributed arbitration, and failure recovery remain outside this prototype.
