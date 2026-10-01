@@ -25,3 +25,8 @@ The prototype also tests that mapping cardinality is not fixed to 1:1.
 - Removing one mapping must not remove either Unit or unrelated parallel mappings.
 
 The meaning and schema of `scope`, conflict resolution between overlapping mappings, synchronization authority, and fidelity are intentionally not standardized by this experiment.
+
+
+### Regression note: mapping removal
+
+After introducing parallel mappings, removing one mapping no longer implies that a Unit has no remaining mappings. Validation therefore checks relation identity directly: the selected mapping disappears, both endpoint Units remain, and unrelated parallel mappings remain intact.
