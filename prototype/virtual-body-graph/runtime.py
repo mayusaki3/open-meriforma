@@ -129,6 +129,7 @@ class BodyGraph:
         self.ownership = ResourceOwnership()
         self.observation_sources: dict[str, bool] = {}
         self.health_states: dict[str, str] = {}
+        self.constraint_states: dict[str, bool | None] = {}
 
     def connect(self, connection: dict) -> None:
         if connection["id"] in self.connections:
@@ -193,6 +194,14 @@ class BodyGraph:
 
     def health_state(self, qualified: str) -> str:
         return self.health_states.get(qualified, "unknown")
+
+    def set_constraint_state(self, name: str, satisfied: bool | None) -> None:
+        if name not in self.definition.get("constraints", {}):
+            raise RuntimeError(f"unknown constraint: {name}")
+        self.constraint_states[name] = satisfied
+
+    def constraint_state(self, name: str) -> bool | None:
+        return self.constraint_states.get(name)
 
     def set_observation_source_available(self, qualified: str, available: bool) -> None:
         if not self.resource_exists(qualified):
@@ -311,6 +320,29 @@ class BodyGraph:
                     "reason": (
                         None if satisfied else f"health_not_usable:{subject}:{state}"
                     ),
+                }
+            )
+
+        for constraint in capability.get("required_constraints", []):
+            declared = constraint in self.definition.get("constraints", {})
+            state = self.constraint_state(constraint) if declared else None
+            satisfied = declared and state is True
+            if not declared:
+                reason = f"constraint_not_declared:{constraint}"
+            elif state is None:
+                reason = f"constraint_unknown:{constraint}"
+            elif state is False:
+                reason = f"constraint_unsatisfied:{constraint}"
+            else:
+                reason = None
+            condition_results.append(
+                {
+                    "category": "constraint",
+                    "condition": "satisfied",
+                    "subject": constraint,
+                    "satisfied": satisfied,
+                    "state": state,
+                    "reason": reason,
                 }
             )
 
