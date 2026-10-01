@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
 graph.set_observation_source_available("foot:sole_contact", True)
+graph.set_health_state("foot:ankle_pitch", "ok")
 connections = {item["id"]: item for item in definition["connections"]}
 
 print(f"Body       : {definition['body_id']}")
@@ -129,3 +130,20 @@ graph.set_observation_source_available("foot:sole_contact", True)
 print(f"source restored     : state={observation_execution.state}")
 observation_execution.finish()
 print(f"after finish        : state={observation_execution.state} owner={graph.ownership_summary()}")
+
+print("-- generic condition invalidation: runtime health --")
+graph.set_health_state("foot:ankle_pitch", "degraded")
+print(f"degraded            : {graph.evaluate_capability('stance')}")
+health_execution = CapabilityExecution(graph, "stance", "health_stance")
+health_execution.start()
+graph.set_health_state("foot:ankle_pitch", "unavailable")
+print(
+    "health unavailable  : "
+    f"valid={health_execution.validate()} state={health_execution.state}"
+)
+print(f"reasons             : {health_execution.reasons}")
+graph.set_health_state("foot:ankle_pitch", "ok")
+health_execution.finish()
+graph.set_health_state("foot:ankle_pitch", "unknown")
+print(f"health unknown      : {graph.evaluate_capability('stance')}")
+graph.set_health_state("foot:ankle_pitch", "ok")
