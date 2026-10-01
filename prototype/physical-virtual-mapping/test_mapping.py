@@ -95,6 +95,15 @@ assert graph.command_authority_conflicts() == {}
 assert graph.mapping("foot_twin") is not None
 print("PASS removing competing command relation clears authority conflict")
 
+calibration_mapping = next(
+    item
+    for item in definition["mappings"]
+    if item["id"] == "foot_calibration_command"
+)
+graph.add_mapping(calibration_mapping)
+assert "physical_foot_01:ankle_pitch" in graph.command_authority_conflicts()
+print("PASS competing command candidate can coexist again before runtime selection")
+
 observer_mappings = [
     item
     for item in graph.mappings_for_physical("physical_foot_01")
@@ -106,5 +115,29 @@ observer_mappings = [
 assert len(observer_mappings) >= 2
 assert graph.command_authority_conflicts() == {}
 print("PASS multiple physical-to-virtual observers do not create command conflict")
+
+graph.activate_command_authority("foot_twin")
+assert graph.active_command_authority["physical_foot_01:ankle_pitch"] == "foot_twin"
+assert graph.active_command_authority["physical_foot_01:ankle_roll"] == "foot_twin"
+print("PASS one mapping can become active command authority for its scope")
+
+try:
+    graph.activate_command_authority("foot_calibration_command")
+except RuntimeError as exc:
+    print(f"PASS parallel command candidate cannot seize active authority: {exc}")
+else:
+    raise AssertionError("parallel command authority was activated without handoff")
+
+graph.handoff_command_authority("foot_twin", "foot_calibration_command")
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_pitch"]
+    == "foot_calibration_command"
+)
+assert "physical_foot_01:ankle_roll" not in graph.active_command_authority
+print("PASS explicit handoff transfers overlapping command authority")
+
+graph.remove_mapping("foot_calibration_command")
+assert "physical_foot_01:ankle_pitch" not in graph.active_command_authority
+print("PASS removing active mapping clears its runtime command authority")
 
 print("PASS all physical-virtual-mapping checks")
