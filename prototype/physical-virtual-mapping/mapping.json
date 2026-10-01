@@ -1,0 +1,35 @@
+{
+  "physical_units": {
+    "physical_foot_01": {
+      "definition_id": "open-meriforma.reference.physical-foot",
+      "instance_id": "physical_foot_01"
+    }
+  },
+  "virtual_units": {
+    "virtual_foot_sim": {
+      "definition_id": "open-meriforma.reference.virtual-foot",
+      "instance_id": "virtual_foot_sim"
+    },
+    "virtual_test_only": {
+      "definition_id": "open-meriforma.reference.virtual-test-unit",
+      "instance_id": "virtual_test_only"
+    }
+  },
+  "mappings": [
+    {
+      "id": "foot_twin",
+      "physical": "physical_foot_01",
+      "virtual": "virtual_foot_sim",
+      "channels": [
+        {
+          "name": "joint_state",
+          "direction": "physical_to_virtual"
+        },
+        {
+          "name": "command_preview",
+          "direction": "virtual_to_physical"
+        }
+      ]
+    }
+  ]
+}
