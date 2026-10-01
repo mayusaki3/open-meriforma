@@ -16,9 +16,14 @@ class ResourceOwnership:
         for resource in resources:
             self.owners[resource] = owner
 
-    def release(self, owner: str) -> None:
-        for resource in [key for key, value in self.owners.items() if value == owner]:
-            del self.owners[resource]
+    def release(self, owner: str, resources: list[str] | None = None) -> None:
+        if resources is None:
+            resources = [
+                key for key, value in self.owners.items() if value == owner
+            ]
+        for resource in resources:
+            if self.owners.get(resource) == owner:
+                del self.owners[resource]
 
 
 class CapabilityExecution:
@@ -28,6 +33,7 @@ class CapabilityExecution:
         self.controller = controller
         self.state = "idle"
         self.reasons: list[str] = []
+        self.acquired_resources: list[str] = []
 
     def start(self) -> None:
         readiness = self.graph.evaluate_capability_readiness(
@@ -56,12 +62,25 @@ class CapabilityExecution:
                 f"{self.capability}: {self.reasons}"
             ) from exc
 
+        self.acquired_resources = list(resources)
         self.state = "active"
         self.reasons = []
 
     def validate(self) -> bool:
         if self.state != "active":
             return self.state == "active"
+        lost_ownership = [
+            resource
+            for resource in self.acquired_resources
+            if self.graph.ownership.owners.get(resource) != self.controller
+        ]
+        if lost_ownership:
+            self.state = "invalidated"
+            self.reasons = [
+                f"ownership_lost:{resource}" for resource in lost_ownership
+            ]
+            return False
+
         evaluation = self.graph.evaluate_capability(self.capability)
         if not evaluation["available"]:
             self.state = "invalidated"
@@ -72,7 +91,8 @@ class CapabilityExecution:
     def finish(self) -> None:
         if self.state not in {"active", "invalidated"}:
             raise RuntimeError(f"cannot finish execution in state: {self.state}")
-        self.graph.release_resources(self.controller)
+        self.graph.release_resources(self.controller, self.acquired_resources)
+        self.acquired_resources = []
         self.state = "finished"
 
 
@@ -162,8 +182,10 @@ class BodyGraph:
             raise RuntimeError(f"unknown resources: {missing}")
         self.ownership.acquire(owner, resources)
 
-    def release_resources(self, owner: str) -> None:
-        self.ownership.release(owner)
+    def release_resources(
+        self, owner: str, resources: list[str] | None = None
+    ) -> None:
+        self.ownership.release(owner, resources)
 
     def owned_resources(self, owner: str) -> list[str]:
         return [
