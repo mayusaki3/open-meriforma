@@ -82,6 +82,9 @@
       ],
       "required_health": [
         "foot:ankle_pitch"
+      ],
+      "required_constraints": [
+        "stance_posture_safe"
       ]
     },
     "ankle_hold": {
@@ -98,6 +101,12 @@
       "required_health": [
         "foot:ankle_pitch"
       ]
+    }
+  },
+  "constraints": {
+    "stance_posture_safe": {
+      "subject": "foot:ankle_pitch",
+      "description": "Prototype stance posture constraint"
     }
   }
 }
