@@ -3,6 +3,10 @@
     "physical_foot_01": {
       "definition_id": "open-meriforma.reference.physical-foot",
       "instance_id": "physical_foot_01"
+    },
+    "physical_leg_01": {
+      "definition_id": "open-meriforma.reference.physical-leg",
+      "instance_id": "physical_leg_01"
     }
   },
   "virtual_units": {
@@ -13,6 +17,14 @@
     "virtual_test_only": {
       "definition_id": "open-meriforma.reference.virtual-test-unit",
       "instance_id": "virtual_test_only"
+    },
+    "virtual_foot_observer": {
+      "definition_id": "open-meriforma.reference.virtual-foot-observer",
+      "instance_id": "virtual_foot_observer"
+    },
+    "virtual_lower_body": {
+      "definition_id": "open-meriforma.reference.virtual-lower-body",
+      "instance_id": "virtual_lower_body"
     }
   },
   "mappings": [
@@ -28,6 +40,49 @@
         {
           "name": "command_preview",
           "direction": "virtual_to_physical"
+        }
+      ]
+    },
+    {
+      "id": "foot_observer_mapping",
+      "physical": "physical_foot_01",
+      "virtual": "virtual_foot_observer",
+      "scope": [
+        "sole_contact"
+      ],
+      "channels": [
+        {
+          "name": "contact_state",
+          "direction": "physical_to_virtual"
+        }
+      ]
+    },
+    {
+      "id": "foot_lower_body_mapping",
+      "physical": "physical_foot_01",
+      "virtual": "virtual_lower_body",
+      "scope": [
+        "ankle_pitch",
+        "ankle_roll"
+      ],
+      "channels": [
+        {
+          "name": "joint_state",
+          "direction": "physical_to_virtual"
+        }
+      ]
+    },
+    {
+      "id": "leg_lower_body_mapping",
+      "physical": "physical_leg_01",
+      "virtual": "virtual_lower_body",
+      "scope": [
+        "knee_pitch"
+      ],
+      "channels": [
+        {
+          "name": "joint_state",
+          "direction": "physical_to_virtual"
         }
       ]
     }
