@@ -304,6 +304,21 @@ stance_same_controller.start()
 overlap_same_controller = CapabilityExecution(
     graph, "ankle_hold", "multi_execution_controller"
 )
+lease_readiness = graph.evaluate_capability_readiness(
+    "ankle_hold",
+    "multi_execution_controller",
+    lease=overlap_same_controller.lease_id,
+)
+assert lease_readiness["available"] is True
+assert lease_readiness["ready"] is False
+assert any(
+    reason.startswith("resource_leased:foot:ankle_pitch:")
+    for reason in lease_readiness["reasons"]
+)
+print(
+    "PASS execution readiness detects another lease held by same controller: "
+    f"{lease_readiness}"
+)
 try:
     overlap_same_controller.start()
 except RuntimeError as exc:
