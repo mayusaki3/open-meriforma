@@ -44,4 +44,34 @@ except RuntimeError as exc:
 else:
     raise AssertionError("invalid mapping endpoint accepted")
 
+physical_foot_mappings = graph.mappings_for_physical("physical_foot_01")
+assert len(physical_foot_mappings) == 3
+assert {
+    item["virtual"] for item in physical_foot_mappings
+} == {"virtual_foot_sim", "virtual_foot_observer", "virtual_lower_body"}
+print("PASS one physical unit can map to multiple virtual units")
+
+lower_body_mappings = graph.mappings_for_virtual("virtual_lower_body")
+assert len(lower_body_mappings) == 2
+assert {
+    item["physical"] for item in lower_body_mappings
+} == {"physical_foot_01", "physical_leg_01"}
+print("PASS multiple physical units can map to one aggregate virtual unit")
+
+observer = graph.mapping("foot_observer_mapping")
+lower_foot = graph.mapping("foot_lower_body_mapping")
+lower_leg = graph.mapping("leg_lower_body_mapping")
+assert observer is not None and observer["scope"] == ["sole_contact"]
+assert lower_foot is not None and lower_foot["scope"] == ["ankle_pitch", "ankle_roll"]
+assert lower_leg is not None and lower_leg["scope"] == ["knee_pitch"]
+print("PASS mappings can describe different partial scopes")
+
+graph.remove_mapping("foot_observer_mapping")
+assert graph.mapping("foot_observer_mapping") is None
+assert graph.mapping("foot_twin") is not None
+assert graph.mapping("foot_lower_body_mapping") is not None
+assert "physical_foot_01" in graph.physical_units
+assert "virtual_foot_observer" in graph.virtual_units
+print("PASS removing one relation does not disturb parallel mappings or units")
+
 print("PASS all physical-virtual-mapping checks")
