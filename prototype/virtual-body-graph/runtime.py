@@ -4,26 +4,44 @@ from __future__ import annotations
 class ResourceOwnership:
     def __init__(self) -> None:
         self.owners: dict[str, str] = {}
+        self.leases: dict[str, str] = {}
 
-    def acquire(self, owner: str, resources: list[str]) -> None:
+    def acquire(
+        self, owner: str, resources: list[str], lease: str | None = None
+    ) -> None:
         conflicts = {
             resource: self.owners[resource]
             for resource in resources
-            if resource in self.owners and self.owners[resource] != owner
+            if resource in self.owners
+            and (
+                self.owners[resource] != owner
+                or (lease is not None and self.leases.get(resource) != lease)
+            )
         }
         if conflicts:
             raise RuntimeError(f"resource ownership conflict: {conflicts}")
         for resource in resources:
             self.owners[resource] = owner
+            if lease is not None:
+                self.leases[resource] = lease
 
-    def release(self, owner: str, resources: list[str] | None = None) -> None:
+    def release(
+        self,
+        owner: str,
+        resources: list[str] | None = None,
+        lease: str | None = None,
+    ) -> None:
         if resources is None:
             resources = [
                 key for key, value in self.owners.items() if value == owner
             ]
         for resource in resources:
-            if self.owners.get(resource) == owner:
-                del self.owners[resource]
+            if self.owners.get(resource) != owner:
+                continue
+            if lease is not None and self.leases.get(resource) != lease:
+                continue
+            del self.owners[resource]
+            self.leases.pop(resource, None)
 
 
 class CapabilityExecution:
@@ -34,6 +52,7 @@ class CapabilityExecution:
         self.state = "idle"
         self.reasons: list[str] = []
         self.acquired_resources: list[str] = []
+        self.lease_id = f"execution:{id(self)}"
 
     def start(self) -> None:
         readiness = self.graph.evaluate_capability_readiness(
@@ -53,7 +72,9 @@ class CapabilityExecution:
             ),
         )
         try:
-            self.graph.acquire_resources(self.controller, resources)
+            self.graph.acquire_resources(
+                self.controller, resources, lease=self.lease_id
+            )
         except RuntimeError as exc:
             self.state = "rejected"
             self.reasons = [f"acquire_failed:{exc}"]
@@ -72,7 +93,10 @@ class CapabilityExecution:
         lost_ownership = [
             resource
             for resource in self.acquired_resources
-            if self.graph.ownership.owners.get(resource) != self.controller
+            if (
+                self.graph.ownership.owners.get(resource) != self.controller
+                or self.graph.ownership.leases.get(resource) != self.lease_id
+            )
         ]
         if lost_ownership:
             self.state = "invalidated"
@@ -91,7 +115,9 @@ class CapabilityExecution:
     def finish(self) -> None:
         if self.state not in {"active", "invalidated"}:
             raise RuntimeError(f"cannot finish execution in state: {self.state}")
-        self.graph.release_resources(self.controller, self.acquired_resources)
+        self.graph.release_resources(
+            self.controller, self.acquired_resources, lease=self.lease_id
+        )
         self.acquired_resources = []
         self.state = "finished"
 
@@ -176,16 +202,21 @@ class BodyGraph:
     def observation_source_available(self, qualified: str) -> bool:
         return self.observation_sources.get(qualified, False)
 
-    def acquire_resources(self, owner: str, resources: list[str]) -> None:
+    def acquire_resources(
+        self, owner: str, resources: list[str], lease: str | None = None
+    ) -> None:
         missing = [item for item in resources if not self.resource_exists(item)]
         if missing:
             raise RuntimeError(f"unknown resources: {missing}")
-        self.ownership.acquire(owner, resources)
+        self.ownership.acquire(owner, resources, lease)
 
     def release_resources(
-        self, owner: str, resources: list[str] | None = None
+        self,
+        owner: str,
+        resources: list[str] | None = None,
+        lease: str | None = None,
     ) -> None:
-        self.ownership.release(owner, resources)
+        self.ownership.release(owner, resources, lease)
 
     def owned_resources(self, owner: str) -> list[str]:
         return [
