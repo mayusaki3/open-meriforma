@@ -405,3 +405,18 @@ State名とusable判定規則は標準仕様として未確定。
 これによりCapability AvailabilityとExecution自身のOwnership integrityを別に検証する。
 
 Lease、Ownership token、Execution ID等の最終表現は未確定。
+
+
+## 18. Controller Ownership and Execution Lease
+
+同じController内で複数Capability Executionが並行する場合、Controller identityだけではexclusive Control Resourceの利用主体を区別できない。
+
+PrototypeではResourceにController ownerとExecution leaseを分けて保持し、以下を検証する。
+
+- 同じControllerでも別Execution leaseから同じexclusive Resourceを取得できない。
+- 先行Execution終了後は新しいExecutionが取得できる。
+- Executionの `finish()` は自身のleaseに属するResourceだけをreleaseする。
+- Active Executionは自身のleaseを失った場合にOwnership integrity failureとしてInvalidatedになる。
+- Execution開始用Readinessもleaseを考慮し、同じControllerが所有していても別leaseならready=falseとする。
+
+Controller OwnershipとExecution Leaseという名称・永続性・ID形式は標準仕様として未確定。
