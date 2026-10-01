@@ -169,11 +169,13 @@ graph.release_resources("late_controller")
 original_acquire = graph.acquire_resources
 injected = {"done": False}
 
-def acquire_with_interleaving(owner: str, resources: list[str]) -> None:
+def acquire_with_interleaving(
+    owner: str, resources: list[str], lease: str | None = None
+) -> None:
     if owner == "atomic_stance" and not injected["done"]:
         injected["done"] = True
         original_acquire("interleaving_controller", ["foot:ankle_pitch"])
-    original_acquire(owner, resources)
+    original_acquire(owner, resources, lease=lease)
 
 graph.acquire_resources = acquire_with_interleaving
 atomic = CapabilityExecution(graph, "stance", "atomic_stance")
