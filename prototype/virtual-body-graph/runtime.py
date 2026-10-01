@@ -56,7 +56,7 @@ class CapabilityExecution:
 
     def start(self) -> None:
         readiness = self.graph.evaluate_capability_readiness(
-            self.capability, self.controller
+            self.capability, self.controller, lease=self.lease_id
         )
         if not readiness["available"] or not readiness["ready"]:
             self.state = "rejected"
@@ -328,7 +328,9 @@ class BodyGraph:
     def capability_available(self, name: str) -> bool:
         return self.evaluate_capability(name)["available"]
 
-    def evaluate_capability_readiness(self, name: str, requester: str) -> dict:
+    def evaluate_capability_readiness(
+        self, name: str, requester: str, lease: str | None = None
+    ) -> dict:
         evaluation = self.evaluate_capability(name)
         if not evaluation["available"]:
             return {
@@ -339,16 +341,23 @@ class BodyGraph:
             }
 
         capability = self.definition["capabilities"][name]
-        blocked = {
-            resource: self.ownership.owners[resource]
-            for resource in capability.get("required_resources", [])
-            if resource in self.ownership.owners
-            and self.ownership.owners[resource] != requester
-        }
-        reasons = [
-            f"resource_owned:{resource}:{owner}"
-            for resource, owner in sorted(blocked.items())
-        ]
+        control_resources = capability.get(
+            "control_resources", capability.get("required_resources", [])
+        )
+        blocked: dict[str, str] = {}
+        reasons: list[str] = []
+        for resource in control_resources:
+            if resource not in self.ownership.owners:
+                continue
+            owner = self.ownership.owners[resource]
+            current_lease = self.ownership.leases.get(resource)
+            if owner != requester:
+                blocked[resource] = owner
+                reasons.append(f"resource_owned:{resource}:{owner}")
+            elif lease is not None and current_lease != lease:
+                blocked[resource] = owner
+                reasons.append(f"resource_leased:{resource}:{owner}")
+
         return {
             "available": True,
             "ready": not blocked,
