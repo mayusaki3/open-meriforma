@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parent
 definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
 graph.set_observation_source_available("foot:sole_contact", True)
+graph.set_health_state("foot:ankle_pitch", "ok")
 connections = {item["id"]: item for item in definition["connections"]}
 
 assert graph.connected("thigh", "leg")
@@ -238,5 +239,36 @@ print(
 )
 graph.connect(connections["leg_foot"])
 graph.set_observation_source_available("foot:sole_contact", True)
+
+graph.set_health_state("foot:ankle_pitch", "degraded")
+degraded = graph.evaluate_capability("stance")
+assert degraded["available"] is True
+health_condition = next(
+    item for item in degraded["conditions"] if item["category"] == "health"
+)
+assert health_condition["state"] == "degraded"
+assert health_condition["satisfied"] is True
+print("PASS degraded health remains distinguishable while capability stays available")
+
+health_execution = CapabilityExecution(graph, "stance", "health_stance")
+health_execution.start()
+graph.set_health_state("foot:ankle_pitch", "unavailable")
+assert health_execution.validate() is False
+assert health_execution.state == "invalidated"
+assert "health_not_usable:foot:ankle_pitch:unavailable" in health_execution.reasons
+print(
+    "PASS generic execution validation detects runtime health loss: "
+    f"{health_execution.reasons}"
+)
+graph.set_health_state("foot:ankle_pitch", "ok")
+assert health_execution.state == "invalidated"
+health_execution.finish()
+
+graph.set_health_state("foot:ankle_pitch", "unknown")
+unknown_health = graph.evaluate_capability("stance")
+assert unknown_health["available"] is False
+assert "health_not_usable:foot:ankle_pitch:unknown" in unknown_health["reasons"]
+print("PASS unknown health is not silently treated as usable")
+graph.set_health_state("foot:ankle_pitch", "ok")
 
 print("PASS all virtual-body-graph checks")
