@@ -304,10 +304,20 @@ stance_same_controller.start()
 overlap_same_controller = CapabilityExecution(
     graph, "ankle_hold", "multi_execution_controller"
 )
-lease_readiness = graph.evaluate_capability_readiness(
+controller_readiness = graph.evaluate_capability_readiness(
+    "ankle_hold", "multi_execution_controller"
+)
+assert controller_readiness["available"] is True
+assert controller_readiness["ready"] is True
+print(
+    "PASS controller-level readiness can reuse resources already owned by "
+    "that controller"
+)
+
+lease_readiness = graph.evaluate_execution_readiness(
     "ankle_hold",
     "multi_execution_controller",
-    lease=overlap_same_controller.lease_id,
+    overlap_same_controller.lease_id,
 )
 assert lease_readiness["available"] is True
 assert lease_readiness["ready"] is False
