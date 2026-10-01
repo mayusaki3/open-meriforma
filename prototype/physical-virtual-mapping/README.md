@@ -13,3 +13,15 @@ This prototype validates the relationship between a Physical Unit and a Virtual 
 - Mapping direction and synchronized information are represented separately from Unit identity.
 
 This prototype intentionally does not define a final schema, transport protocol, synchronization frequency, or distributed consistency model.
+
+
+## Non-1:1 mapping experiment
+
+The prototype also tests that mapping cardinality is not fixed to 1:1.
+
+- One Physical Unit may participate in multiple mappings to different Virtual Units.
+- Multiple Physical Units may participate in mappings to one aggregate Virtual Unit.
+- Each mapping may expose only a partial scope of the source/target representation.
+- Removing one mapping must not remove either Unit or unrelated parallel mappings.
+
+The meaning and schema of `scope`, conflict resolution between overlapping mappings, synchronization authority, and fidelity are intentionally not standardized by this experiment.
