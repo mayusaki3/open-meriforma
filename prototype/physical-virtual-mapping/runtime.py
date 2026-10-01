@@ -38,3 +38,22 @@ class TwinMappingGraph:
             item for item in self.mappings.values()
             if item["virtual"] == unit_id
         ]
+
+
+    def command_authority_conflicts(self) -> dict[str, list[str]]:
+        authorities: dict[str, list[str]] = {}
+        for mapping in self.mappings.values():
+            scope = mapping.get("scope", [])
+            for channel in mapping.get("channels", []):
+                if channel.get("direction") != "virtual_to_physical":
+                    continue
+                if channel.get("authority") != "command":
+                    continue
+                for subject in scope:
+                    key = f"{mapping['physical']}:{subject}"
+                    authorities.setdefault(key, []).append(mapping["id"])
+        return {
+            subject: mapping_ids
+            for subject, mapping_ids in authorities.items()
+            if len(mapping_ids) > 1
+        }
