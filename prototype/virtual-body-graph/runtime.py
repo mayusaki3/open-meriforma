@@ -55,8 +55,8 @@ class CapabilityExecution:
         self.lease_id = f"execution:{id(self)}"
 
     def start(self) -> None:
-        readiness = self.graph.evaluate_capability_readiness(
-            self.capability, self.controller, lease=self.lease_id
+        readiness = self.graph.evaluate_execution_readiness(
+            self.capability, self.controller, self.lease_id
         )
         if not readiness["available"] or not readiness["ready"]:
             self.state = "rejected"
@@ -328,8 +328,16 @@ class BodyGraph:
     def capability_available(self, name: str) -> bool:
         return self.evaluate_capability(name)["available"]
 
-    def evaluate_capability_readiness(
-        self, name: str, requester: str, lease: str | None = None
+    def evaluate_capability_readiness(self, name: str, requester: str) -> dict:
+        return self._evaluate_readiness(name, requester, lease=None)
+
+    def evaluate_execution_readiness(
+        self, name: str, requester: str, lease: str
+    ) -> dict:
+        return self._evaluate_readiness(name, requester, lease=lease)
+
+    def _evaluate_readiness(
+        self, name: str, requester: str, lease: str | None
     ) -> dict:
         evaluation = self.evaluate_capability(name)
         if not evaluation["available"]:
