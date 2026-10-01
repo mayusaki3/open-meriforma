@@ -420,3 +420,17 @@ PrototypeではResourceにController ownerとExecution leaseを分けて保持�
 - Execution開始用Readinessもleaseを考慮し、同じControllerが所有していても別leaseならready=falseとする。
 
 Controller OwnershipとExecution Leaseという名称・永続性・ID形式は標準仕様として未確定。
+
+
+## 19. Capability Readiness and Execution Readiness
+
+Execution lease導入後、Readinessには少なくとも2つの照会目的があることが明確になった。
+
+- Capability/Controller-level Readiness: あるControllerから見て必要なControl Resourceを利用可能か。既に同じControllerが所有しているResourceはblockedとしない。
+- Execution Readiness: 新しいExecution leaseがexclusive Control Resourceを取得できるか。同じController所有でも別leaseならblockedとする。
+
+Prototypeではこの2つを `evaluate_capability_readiness()` と `evaluate_execution_readiness()` に分離し、`CapabilityExecution.start()` は後者を使用する。
+
+これによりPlanner等の事前照会とExecution開始可否を、暗黙のoptional lease引数だけで切り替えない。
+
+API名と最終的なReadiness階層は標準仕様として未確定。
