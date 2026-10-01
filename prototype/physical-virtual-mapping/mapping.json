@@ -25,6 +25,10 @@
     "virtual_lower_body": {
       "definition_id": "open-meriforma.reference.virtual-lower-body",
       "instance_id": "virtual_lower_body"
+    },
+    "virtual_foot_calibration": {
+      "definition_id": "open-meriforma.reference.virtual-foot-calibration",
+      "instance_id": "virtual_foot_calibration"
     }
   },
   "mappings": [
@@ -39,8 +43,13 @@
         },
         {
           "name": "command_preview",
-          "direction": "virtual_to_physical"
+          "direction": "virtual_to_physical",
+          "authority": "command"
         }
+      ],
+      "scope": [
+        "ankle_pitch",
+        "ankle_roll"
       ]
     },
     {
@@ -54,6 +63,11 @@
         {
           "name": "contact_state",
           "direction": "physical_to_virtual"
+        },
+        {
+          "name": "contact_debug",
+          "direction": "physical_to_virtual",
+          "authority": "observe"
         }
       ]
     },
@@ -83,6 +97,21 @@
         {
           "name": "joint_state",
           "direction": "physical_to_virtual"
+        }
+      ]
+    },
+    {
+      "id": "foot_calibration_command",
+      "physical": "physical_foot_01",
+      "virtual": "virtual_foot_calibration",
+      "scope": [
+        "ankle_pitch"
+      ],
+      "channels": [
+        {
+          "name": "calibration_command",
+          "direction": "virtual_to_physical",
+          "authority": "command"
         }
       ]
     }
