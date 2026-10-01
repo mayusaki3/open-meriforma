@@ -8,6 +8,7 @@ definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
 graph.set_observation_source_available("foot:sole_contact", True)
 graph.set_health_state("foot:ankle_pitch", "ok")
+graph.set_constraint_state("stance_posture_safe", True)
 connections = {item["id"]: item for item in definition["connections"]}
 
 assert graph.connected("thigh", "leg")
@@ -356,5 +357,36 @@ assert graph.ownership.leases["foot:ankle_pitch"] == independent.lease_id
 independent.finish()
 assert graph.ownership.owners == {}
 print("PASS resource can be acquired by a new execution after prior lease ends")
+
+constraint_execution = CapabilityExecution(
+    graph, "stance", "constraint_stance"
+)
+constraint_execution.start()
+graph.set_constraint_state("stance_posture_safe", False)
+assert constraint_execution.validate() is False
+assert constraint_execution.state == "invalidated"
+assert "constraint_unsatisfied:stance_posture_safe" in constraint_execution.reasons
+print(
+    "PASS generic execution validation detects unsatisfied constraint: "
+    f"{constraint_execution.reasons}"
+)
+constraint_execution.finish()
+
+graph.set_constraint_state("stance_posture_safe", None)
+constraint_unknown = graph.evaluate_capability("stance")
+assert constraint_unknown["available"] is False
+assert "constraint_unknown:stance_posture_safe" in constraint_unknown["reasons"]
+print("PASS unknown constraint state is not silently treated as satisfied")
+
+graph.set_constraint_state("stance_posture_safe", True)
+constraint_restored = graph.evaluate_capability("stance")
+assert constraint_restored["available"] is True
+assert any(
+    item["category"] == "constraint"
+    and item["subject"] == "stance_posture_safe"
+    and item["satisfied"] is True
+    for item in constraint_restored["conditions"]
+)
+print("PASS satisfied constraint participates in structured availability")
 
 print("PASS all virtual-body-graph checks")
