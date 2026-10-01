@@ -79,6 +79,9 @@
       ],
       "required_observations": [
         "foot:sole_contact"
+      ],
+      "required_health": [
+        "foot:ankle_pitch"
       ]
     }
   }
