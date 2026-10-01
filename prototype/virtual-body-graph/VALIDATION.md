@@ -370,3 +370,38 @@ Category例:
 複数条件が同時に失敗した場合も、一回のAvailability評価で複数categoryの失敗を保持できることを検証対象とする。
 
 Field名、category名、reason形式は標準仕様として未確定。
+
+
+## 16. Runtime Health Condition
+
+Capability Availabilityへ現在のRuntime Health判定を入力できることを検証した。
+
+Prototypeでは `ok` / `degraded` / `unavailable` / `unknown` を仮のstateとして使用した。
+
+確認結果:
+
+- `degraded` は状態を保持したままCapabilityをAvailableにできる。
+- `unavailable` は既存のCapability再評価経路でActive ExecutionをInvalidatedにできる。
+- `unknown` を暗黙にusableとして扱わない。
+- Health専用のExecution lifecycle分岐は不要だった。
+
+このHealth stateは現在のCapability判定用Runtime入力であり、長期的な劣化履歴、基準特性、SysID結果、学習済み補正値を表すHealth recordそのものではない。
+
+State名とusable判定規則は標準仕様として未確定。
+
+## 17. Execution-scoped Ownership Lifetime
+
+同一ControllerがCapability Execution以外のResourceも所有できる場合、`finish()` がController所有Resourceを全releaseすると別用途のOwnershipまで破壊する。
+
+そのためExecutionは開始時に自身が取得したControl Resource集合を記録し、その集合だけをExecution lifetimeの対象とするPrototypeへ変更した。
+
+検証対象:
+
+- Execution開始前から同じControllerが所有していた無関係Resourceを `finish()` がreleaseしない。
+- Executionが取得したResourceだけを `finish()` でreleaseする。
+- Active中にExecutionが取得したResourceのOwnershipを失った場合、Capability Availabilityが成立していてもExecutionをInvalidatedにする。
+- Ownership lossは `ownership_lost:<resource>` としてPrototype reasonに保持する。
+
+これによりCapability AvailabilityとExecution自身のOwnership integrityを別に検証する。
+
+Lease、Ownership token、Execution ID等の最終表現は未確定。
