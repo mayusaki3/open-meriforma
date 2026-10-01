@@ -4,6 +4,7 @@ class TwinMappingGraph:
         self.physical_units = set(definition.get("physical_units", {}))
         self.virtual_units = set(definition.get("virtual_units", {}))
         self.mappings: dict[str, dict] = {}
+        self.active_command_authority: dict[str, str] = {}
         for mapping in definition.get("mappings", []):
             self.add_mapping(mapping)
 
@@ -22,7 +23,11 @@ class TwinMappingGraph:
     def remove_mapping(self, mapping_id: str) -> dict:
         if mapping_id not in self.mappings:
             raise RuntimeError(f"unknown mapping: {mapping_id}")
-        return self.mappings.pop(mapping_id)
+        removed = self.mappings.pop(mapping_id)
+        for subject, active_mapping in list(self.active_command_authority.items()):
+            if active_mapping == mapping_id:
+                del self.active_command_authority[subject]
+        return removed
 
     def mapping(self, mapping_id: str) -> dict | None:
         return self.mappings.get(mapping_id)
@@ -57,3 +62,65 @@ class TwinMappingGraph:
             for subject, mapping_ids in authorities.items()
             if len(mapping_ids) > 1
         }
+
+
+    def command_subjects(self, mapping_id: str) -> list[str]:
+        mapping = self.mapping(mapping_id)
+        if mapping is None:
+            raise RuntimeError(f"unknown mapping: {mapping_id}")
+        has_command_channel = any(
+            channel.get("direction") == "virtual_to_physical"
+            and channel.get("authority") == "command"
+            for channel in mapping.get("channels", [])
+        )
+        if not has_command_channel:
+            return []
+        return [
+            f"{mapping['physical']}:{subject}"
+            for subject in mapping.get("scope", [])
+        ]
+
+    def activate_command_authority(self, mapping_id: str) -> None:
+        subjects = self.command_subjects(mapping_id)
+        if not subjects:
+            raise RuntimeError(f"mapping has no command authority: {mapping_id}")
+        conflicts = {
+            subject: self.active_command_authority[subject]
+            for subject in subjects
+            if subject in self.active_command_authority
+            and self.active_command_authority[subject] != mapping_id
+        }
+        if conflicts:
+            raise RuntimeError(f"active command authority conflict: {conflicts}")
+        for subject in subjects:
+            self.active_command_authority[subject] = mapping_id
+
+    def deactivate_command_authority(self, mapping_id: str) -> None:
+        for subject, active_mapping in list(self.active_command_authority.items()):
+            if active_mapping == mapping_id:
+                del self.active_command_authority[subject]
+
+    def handoff_command_authority(self, source: str, target: str) -> None:
+        target_subjects = set(self.command_subjects(target))
+        source_subjects = set(self.command_subjects(source))
+        overlap = target_subjects & source_subjects
+        if not overlap:
+            raise RuntimeError(
+                f"command authority handoff has no overlapping scope: {source}->{target}"
+            )
+        if any(
+            self.active_command_authority.get(subject) != source
+            for subject in overlap
+        ):
+            raise RuntimeError(
+                f"source does not own overlapping command scope: {source}"
+            )
+        blocking = {
+            subject: owner
+            for subject, owner in self.active_command_authority.items()
+            if subject in target_subjects and owner not in {source, target}
+        }
+        if blocking:
+            raise RuntimeError(f"command authority handoff blocked: {blocking}")
+        self.deactivate_command_authority(source)
+        self.activate_command_authority(target)
