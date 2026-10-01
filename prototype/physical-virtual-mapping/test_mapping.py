@@ -19,14 +19,14 @@ print("PASS virtual unit can exist without physical mapping")
 removed = graph.remove_mapping("foot_twin")
 assert removed["physical"] == "physical_foot_01"
 assert graph.mapping("foot_twin") is None
-assert len(graph.mappings_for_physical("physical_foot_01")) == 2
+assert len(graph.mappings_for_physical("physical_foot_01")) == 3
 assert "physical_foot_01" in graph.physical_units
 assert "virtual_foot_sim" in graph.virtual_units
 print("PASS removing mapping removes only that relation and keeps both units")
 
 graph.add_mapping(removed)
 assert graph.mapping("foot_twin") is not None
-assert len(graph.mappings_for_physical("physical_foot_01")) == 3
+assert len(graph.mappings_for_physical("physical_foot_01")) == 4
 print("PASS mapping can be restored independently of unit identity")
 
 channels = {item["name"]: item["direction"] for item in foot["channels"]}
@@ -47,10 +47,15 @@ else:
     raise AssertionError("invalid mapping endpoint accepted")
 
 physical_foot_mappings = graph.mappings_for_physical("physical_foot_01")
-assert len(physical_foot_mappings) == 3
+assert len(physical_foot_mappings) == 4
 assert {
     item["virtual"] for item in physical_foot_mappings
-} == {"virtual_foot_sim", "virtual_foot_observer", "virtual_lower_body"}
+} == {
+    "virtual_foot_sim",
+    "virtual_foot_observer",
+    "virtual_lower_body",
+    "virtual_foot_calibration",
+}
 print("PASS one physical unit can map to multiple virtual units")
 
 lower_body_mappings = graph.mappings_for_virtual("virtual_lower_body")
@@ -75,5 +80,31 @@ assert graph.mapping("foot_lower_body_mapping") is not None
 assert "physical_foot_01" in graph.physical_units
 assert "virtual_foot_observer" in graph.virtual_units
 print("PASS removing one relation does not disturb parallel mappings or units")
+
+conflicts = graph.command_authority_conflicts()
+assert conflicts == {
+    "physical_foot_01:ankle_pitch": [
+        "foot_twin",
+        "foot_calibration_command",
+    ]
+}
+print(f"PASS overlapping command authority is detected: {conflicts}")
+
+graph.remove_mapping("foot_calibration_command")
+assert graph.command_authority_conflicts() == {}
+assert graph.mapping("foot_twin") is not None
+print("PASS removing competing command relation clears authority conflict")
+
+observer_mappings = [
+    item
+    for item in graph.mappings_for_physical("physical_foot_01")
+    if any(
+        channel.get("direction") == "physical_to_virtual"
+        for channel in item.get("channels", [])
+    )
+]
+assert len(observer_mappings) >= 2
+assert graph.command_authority_conflicts() == {}
+print("PASS multiple physical-to-virtual observers do not create command conflict")
 
 print("PASS all physical-virtual-mapping checks")
