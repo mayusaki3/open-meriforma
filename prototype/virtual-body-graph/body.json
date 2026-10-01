@@ -83,6 +83,21 @@
       "required_health": [
         "foot:ankle_pitch"
       ]
+    },
+    "ankle_hold": {
+      "declared": true,
+      "required_units": [
+        "foot"
+      ],
+      "required_resources": [
+        "foot:ankle_pitch"
+      ],
+      "control_resources": [
+        "foot:ankle_pitch"
+      ],
+      "required_health": [
+        "foot:ankle_pitch"
+      ]
     }
   }
 }
