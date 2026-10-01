@@ -295,4 +295,39 @@ print(
 ownership_execution.finish()
 assert graph.ownership.owners == {}
 
+stance_same_controller = CapabilityExecution(
+    graph, "stance", "multi_execution_controller"
+)
+stance_same_controller.start()
+overlap_same_controller = CapabilityExecution(
+    graph, "ankle_hold", "multi_execution_controller"
+)
+try:
+    overlap_same_controller.start()
+except RuntimeError as exc:
+    assert overlap_same_controller.state == "rejected"
+    assert graph.ownership.owners["foot:ankle_pitch"] == "multi_execution_controller"
+    assert (
+        graph.ownership.leases["foot:ankle_pitch"]
+        == stance_same_controller.lease_id
+    )
+    print(
+        "PASS overlapping executions from same controller cannot share "
+        f"exclusive resource lease: {exc}"
+    )
+else:
+    raise AssertionError("overlapping execution reused another execution lease")
+
+stance_same_controller.finish()
+assert "foot:ankle_pitch" not in graph.ownership.owners
+
+independent = CapabilityExecution(
+    graph, "ankle_hold", "multi_execution_controller"
+)
+independent.start()
+assert graph.ownership.leases["foot:ankle_pitch"] == independent.lease_id
+independent.finish()
+assert graph.ownership.owners == {}
+print("PASS resource can be acquired by a new execution after prior lease ends")
+
 print("PASS all virtual-body-graph checks")
