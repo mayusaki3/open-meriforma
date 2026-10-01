@@ -434,3 +434,27 @@ Prototypeではこの2つを `evaluate_capability_readiness()` と `evaluate_exe
 これによりPlanner等の事前照会とExecution開始可否を、暗黙のoptional lease引数だけで切り替えない。
 
 API名と最終的なReadiness階層は標準仕様として未確定。
+
+
+## 20. Capability Constraint Condition
+
+Capability AvailabilityへConstraintを独立したstructured conditionとして入力できることを検証する。
+
+Prototypeでは `stance_posture_safe` をDefinition上のConstraintとして宣言し、`stance.required_constraints` から参照する。
+
+Runtime状態は検証用に以下の3値を使用する。
+
+- `True`: satisfied
+- `False`: unsatisfied
+- `None`: unknown
+
+検証結果:
+
+- satisfiedなConstraintはCapability Availabilityを妨げない。
+- unsatisfiedなConstraintは `constraint_unsatisfied` としてAvailabilityをfalseにする。
+- unknownなConstraintは成立とみなさず `constraint_unknown` としてAvailabilityをfalseにする。
+- Active Execution中にConstraintがunsatisfiedになると、Topology/Observation/Healthと同じgeneric validation経路でInvalidatedになる。
+- Constraint回復後もInvalidated Executionは自動再開しない。
+- ConstraintのDefinitionとRuntime状態はCapabilityそのものから分離する。
+
+`stance_posture_safe` の意味、数値条件、評価主体、Constraint式の表現、Safety Constraintとの境界は未確定。特にSafety policyを単なるCapability Availability conditionへ統合することは、この検証では決定していない。
