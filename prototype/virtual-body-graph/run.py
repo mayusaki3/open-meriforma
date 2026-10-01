@@ -8,6 +8,7 @@ definition = json.loads((ROOT / "body.json").read_text(encoding="utf-8"))
 graph = BodyGraph(definition)
 graph.set_observation_source_available("foot:sole_contact", True)
 graph.set_health_state("foot:ankle_pitch", "ok")
+graph.set_constraint_state("stance_posture_safe", True)
 connections = {item["id"]: item for item in definition["connections"]}
 
 print(f"Body       : {definition['body_id']}")
@@ -147,3 +148,25 @@ health_execution.finish()
 graph.set_health_state("foot:ankle_pitch", "unknown")
 print(f"health unknown      : {graph.evaluate_capability('stance')}")
 graph.set_health_state("foot:ankle_pitch", "ok")
+
+
+print("-- generic condition invalidation: constraint --")
+graph.set_constraint_state("stance_posture_safe", True)
+constraint_execution = CapabilityExecution(graph, "stance", "constraint_stance")
+constraint_execution.start()
+print(f"started             : state={constraint_execution.state}")
+graph.set_constraint_state("stance_posture_safe", False)
+valid = constraint_execution.validate()
+print(f"constraint false    : valid={valid} state={constraint_execution.state}")
+print(f"reasons             : {constraint_execution.reasons}")
+print(f"owner retained      : {graph.ownership_summary()}")
+graph.set_constraint_state("stance_posture_safe", True)
+print(f"constraint restored : state={constraint_execution.state}")
+constraint_execution.finish()
+print(
+    f"after finish        : state={constraint_execution.state} "
+    f"owner={graph.ownership_summary()}"
+)
+graph.set_constraint_state("stance_posture_safe", None)
+print(f"constraint unknown  : {graph.evaluate_capability('stance')}")
+graph.set_constraint_state("stance_posture_safe", True)
