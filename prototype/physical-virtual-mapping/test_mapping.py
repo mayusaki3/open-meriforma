@@ -18,13 +18,15 @@ print("PASS virtual unit can exist without physical mapping")
 
 removed = graph.remove_mapping("foot_twin")
 assert removed["physical"] == "physical_foot_01"
-assert graph.mappings_for_physical("physical_foot_01") == []
+assert graph.mapping("foot_twin") is None
+assert len(graph.mappings_for_physical("physical_foot_01")) == 2
 assert "physical_foot_01" in graph.physical_units
 assert "virtual_foot_sim" in graph.virtual_units
-print("PASS removing mapping does not remove either unit")
+print("PASS removing mapping removes only that relation and keeps both units")
 
 graph.add_mapping(removed)
 assert graph.mapping("foot_twin") is not None
+assert len(graph.mappings_for_physical("physical_foot_01")) == 3
 print("PASS mapping can be restored independently of unit identity")
 
 channels = {item["name"]: item["direction"] for item in foot["channels"]}
