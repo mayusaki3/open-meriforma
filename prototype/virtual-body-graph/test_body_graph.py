@@ -271,4 +271,28 @@ assert "health_not_usable:foot:ankle_pitch:unknown" in unknown_health["reasons"]
 print("PASS unknown health is not silently treated as usable")
 graph.set_health_state("foot:ankle_pitch", "ok")
 
+graph.acquire_resources("shared_controller", ["foot:sole_contact"])
+scoped_execution = CapabilityExecution(graph, "stance", "shared_controller")
+scoped_execution.start()
+assert "foot:sole_contact" not in scoped_execution.acquired_resources
+assert graph.ownership.owners["foot:sole_contact"] == "shared_controller"
+scoped_execution.finish()
+assert graph.ownership.owners["foot:sole_contact"] == "shared_controller"
+assert "foot:ankle_pitch" not in graph.ownership.owners
+print("PASS execution finish releases only resources acquired by that execution")
+graph.release_resources("shared_controller")
+
+ownership_execution = CapabilityExecution(graph, "stance", "ownership_integrity")
+ownership_execution.start()
+graph.release_resources("ownership_integrity", ["foot:ankle_pitch"])
+assert ownership_execution.validate() is False
+assert ownership_execution.state == "invalidated"
+assert "ownership_lost:foot:ankle_pitch" in ownership_execution.reasons
+print(
+    "PASS active execution detects loss of acquired ownership: "
+    f"{ownership_execution.reasons}"
+)
+ownership_execution.finish()
+assert graph.ownership.owners == {}
+
 print("PASS all virtual-body-graph checks")
