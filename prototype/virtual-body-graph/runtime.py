@@ -82,6 +82,7 @@ class BodyGraph:
         self.connections = {item["id"]: item for item in definition.get("connections", [])}
         self.ownership = ResourceOwnership()
         self.observation_sources: dict[str, bool] = {}
+        self.health_states: dict[str, str] = {}
 
     def connect(self, connection: dict) -> None:
         if connection["id"] in self.connections:
@@ -136,6 +137,16 @@ class BodyGraph:
         unit_name, resource = qualified.split(":", 1)
         unit = self.definition["units"].get(unit_name)
         return unit is not None and resource in unit.get("resources", [])
+
+    def set_health_state(self, qualified: str, state: str) -> None:
+        if not self.resource_exists(qualified):
+            raise RuntimeError(f"unknown health subject: {qualified}")
+        if state not in {"ok", "degraded", "unavailable", "unknown"}:
+            raise RuntimeError(f"unknown health state: {state}")
+        self.health_states[qualified] = state
+
+    def health_state(self, qualified: str) -> str:
+        return self.health_states.get(qualified, "unknown")
 
     def set_observation_source_available(self, qualified: str, available: bool) -> None:
         if not self.resource_exists(qualified):
@@ -230,6 +241,22 @@ class BodyGraph:
                         None
                         if source_available
                         else f"observation_unavailable:{observation}"
+                    ),
+                }
+            )
+
+        for subject in capability.get("required_health", []):
+            state = self.health_state(subject)
+            satisfied = state in {"ok", "degraded"}
+            condition_results.append(
+                {
+                    "category": "health",
+                    "condition": "usable",
+                    "subject": subject,
+                    "satisfied": satisfied,
+                    "state": state,
+                    "reason": (
+                        None if satisfied else f"health_not_usable:{subject}:{state}"
                     ),
                 }
             )
