@@ -148,4 +148,33 @@ graph.remove_mapping("foot_calibration_command")
 assert "physical_foot_01:ankle_pitch" not in graph.active_command_authority
 print("PASS removing active mapping clears its runtime command authority")
 
+graph.set_endpoint_available("physical_foot_01", True)
+graph.set_endpoint_available("virtual_foot_sim", True)
+evaluation = graph.evaluate_mapping("foot_twin")
+assert evaluation == {"configured": True, "usable": True, "reasons": []}
+print("PASS configured mapping is usable when both endpoints are available")
+
+graph.set_endpoint_available("virtual_foot_sim", False)
+evaluation = graph.evaluate_mapping("foot_twin")
+assert evaluation["configured"] is True
+assert evaluation["usable"] is False
+assert evaluation["reasons"] == [
+    "virtual_endpoint_unavailable:virtual_foot_sim"
+]
+assert graph.mapping("foot_twin") is not None
+print("PASS endpoint loss makes mapping unusable without deleting configuration")
+
+graph.set_endpoint_available("virtual_foot_sim", None)
+evaluation = graph.evaluate_mapping("foot_twin")
+assert evaluation["configured"] is True
+assert evaluation["usable"] is False
+assert evaluation["reasons"] == [
+    "virtual_endpoint_unknown:virtual_foot_sim"
+]
+print("PASS unknown endpoint state is not silently treated as usable")
+
+graph.set_endpoint_available("virtual_foot_sim", True)
+assert graph.evaluate_mapping("foot_twin")["usable"] is True
+print("PASS endpoint recovery restores mapping usability without recreating relation")
+
 print("PASS all physical-virtual-mapping checks")
