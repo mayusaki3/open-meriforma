@@ -45,3 +45,8 @@ The prototype keeps runtime command authority separately:
 - removing an active mapping clears authority held by that mapping.
 
 This validates the separation between mapping existence and current command authority. Handoff safety procedure, transition timing, command blending, distributed arbitration, and failure recovery remain outside this prototype.
+
+
+### Test-state isolation
+
+Mapping removal tests restore the removed relation before subsequent scenarios. Definition-level command-candidate overlap is intentionally allowed to remain while runtime authority selects only one active command source. Observation mappings neither create nor clear command-candidate conflicts.
