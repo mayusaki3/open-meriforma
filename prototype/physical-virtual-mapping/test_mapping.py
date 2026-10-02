@@ -138,8 +138,11 @@ assert (
     graph.active_command_authority["physical_foot_01:ankle_pitch"]
     == "foot_calibration_command"
 )
-assert "physical_foot_01:ankle_roll" not in graph.active_command_authority
-print("PASS explicit handoff transfers overlapping command authority")
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_roll"]
+    == "foot_twin"
+)
+print("PASS partial handoff transfers overlap and preserves source-only authority")
 
 graph.remove_mapping("foot_calibration_command")
 assert "physical_foot_01:ankle_pitch" not in graph.active_command_authority
