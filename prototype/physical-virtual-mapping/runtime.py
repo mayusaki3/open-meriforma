@@ -5,6 +5,7 @@ class TwinMappingGraph:
         self.virtual_units = set(definition.get("virtual_units", {}))
         self.mappings: dict[str, dict] = {}
         self.active_command_authority: dict[str, str] = {}
+        self.endpoint_available: dict[str, bool | None] = {}
         for mapping in definition.get("mappings", []):
             self.add_mapping(mapping)
 
@@ -130,3 +131,33 @@ class TwinMappingGraph:
                 raise RuntimeError(f"command authority handoff blocked: {subject}={current}")
         for subject in target_subjects:
             self.active_command_authority[subject] = target
+
+
+    def set_endpoint_available(self, unit_id: str, available: bool | None) -> None:
+        if unit_id not in self.physical_units and unit_id not in self.virtual_units:
+            raise RuntimeError(f"unknown unit: {unit_id}")
+        self.endpoint_available[unit_id] = available
+
+    def evaluate_mapping(self, mapping_id: str) -> dict:
+        mapping = self.mapping(mapping_id)
+        if mapping is None:
+            return {
+                "configured": False,
+                "usable": False,
+                "reasons": ["mapping_not_configured"],
+            }
+
+        reasons: list[str] = []
+        for endpoint_type in ("physical", "virtual"):
+            unit_id = mapping[endpoint_type]
+            state = self.endpoint_available.get(unit_id)
+            if state is False:
+                reasons.append(f"{endpoint_type}_endpoint_unavailable:{unit_id}")
+            elif state is None:
+                reasons.append(f"{endpoint_type}_endpoint_unknown:{unit_id}")
+
+        return {
+            "configured": True,
+            "usable": not reasons,
+            "reasons": reasons,
+        }
