@@ -73,13 +73,14 @@ assert lower_foot is not None and lower_foot["scope"] == ["ankle_pitch", "ankle_
 assert lower_leg is not None and lower_leg["scope"] == ["knee_pitch"]
 print("PASS mappings can describe different partial scopes")
 
-graph.remove_mapping("foot_observer_mapping")
+removed_observer = graph.remove_mapping("foot_observer_mapping")
 assert graph.mapping("foot_observer_mapping") is None
 assert graph.mapping("foot_twin") is not None
 assert graph.mapping("foot_lower_body_mapping") is not None
 assert "physical_foot_01" in graph.physical_units
 assert "virtual_foot_observer" in graph.virtual_units
 print("PASS removing one relation does not disturb parallel mappings or units")
+graph.add_mapping(removed_observer)
 
 conflicts = graph.command_authority_conflicts()
 assert conflicts == {
@@ -113,8 +114,13 @@ observer_mappings = [
     )
 ]
 assert len(observer_mappings) >= 2
-assert graph.command_authority_conflicts() == {}
-print("PASS multiple physical-to-virtual observers do not create command conflict")
+assert graph.command_authority_conflicts() == {
+    "physical_foot_01:ankle_pitch": [
+        "foot_twin",
+        "foot_calibration_command",
+    ]
+}
+print("PASS multiple physical-to-virtual observers do not add command conflicts")
 
 graph.activate_command_authority("foot_twin")
 assert graph.active_command_authority["physical_foot_01:ankle_pitch"] == "foot_twin"
