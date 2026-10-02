@@ -122,5 +122,11 @@ class TwinMappingGraph:
         }
         if blocking:
             raise RuntimeError(f"command authority handoff blocked: {blocking}")
-        self.deactivate_command_authority(source)
-        self.activate_command_authority(target)
+        for subject in overlap:
+            del self.active_command_authority[subject]
+        for subject in target_subjects:
+            current = self.active_command_authority.get(subject)
+            if current is not None and current != target:
+                raise RuntimeError(f"command authority handoff blocked: {subject}={current}")
+        for subject in target_subjects:
+            self.active_command_authority[subject] = target
