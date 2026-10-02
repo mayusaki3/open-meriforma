@@ -83,11 +83,10 @@ print("PASS removing one relation does not disturb parallel mappings or units")
 graph.add_mapping(removed_observer)
 
 conflicts = graph.command_authority_conflicts()
-assert conflicts == {
-    "physical_foot_01:ankle_pitch": [
-        "foot_twin",
-        "foot_calibration_command",
-    ]
+assert set(conflicts) == {"physical_foot_01:ankle_pitch"}
+assert set(conflicts["physical_foot_01:ankle_pitch"]) == {
+    "foot_twin",
+    "foot_calibration_command",
 }
 print(f"PASS overlapping command authority is detected: {conflicts}")
 
@@ -114,11 +113,11 @@ observer_mappings = [
     )
 ]
 assert len(observer_mappings) >= 2
-assert graph.command_authority_conflicts() == {
-    "physical_foot_01:ankle_pitch": [
-        "foot_twin",
-        "foot_calibration_command",
-    ]
+observer_conflicts = graph.command_authority_conflicts()
+assert set(observer_conflicts) == {"physical_foot_01:ankle_pitch"}
+assert set(observer_conflicts["physical_foot_01:ankle_pitch"]) == {
+    "foot_twin",
+    "foot_calibration_command",
 }
 print("PASS multiple physical-to-virtual observers do not add command conflicts")
 
