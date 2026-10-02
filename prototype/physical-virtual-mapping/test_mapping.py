@@ -177,4 +177,34 @@ graph.set_endpoint_available("virtual_foot_sim", True)
 assert graph.evaluate_mapping("foot_twin")["usable"] is True
 print("PASS endpoint recovery restores mapping usability without recreating relation")
 
+graph.activate_command_authority("foot_twin")
+assert graph.invalid_active_command_authority() == {}
+print("PASS active command authority is valid while mapping is usable")
+
+graph.set_endpoint_available("virtual_foot_sim", False)
+invalid_authority = graph.invalid_active_command_authority()
+assert set(invalid_authority) == {
+    "physical_foot_01:ankle_pitch",
+    "physical_foot_01:ankle_roll",
+}
+for item in invalid_authority.values():
+    assert item["mapping"] == "foot_twin"
+    assert item["reasons"] == [
+        "virtual_endpoint_unavailable:virtual_foot_sim"
+    ]
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_pitch"]
+    == "foot_twin"
+)
+print("PASS unusable mapping exposes invalid active authority without auto-release")
+
+graph.set_endpoint_available("virtual_foot_sim", True)
+assert graph.invalid_active_command_authority() == {}
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_pitch"]
+    == "foot_twin"
+)
+print("PASS endpoint recovery clears invalidity without changing authority ownership")
+
+graph.deactivate_command_authority("foot_twin")
 print("PASS all physical-virtual-mapping checks")
