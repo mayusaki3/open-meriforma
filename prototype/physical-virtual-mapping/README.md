@@ -50,3 +50,8 @@ This validates the separation between mapping existence and current command auth
 ### Test-state isolation
 
 Mapping removal tests restore the removed relation before subsequent scenarios. Definition-level command-candidate overlap is intentionally allowed to remain while runtime authority selects only one active command source. Observation mappings neither create nor clear command-candidate conflicts.
+
+
+### Conflict ordering
+
+Command-authority conflicts are treated as sets of competing mappings. Mapping insertion order is not semantic and must not affect conflict evaluation or validation results.
