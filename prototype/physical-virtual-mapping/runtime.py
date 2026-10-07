@@ -185,6 +185,7 @@ class TwinMappingGraph:
         subject: str,
         value: float,
         sample_time: float,
+        generation: int | str | None = None,
     ) -> None:
         if self.mapping(mapping_id) is None:
             raise RuntimeError(f"unknown mapping: {mapping_id}")
@@ -194,6 +195,7 @@ class TwinMappingGraph:
         samples.setdefault(subject, {})[side] = {
             "value": value,
             "sample_time": sample_time,
+            "generation": generation,
         }
 
     def evaluate_state_alignment(
@@ -248,8 +250,26 @@ class TwinMappingGraph:
                 "reasons": [f"sample_skew_exceeded:{subject}"],
             }
 
+        physical_generation = physical_sample.get("generation")
+        virtual_generation = virtual_sample.get("generation")
+        if (
+            physical_generation is not None
+            and virtual_generation is not None
+            and physical_generation != virtual_generation
+        ):
+            return {
+                "comparable": False,
+                "aligned": None,
+                "sample_skew": skew,
+                "generations": {
+                    "physical": physical_generation,
+                    "virtual": virtual_generation,
+                },
+                "reasons": [f"generation_mismatch:{subject}"],
+            }
+
         physical = physical_sample["value"]
-        virtual = subject_samples["virtual"]["value"]
+        virtual = virtual_sample["value"]
         aligned = abs(physical - virtual) <= tolerance
         return {
             "comparable": True,
