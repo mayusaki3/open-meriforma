@@ -290,4 +290,54 @@ assert alignment["comparable"] is True
 assert alignment["aligned"] is True
 print("PASS fresh samples within time skew limit can be compared")
 
+graph.set_state_sample(
+    "foot_twin",
+    "physical",
+    "ankle_pitch",
+    value=0.50,
+    sample_time=9.98,
+    generation=41,
+)
+graph.set_state_sample(
+    "foot_twin",
+    "virtual",
+    "ankle_pitch",
+    value=0.50,
+    sample_time=9.99,
+    generation=42,
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin",
+    "ankle_pitch",
+    now=10.0,
+    max_age=0.2,
+    tolerance=0.05,
+    max_skew=0.05,
+)
+assert alignment["comparable"] is False
+assert alignment["aligned"] is None
+assert alignment["reasons"] == ["generation_mismatch:ankle_pitch"]
+assert alignment["generations"] == {"physical": 41, "virtual": 42}
+print("PASS close-in-time samples from different generations are not compared")
+
+graph.set_state_sample(
+    "foot_twin",
+    "physical",
+    "ankle_pitch",
+    value=0.50,
+    sample_time=9.98,
+    generation=42,
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin",
+    "ankle_pitch",
+    now=10.0,
+    max_age=0.2,
+    tolerance=0.05,
+    max_skew=0.05,
+)
+assert alignment["comparable"] is True
+assert alignment["aligned"] is True
+print("PASS matching generations allow normal state alignment evaluation")
+
 print("PASS all physical-virtual-mapping checks")
