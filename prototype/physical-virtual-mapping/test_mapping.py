@@ -256,4 +256,38 @@ assert alignment["aligned"] is None
 assert alignment["reasons"] == ["physical_sample_stale:ankle_pitch"]
 print("PASS stale sample prevents divergence comparison")
 
+graph.set_state_sample(
+    "foot_twin", "physical", "ankle_pitch", value=0.50, sample_time=9.81
+)
+graph.set_state_sample(
+    "foot_twin", "virtual", "ankle_pitch", value=0.50, sample_time=9.99
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin",
+    "ankle_pitch",
+    now=10.0,
+    max_age=0.2,
+    tolerance=0.05,
+    max_skew=0.05,
+)
+assert alignment["comparable"] is False
+assert alignment["aligned"] is None
+assert alignment["reasons"] == ["sample_skew_exceeded:ankle_pitch"]
+print("PASS individually fresh samples with excessive time skew are not compared")
+
+graph.set_state_sample(
+    "foot_twin", "physical", "ankle_pitch", value=0.50, sample_time=9.96
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin",
+    "ankle_pitch",
+    now=10.0,
+    max_age=0.2,
+    tolerance=0.05,
+    max_skew=0.05,
+)
+assert alignment["comparable"] is True
+assert alignment["aligned"] is True
+print("PASS fresh samples within time skew limit can be compared")
+
 print("PASS all physical-virtual-mapping checks")
