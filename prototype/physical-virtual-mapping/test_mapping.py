@@ -207,4 +207,45 @@ assert (
 print("PASS endpoint recovery clears invalidity without changing authority ownership")
 
 graph.deactivate_command_authority("foot_twin")
+graph.activate_command_authority("foot_twin")
+graph.set_endpoint_available("physical_foot_01", True)
+graph.set_endpoint_available("virtual_foot_sim", True)
+assert graph.unusable_active_command_authority() == {}
+print("PASS active command authority is healthy while mapping is usable")
+
+graph.set_endpoint_available("virtual_foot_sim", False)
+affected = graph.unusable_active_command_authority()
+assert set(affected) == {
+    "physical_foot_01:ankle_pitch",
+    "physical_foot_01:ankle_roll",
+}
+assert all(
+    item["mapping"] == "foot_twin"
+    and item["reasons"] == [
+        "virtual_endpoint_unavailable:virtual_foot_sim"
+    ]
+    for item in affected.values()
+)
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_pitch"]
+    == "foot_twin"
+)
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_roll"]
+    == "foot_twin"
+)
+print("PASS endpoint loss detects unusable active authority without auto-release")
+
+graph.set_endpoint_available("virtual_foot_sim", True)
+assert graph.unusable_active_command_authority() == {}
+assert (
+    graph.active_command_authority["physical_foot_01:ankle_pitch"]
+    == "foot_twin"
+)
+print("PASS endpoint recovery restores reachability without rewriting authority")
+
+graph.deactivate_command_authority("foot_twin")
+assert graph.active_command_authority == {}
+print("PASS runtime policy can explicitly release recovered command authority")
+
 print("PASS all physical-virtual-mapping checks")
