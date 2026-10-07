@@ -55,3 +55,16 @@ Mapping removal tests restore the removed relation before subsequent scenarios. 
 ### Conflict ordering
 
 Command-authority conflicts are treated as sets of competing mappings. Mapping insertion order is not semantic and must not affect conflict evaluation or validation results.
+
+
+## Active authority and endpoint loss
+
+The prototype keeps active command authority records when a mapped endpoint becomes unavailable.
+
+- Endpoint loss makes the Mapping unusable.
+- Active command authority is reported as unusable rather than silently released.
+- Mapping configuration remains intact.
+- Endpoint recovery removes the unusable condition but does not create or transfer authority.
+- Runtime/Safety policy remains responsible for deciding whether authority should be released, stopped, transitioned, or explicitly resumed.
+
+This mirrors the Body Graph principle that topology or reachability loss is detected separately from ownership-release policy. Automatic command resumption after recovery is intentionally not defined by this prototype.
