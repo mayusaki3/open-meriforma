@@ -6,6 +6,7 @@ class TwinMappingGraph:
         self.mappings: dict[str, dict] = {}
         self.active_command_authority: dict[str, str] = {}
         self.endpoint_available: dict[str, bool | None] = {}
+        self.mapping_state_samples: dict[str, dict[str, dict]] = {}
         for mapping in definition.get("mappings", []):
             self.add_mapping(mapping)
 
@@ -175,3 +176,70 @@ class TwinMappingGraph:
             }
         return invalid
 
+
+
+    def set_state_sample(
+        self,
+        mapping_id: str,
+        side: str,
+        subject: str,
+        value: float,
+        sample_time: float,
+    ) -> None:
+        if self.mapping(mapping_id) is None:
+            raise RuntimeError(f"unknown mapping: {mapping_id}")
+        if side not in {"physical", "virtual"}:
+            raise RuntimeError(f"unknown mapping side: {side}")
+        samples = self.mapping_state_samples.setdefault(mapping_id, {})
+        samples.setdefault(subject, {})[side] = {
+            "value": value,
+            "sample_time": sample_time,
+        }
+
+    def evaluate_state_alignment(
+        self,
+        mapping_id: str,
+        subject: str,
+        now: float,
+        max_age: float,
+        tolerance: float,
+    ) -> dict:
+        mapping = self.mapping(mapping_id)
+        if mapping is None:
+            return {
+                "comparable": False,
+                "aligned": None,
+                "reasons": ["mapping_not_configured"],
+            }
+
+        subject_samples = self.mapping_state_samples.get(mapping_id, {}).get(
+            subject, {}
+        )
+        reasons: list[str] = []
+        for side in ("physical", "virtual"):
+            sample = subject_samples.get(side)
+            if sample is None:
+                reasons.append(f"{side}_sample_missing:{subject}")
+                continue
+            age = now - sample["sample_time"]
+            if age < 0:
+                reasons.append(f"{side}_sample_from_future:{subject}")
+            elif age > max_age:
+                reasons.append(f"{side}_sample_stale:{subject}")
+
+        if reasons:
+            return {
+                "comparable": False,
+                "aligned": None,
+                "reasons": reasons,
+            }
+
+        physical = subject_samples["physical"]["value"]
+        virtual = subject_samples["virtual"]["value"]
+        aligned = abs(physical - virtual) <= tolerance
+        return {
+            "comparable": True,
+            "aligned": aligned,
+            "difference": virtual - physical,
+            "reasons": [] if aligned else [f"state_diverged:{subject}"],
+        }
