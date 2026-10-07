@@ -18,6 +18,12 @@ This document records prototype findings. It does not freeze the final standard 
 - Unknown endpoint state is not silently treated as usable.
 - If an endpoint is lost while command authority is active, the authority record is retained and reported as invalid rather than silently released.
 - Endpoint recovery clears the Mapping usability failure but does not itself transfer, recreate, or release command authority.
+- State sample existence and state comparability are separate concepts.
+- Freshness is evaluated per sample before Physical/Virtual state comparison.
+- Cross-side sample time skew is separate from per-sample freshness; two individually fresh samples may still be unsuitable for comparison.
+- Fresh and time-aligned samples may still represent different synchronization generations.
+- Optional generation metadata can prevent comparison of samples from different update generations without making one particular generation scheme mandatory.
+- State alignment/divergence is evaluated only after the available comparability conditions are satisfied.
 - Runtime/Safety policy decides STOP, release, transition, or explicit resume behavior.
 
 ## Relationship to Body Graph validation
@@ -43,8 +49,11 @@ The following are implementation devices for validation and are not standardized
 
 ## Not yet validated
 
-- synchronization timestamps, freshness, latency, and ordering;
-- state divergence and reconciliation between Physical and Virtual endpoints;
+- synchronization clock source, timestamp representation, and clock synchronization method;
+- standard freshness and cross-side skew limits;
+- generation identifier representation and generation propagation rules;
+- transport latency and message ordering;
+- divergence reconciliation policy after a mismatch is detected;
 - fidelity metadata and model accuracy;
 - distributed authority arbitration;
 - safe command transition/blending during handoff;
@@ -55,3 +64,5 @@ The following are implementation devices for validation and are not standardized
 ## Current conclusion
 
 A Twin should be modeled as a relationship between independently existing Physical and Virtual Units rather than as a Unit category. The relationship may be partial and non-1:1. Runtime synchronization usability and command authority are dynamic states layered on top of the configured Mapping.
+
+For state comparison, having values is insufficient by itself. Sample validity for comparison may depend on freshness, cross-side time alignment, and, when available, synchronization generation. The prototype validates the separation of these concepts without selecting a final clock, timing threshold, generation scheme, or reconciliation policy.
