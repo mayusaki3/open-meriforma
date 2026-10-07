@@ -210,4 +210,50 @@ graph.deactivate_command_authority("foot_twin")
 assert graph.active_command_authority == {}
 print("PASS runtime policy can explicitly release recovered command authority")
 
+alignment = graph.evaluate_state_alignment(
+    "foot_twin", "ankle_pitch", now=10.0, max_age=0.2, tolerance=0.05
+)
+assert alignment["comparable"] is False
+assert alignment["aligned"] is None
+assert set(alignment["reasons"]) == {
+    "physical_sample_missing:ankle_pitch",
+    "virtual_sample_missing:ankle_pitch",
+}
+print("PASS missing state samples are not treated as aligned or diverged")
+
+graph.set_state_sample(
+    "foot_twin", "physical", "ankle_pitch", value=0.50, sample_time=9.95
+)
+graph.set_state_sample(
+    "foot_twin", "virtual", "ankle_pitch", value=0.53, sample_time=9.96
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin", "ankle_pitch", now=10.0, max_age=0.2, tolerance=0.05
+)
+assert alignment["comparable"] is True
+assert alignment["aligned"] is True
+print("PASS fresh physical and virtual state can be compared as aligned")
+
+graph.set_state_sample(
+    "foot_twin", "virtual", "ankle_pitch", value=0.70, sample_time=9.97
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin", "ankle_pitch", now=10.0, max_age=0.2, tolerance=0.05
+)
+assert alignment["comparable"] is True
+assert alignment["aligned"] is False
+assert alignment["reasons"] == ["state_diverged:ankle_pitch"]
+print("PASS fresh state difference is reported as divergence")
+
+graph.set_state_sample(
+    "foot_twin", "physical", "ankle_pitch", value=0.70, sample_time=9.0
+)
+alignment = graph.evaluate_state_alignment(
+    "foot_twin", "ankle_pitch", now=10.0, max_age=0.2, tolerance=0.05
+)
+assert alignment["comparable"] is False
+assert alignment["aligned"] is None
+assert alignment["reasons"] == ["physical_sample_stale:ankle_pitch"]
+print("PASS stale sample prevents divergence comparison")
+
 print("PASS all physical-virtual-mapping checks")
