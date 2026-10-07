@@ -203,6 +203,7 @@ class TwinMappingGraph:
         now: float,
         max_age: float,
         tolerance: float,
+        max_skew: float | None = None,
     ) -> dict:
         mapping = self.mapping(mapping_id)
         if mapping is None:
@@ -234,7 +235,20 @@ class TwinMappingGraph:
                 "reasons": reasons,
             }
 
-        physical = subject_samples["physical"]["value"]
+        physical_sample = subject_samples["physical"]
+        virtual_sample = subject_samples["virtual"]
+        skew = abs(
+            physical_sample["sample_time"] - virtual_sample["sample_time"]
+        )
+        if max_skew is not None and skew > max_skew:
+            return {
+                "comparable": False,
+                "aligned": None,
+                "sample_skew": skew,
+                "reasons": [f"sample_skew_exceeded:{subject}"],
+            }
+
+        physical = physical_sample["value"]
         virtual = subject_samples["virtual"]["value"]
         aligned = abs(physical - virtual) <= tolerance
         return {
