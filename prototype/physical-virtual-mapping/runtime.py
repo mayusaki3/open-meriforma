@@ -174,3 +174,16 @@ class TwinMappingGraph:
                 "reasons": list(evaluation["reasons"]),
             }
         return invalid
+
+
+    def unusable_active_command_authority(self) -> dict[str, dict]:
+        affected: dict[str, dict] = {}
+        for subject, mapping_id in self.active_command_authority.items():
+            evaluation = self.evaluate_mapping(mapping_id)
+            if evaluation["usable"]:
+                continue
+            affected[subject] = {
+                "mapping": mapping_id,
+                "reasons": list(evaluation["reasons"]),
+            }
+        return affected
