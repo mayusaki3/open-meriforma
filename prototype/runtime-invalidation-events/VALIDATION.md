@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -11,7 +11,7 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Recovery requires explicit lifecycle cleanup: PASS.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_actions.py` — pending
+## Confirmed: `python .\\test_actions.py`
 
 - Explicit requested/accepted/executing/completed/failed transitions.
 - Completed status is a report, not verified physical safety.
@@ -19,6 +19,16 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Acknowledgment does not complete actions; duplicate request rejected.
 - Invalid and terminal transitions rejected.
 - Explicit Execution finish independently releases rights.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_safety_verification.py` — pending
+
+- Synthetic STOP evidence assessed independently from Action completed report.
+- Enabled drive or moving joint is not_verified.
+- Missing, incomplete, or non-finite evidence is unknown (fail closed).
+- Unfinished Action cannot be verified from observation alone.
+- Handoff actions cannot use STOP verification; verification result cannot be silently overwritten.
+- No actual sensor, timestamp, freshness, fault-tolerant verification, or real actuator.
 
 ## Limitations
 
