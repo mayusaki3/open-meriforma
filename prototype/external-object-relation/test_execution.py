@@ -18,7 +18,7 @@ graph.add_world_relation("contact", "cane_01", "contact", "floor_01")
 graph.add_relation("support", "foot_01", "support", "floor_01")
 graph.set_constraint_state("cane_load_capacity", True)
 graph.set_constraint_state("contact_stability", True)
-execution = CapabilityExecution(graph, "assisted_stance")
+execution = CapabilityExecution(graph, "assisted_stance", leases)
 assert execution.start() is True
 assert execution.validate()["state"] == "active"
 print("PASS execution starts when realization is available")
@@ -35,12 +35,12 @@ assert execution.validate()["state"] == "invalidated"
 print("PASS relation recovery does not automatically reactivate execution")
 execution.finish()
 assert execution.state == "finished"
-new_execution = CapabilityExecution(graph, "assisted_stance")
+new_execution = CapabilityExecution(graph, "assisted_stance", leases)
 assert new_execution.start() is True
 new_execution.finish()
 print("PASS explicit new execution can start after recovery")
 
-constraint_execution = CapabilityExecution(graph, "assisted_stance")
+constraint_execution = CapabilityExecution(graph, "assisted_stance", leases)
 assert constraint_execution.start() is True
 graph.set_constraint_state("contact_stability", None)
 result = constraint_execution.validate()
