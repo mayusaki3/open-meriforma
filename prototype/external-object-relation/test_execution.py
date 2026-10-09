@@ -105,4 +105,34 @@ monitor.finish()
 other_control.finish()
 print("PASS observation executions outlive control lease release")
 
+from object_use import ExternalObjectUse
+
+uses = ExternalObjectUse(graph.world_entities)
+observe = CapabilityExecution(graph, "cane_observe_use", leases, uses)
+exclusive = CapabilityExecution(graph, "cane_exclusive_use", leases, uses)
+assert observe.start() is True
+assert exclusive.start() is True
+assert "cane_01" not in leases.known
+print("PASS observation coexists with exclusive object use independently of body leases")
+
+blocked = CapabilityExecution(graph, "cane_exclusive_use", leases, uses)
+assert blocked.start() is False and blocked.reasons == ["object_use_conflict"]
+assert observe.validate()["state"] == "active"
+blocked.finish()
+exclusive.finish()
+print("PASS second exclusive user rejected without disrupting observer")
+
+a = CapabilityExecution(graph, "cane_coordinated_a", leases, uses)
+b = CapabilityExecution(graph, "cane_coordinated_b", leases, uses)
+other = CapabilityExecution(graph, "cane_other_group", leases, uses)
+assert a.start() is True and b.start() is True
+assert other.start() is False and other.reasons == ["object_use_conflict"]
+other.finish()
+print("PASS same coordination group shares use while unrelated group conflicts")
+a.finish()
+b.finish()
+observe.finish()
+assert not uses.holders and not leases.holders
+print("PASS object-use rights release independently of body resource leases")
+
 print("PASS all external-object execution checks")
