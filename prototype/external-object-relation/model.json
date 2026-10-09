@@ -74,6 +74,84 @@
       "observation_resources": [
         "cane_01"
       ]
+    },
+    "cane_observe_use": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "observe"
+        }
+      ]
+    },
+    "cane_exclusive_use": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "exclusive"
+        }
+      ]
+    },
+    "cane_coordinated_a": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "coordinated",
+          "group": "carry_01"
+        }
+      ]
+    },
+    "cane_coordinated_b": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "coordinated",
+          "group": "carry_01"
+        }
+      ]
+    },
+    "cane_other_group": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "coordinated",
+          "group": "carry_02"
+        }
+      ]
     }
   },
   "realizations": {
