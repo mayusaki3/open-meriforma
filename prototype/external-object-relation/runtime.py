@@ -92,7 +92,7 @@ class BodyWorldGraph:
             "available": not missing,
             "reasons": [
                 "required_relation_missing:"
-                f"{item['body']}:{item['relation']}:{item['world']}"
+                ":".join(str(value) for value in item.values())
                 for item in missing
             ],
         }
