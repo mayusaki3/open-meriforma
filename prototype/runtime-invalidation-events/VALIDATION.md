@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eight test suites user-confirmed PASS; forced process-exit crash recovery **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All nine test suites user-confirmed PASS; restart state reconciliation **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -76,7 +76,7 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Uses synthetic logical time; no process-kill, network partition, or hardware safety guarantee.
 - Entire test suite completed: PASS (after test fixture isolation fix).
 
-## New phase: `python .\\test_process_crash.py` — pending
+## Confirmed: `python .\\test_process_crash.py`
 
 - Spawn a separate Python process and terminate it with `os._exit(71)`.
 - Before transaction commit: SQLite must roll back uncommitted claim changes.
@@ -84,6 +84,15 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - After committed ACK: acknowledged event remains suppressed after child process exit.
 - Uses isolated temporary databases and caller-supplied logical timestamps.
 - Does not simulate power loss, disk corruption, network partitions, or a real-time watchdog.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_restart_reconciliation.py` — pending
+
+- SQLite persists separate Execution/Event/Action/Verification/Correlation snapshots.
+- Missing or mismatched records and stale generation fail closed to unknown.
+- Consistent historical verification is labeled historical, never current physical safety.
+- No automatic execution resume or lease mutation.
+- Snapshot ingestion is not transactional across components; no trusted clock or cryptographic evidence.
 
 ## Candidate API and responsibility boundaries
 
