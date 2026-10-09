@@ -82,14 +82,19 @@ class CapabilityExecution:
         if self.state != "active":
             return {"state": self.state, "reasons": list(self.reasons)}
         evaluation = self.graph.evaluate_capability(self.capability)
-        if not evaluation["available"]:
-            self.state = "invalidated"
-            self.reasons = list(evaluation["reasons"])
-        elif self.leases is not None and any(
+        reasons = list(evaluation["reasons"])
+        if self.leases is not None and any(
             self.leases.holders.get(resource) is not self for resource in self.control_resources()
         ):
+            reasons.append("resource_lease_lost")
+        requests = self.object_requests()
+        if requests and (
+            self.object_use is None or not self.object_use.holds(requests, self)
+        ):
+            reasons.append("object_use_lost")
+        if reasons:
             self.state = "invalidated"
-            self.reasons = ["resource_lease_lost"]
+            self.reasons = reasons
         return {"state": self.state, "reasons": list(self.reasons)}
 
     def finish(self) -> None:
