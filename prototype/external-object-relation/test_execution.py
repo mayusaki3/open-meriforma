@@ -78,4 +78,31 @@ print("PASS finished execution releases only its acquired resources")
 assert "cane_01" not in leases.known and "floor_01" not in leases.known
 print("PASS world objects remain relations, not body control resources")
 
+observer = CapabilityExecution(graph, "cane_observation", leases)
+monitor = CapabilityExecution(graph, "cane_contact_monitor", leases)
+controller = CapabilityExecution(graph, "assisted_stance", leases)
+assert observer.start() is True
+assert monitor.start() is True
+assert controller.start() is True
+assert observer.validate()["state"] == "active"
+assert monitor.validate()["state"] == "active"
+assert set(leases.holders) == {"hand_01:gripper", "foot_01:ankle"}
+print("PASS concurrent observation and control of one world object")
+
+other_control = CapabilityExecution(graph, "assisted_stance", leases)
+assert other_control.start() is False
+assert other_control.reasons == ["resource_lease_conflict"]
+assert observer.validate()["state"] == "active"
+assert monitor.validate()["state"] == "active"
+print("PASS overlapping body control conflicts while world observations coexist")
+
+controller.finish()
+assert not leases.holders
+assert observer.validate()["state"] == "active"
+assert monitor.validate()["state"] == "active"
+observer.finish()
+monitor.finish()
+other_control.finish()
+print("PASS observation executions outlive control lease release")
+
 print("PASS all external-object execution checks")
