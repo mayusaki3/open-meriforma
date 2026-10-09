@@ -86,6 +86,10 @@ The local body-resource acquire is atomic in its prototype. Body leases and exte
 - Physical contact/support must be measured; a named functional group alone does not prove support.
 - Structured condition results were explored in Body Graph; External Object prototype currently uses string reasons. A shared reason schema is **not yet validated**.
 
+## Persistence and safety boundary
+
+[Runtime persistence boundaries](runtime-persistence-boundaries.md) clarify that SQLite is a PC reference implementation, not a Forma Unit or MCU requirement. Persistence must not block real-time safety actions, and historical snapshots cannot reauthorize execution after restart. Eleven runtime-invalidation test suites have user-confirmed PASS results; physical safety and cross-device atomicity remain unverified.
+
 ## Open design / validation work
 
 - A common event boundary was demonstrated for Body Graph and World Interaction, but one consistent typed event/reason schema across graph, object use, Health, Twin, and Safety is **not yet validated**.
