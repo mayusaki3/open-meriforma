@@ -34,3 +34,10 @@ class ExternalObjectUse:
             self.holders[obj].pop(lease, None)
             if not self.holders[obj]:
                 del self.holders[obj]
+
+    def holds(self, requests: list[dict], lease: object) -> bool:
+        return all(
+            self.holders.get(request["object"], {}).get(lease)
+            == (request["mode"], request.get("group"))
+            for request in requests
+        )
