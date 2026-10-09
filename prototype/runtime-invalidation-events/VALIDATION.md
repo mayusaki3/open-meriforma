@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All five test suites user-confirmed PASS.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All five test suites user-confirmed PASS; end-to-end correlation **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -47,6 +47,14 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Reject duplicate decisions, action mismatches, and handoff actions.
 - Relation restoration does not auto-resume; explicit finish releases rights.
 - Entire test suite completed: PASS.
+
+## New phase: `python .\\test_correlation.py` — pending
+
+- Link Event ID, Action ID, Execution lifecycle identity, and evidence generation.
+- Reject cross-action, cross-event, cross-execution, stale lifecycle/generation results.
+- Reject incomplete STOP actions, invalid generations, and duplicate evidence generation.
+- Accept correlated verification for advisory policy only; no automatic resume or lease changes.
+- Current identity/generation are trusted caller inputs in this prototype; no cryptographic proof, durable replay protection, or distributed sequencing.
 
 ## Candidate API and responsibility boundaries
 
