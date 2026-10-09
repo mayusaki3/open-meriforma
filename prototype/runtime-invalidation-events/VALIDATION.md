@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All nine test suites user-confirmed PASS; restart state reconciliation **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All ten test suites user-confirmed PASS; atomic state persistence **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -86,13 +86,22 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Does not simulate power loss, disk corruption, network partitions, or a real-time watchdog.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_restart_reconciliation.py` — pending
+## Confirmed: `python .\\test_restart_reconciliation.py`
 
 - SQLite persists separate Execution/Event/Action/Verification/Correlation snapshots.
 - Missing or mismatched records and stale generation fail closed to unknown.
 - Consistent historical verification is labeled historical, never current physical safety.
 - No automatic execution resume or lease mutation.
 - Snapshot ingestion is not transactional across components; no trusted clock or cryptographic evidence.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_atomic_state.py` — pending
+
+- Five record kinds stored together in a single SQLite snapshot transaction.
+- Reject incomplete snapshots and stale optimistic revision updates.
+- Forced child exit before commit must preserve the old complete snapshot.
+- Forced child exit after commit must preserve the new complete snapshot.
+- Snapshot storage is independent of earlier reconciliation table; no automatic integration or external/hardware atomicity.
 
 ## Candidate API and responsibility boundaries
 
