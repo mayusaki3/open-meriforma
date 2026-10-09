@@ -47,3 +47,10 @@ simulated integrity and continuous sample-window duration. All samples are synth
 The `integrity_ok` flag is **not** cryptographic or physical integrity verification.
 The sample-window check cannot establish continuous physical behavior between samples;
 real safety requirements need explicit sensor, timing and fault models.
+
+## Recovery policy (next phase)
+
+Run `python .\\test_recovery_policy.py` to check advisory recovery decisions
+for STOP verification results. Recommendations do not invoke a motor stop,
+change resource ownership, or authorize automatic resumption. Escalation and
+safe fallback remain **requests**, not implemented physical actions.
