@@ -96,3 +96,11 @@ reopens SQLite snapshots for Execution/Event/Action/Verification/Correlation,
 checks identities and caller-supplied generation, and reports historical
 verification only. Missing or inconsistent data becomes `unknown`.
 It cannot infer current physical safety, resume execution, or modify leases.
+
+## Atomic state persistence (next phase)
+
+Run `python .\\test_atomic_state.py` for complete five-kind SQLite
+snapshots, optimistic revision conflict handling, incomplete-batch rejection,
+and child-process termination before/after commit. Uses temporary files only.
+This separate snapshot format is not yet wired to `RestartReconciliation` or
+live controllers; it cannot make database writes atomic with hardware actions.
