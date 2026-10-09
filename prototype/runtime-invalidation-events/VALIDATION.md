@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All six test suites user-confirmed PASS; durable delivery/timeout **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All seven test suites user-confirmed PASS; delivery lease/crash recovery **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -57,13 +57,23 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Current identity/generation are trusted caller inputs in this prototype; no cryptographic proof, durable replay protection, or distributed sequencing.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_durable_delivery.py` — pending
+## Confirmed: `python .\\test_durable_delivery.py`
 
 - SQLite local outbox with stable event keys and at-least-once polling.
 - Missing ACK triggers retry after interval; ACK and dedup survive process restart.
 - Action deadlines transition to timed_out once; late completion cannot overwrite terminal timeout.
 - Tests use caller-supplied logical timestamps and a temporary local SQLite database.
 - Not a distributed exactly-once delivery guarantee, authenticated transport, physical STOP, or safety watchdog.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_delivery_leases.py` — pending
+
+- BEGIN IMMEDIATE serializes local SQLite reservations across connections.
+- Lease expiry allows reclaim with incremented fencing generation.
+- Stale ACK is rejected by owner, generation and unexpired lease checks.
+- Reopen preserves acknowledged/pending work; uncommitted writes roll back.
+- Two simultaneous workers must not both obtain the same active reservation.
+- Uses synthetic logical time; no process-kill, network partition, or hardware safety guarantee.
 
 ## Candidate API and responsibility boundaries
 
