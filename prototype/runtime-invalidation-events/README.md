@@ -88,3 +88,11 @@ Python processes that call `os._exit(71)` at selected transaction/ACK
 boundaries. This does not terminate the test runner or modify production DBs.
 The test uses temporary SQLite files and synthetic logical time; it is not a
 power-loss, filesystem durability, network-partition, or hardware-safety test.
+
+## Restart state reconciliation (next phase)
+
+Run `python .\\test_restart_reconciliation.py`. This read-only assessment
+reopens SQLite snapshots for Execution/Event/Action/Verification/Correlation,
+checks identities and caller-supplied generation, and reports historical
+verification only. Missing or inconsistent data becomes `unknown`.
+It cannot infer current physical safety, resume execution, or modify leases.
