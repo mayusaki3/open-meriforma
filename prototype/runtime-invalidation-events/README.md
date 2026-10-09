@@ -54,3 +54,10 @@ Run `python .\\test_recovery_policy.py` to check advisory recovery decisions
 for STOP verification results. Recommendations do not invoke a motor stop,
 change resource ownership, or authorize automatic resumption. Escalation and
 safe fallback remain **requests**, not implemented physical actions.
+
+## End-to-end correlation (next phase)
+
+Run `python .\\test_correlation.py` to check Event ID, Action ID,
+Execution lifecycle ID and evidence generation before advisory recovery.
+The caller supplies the authoritative current lifecycle/generation; this
+prototype cannot authenticate them. Replay protection is in-memory only.
