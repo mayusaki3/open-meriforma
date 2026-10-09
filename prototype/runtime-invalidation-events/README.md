@@ -23,3 +23,10 @@ Prototype assumptions:
 - Policy decisions are recorded as strings only; they do not actuate.
 - Real-world safety action, control handoff, distributed event ordering,
   and event delivery guarantees remain unvalidated.
+
+## Policy action lifecycle (next phase)
+
+Run `python .\\test_actions.py` to check `requested → accepted → executing → completed/failed`.
+A completed action is only a **reported completion**; it is not proof of physical STOP or safe state.
+Event acknowledgment, action status, and explicit execution finish remain separate.
+No real action executor is implemented.
