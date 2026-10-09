@@ -39,3 +39,11 @@ with a provisional threshold. Results: `verified`, `not_verified`, `unknown`.
 An Action's `completed` report is independent from the verification result.
 This is not physical STOP verification: freshness, sensor integrity, scope,
 redundancy, and real safety policy remain unimplemented.
+
+## Observation evidence extension
+
+Run `python .\\test_observation_evidence.py` to check freshness, joint scope,
+simulated integrity and continuous sample-window duration. All samples are synthetic.
+The `integrity_ok` flag is **not** cryptographic or physical integrity verification.
+The sample-window check cannot establish continuous physical behavior between samples;
+real safety requirements need explicit sensor, timing and fault models.
