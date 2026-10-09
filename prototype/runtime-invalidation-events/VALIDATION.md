@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All five test suites user-confirmed PASS.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -38,13 +38,27 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Uses caller-supplied monotonic timestamps; no sensor authenticity or clock synchronization.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_recovery_policy.py` — pending
+## Confirmed: `python .\\test_recovery_policy.py`
 
 - verified: hold for explicit recovery; never auto-resume.
 - not_verified: request stop escalation (advisory only).
 - unknown: request evidence or safe fallback (advisory only).
 - Decisions do not release control or external object rights.
 - Reject duplicate decisions, action mismatches, and handoff actions.
+- Relation restoration does not auto-resume; explicit finish releases rights.
+- Entire test suite completed: PASS.
+
+## Candidate API and responsibility boundaries
+
+1. Execution validation detects prerequisite/authority loss and invalidates execution; it does not actuate.
+2. InvalidationEvents emits one in-memory event per supplied domain/execution lifecycle ID; acknowledgment does not stop or release.
+3. PolicyInbox records a recommendation; PolicyActions tracks requested/accepted/executing/completed/failed independently.
+4. Action completion is an executor **report**, not a verified physical safe state.
+5. StopVerifier and StopEvidenceVerifier assess synthetic STOP observations separately; unknown means verification cannot be established, not safe.
+6. RecoveryPolicy records advisory hold/escalate/reobserve recommendations; it cannot resume execution or release leases.
+7. ResourceLeases and ExternalObjectUse remain independently owned; explicit execution finish releases rights.
+
+No API name, state vocabulary, threshold, or message schema is standardized by these prototypes.
 
 ## Limitations
 
@@ -54,3 +68,7 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Completion report does not attest safe state.
 - No automatic lease release or execution restart.
 - State names and interfaces are provisional, not standard.
+- Synthetic integrity flag is not proof of sensor integrity; sample-window duration does not prove continuous physical stability.
+- No physical stop/fallback, actual executor, hardware confirmation, retry policy, or safe reauthorization workflow.
+- No persistence, durable event acknowledgment, deduplication across restarts, delivery guarantees, or distributed ordering.
+- No atomic distributed lease/authority transfer, real-time deadline, fault injection, or hardware safety certification.
