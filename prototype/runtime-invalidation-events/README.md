@@ -104,3 +104,11 @@ snapshots, optimistic revision conflict handling, incomplete-batch rejection,
 and child-process termination before/after commit. Uses temporary files only.
 This separate snapshot format is not yet wired to `RestartReconciliation` or
 live controllers; it cannot make database writes atomic with hardware actions.
+
+## Persistence technology boundary
+
+SQLite is used **only as the PC reference/test implementation**, not a required
+Open MeriForma runtime dependency or wire protocol. MCU persistence may use
+other media or none, depending on its responsibilities. Safety actions must not
+wait for a storage transaction, and persisted history cannot authorize motion.
+See [runtime persistence boundaries](../../docs/design/runtime-persistence-boundaries.md).
