@@ -71,3 +71,12 @@ This does **not** implement distributed exactly-once delivery, a real-time
 safety watchdog, or physical STOP. The producer must provide stable unique
 keys; the consumer must deduplicate deliveries. Caller clocks must remain
 consistent across restarts.
+
+## Delivery lease / crash recovery (next phase)
+
+Run `python .\\test_delivery_leases.py` for competing SQLite connections,
+reservation expiration, fencing-token ACK checks, reopen/rollback and a
+simultaneous-thread race. This separate experimental API does not replace
+`DurableDelivery.deliver()`; callers must migrate to the lease API to
+avoid duplicate active reservations. No real process kill, network partition,
+clock synchronization or hardware safety is tested.
