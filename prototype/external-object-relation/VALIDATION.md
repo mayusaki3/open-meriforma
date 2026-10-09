@@ -9,7 +9,7 @@ Status: prototype concept validation; **not a finalized standard**.
 - Body control leases and External Object Use rights are separate runtime domains.
 - Observation may coexist with exclusive use; coordinated use shares only within the same prototype group.
 
-## User-confirmed results (through preceding stage)
+## User-confirmed results (all foundation stages)
 - Body–World and World–World relations, including loss and recovery: PASS.
 - Constraint satisfied / unsatisfied / unknown (unknown fails closed): PASS.
 - Execution rejection, invalidation, explicit finish, no automatic restart: PASS.
@@ -18,11 +18,14 @@ Status: prototype concept validation; **not a finalized standard**.
 - External object observe / exclusive / coordinated conflict rules: PASS.
 - Independent object-use release and body resource lease release: PASS.
 
-## New tests awaiting local confirmation
-- Loss of object-use right invalidates active execution without releasing body control lease.
-- Reacquiring object-use right does not reactivate invalidated execution.
-- Simultaneous Relation loss and object-use loss produce distinct reasons.
-- Explicit finish releases retained leases and object-use rights.
+## Final user-confirmed tests
+- Loss of object-use right invalidates active execution without releasing body control lease: PASS.
+- Reacquiring object-use right does not reactivate invalidated execution: PASS.
+- Simultaneous Relation loss and object-use loss produce distinct reasons: PASS.
+- Explicit finish releases retained leases and object-use rights: PASS.
+- Regression tests `test_external_relation.py` and `test_execution.py`: PASS (user run, 2026-10-09).
+
+**Foundation validation status: COMPLETE.** This is a conceptual prototype milestone, not hardware, distributed arbitration, or safety validation.
 
 Run:
 ```powershell
