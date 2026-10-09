@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All ten test suites user-confirmed PASS; atomic state persistence **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eleven test suites user-confirmed PASS (2026-10-09); storage technology remains provisional.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -95,13 +95,20 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Snapshot ingestion is not transactional across components; no trusted clock or cryptographic evidence.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_atomic_state.py` — pending
+## Confirmed: `python .\\test_atomic_state.py`
 
 - Five record kinds stored together in a single SQLite snapshot transaction.
 - Reject incomplete snapshots and stale optimistic revision updates.
 - Forced child exit before commit must preserve the old complete snapshot.
 - Forced child exit after commit must preserve the new complete snapshot.
 - Snapshot storage is independent of earlier reconciliation table; no automatic integration or external/hardware atomicity.
+- Entire test suite completed: PASS.
+
+## Persistence technology boundary
+
+- SQLite is a PC reference/test implementation, not a mandatory Main Controller or Forma Controller dependency.
+- Safety control must not block on persistence; historical evidence never grants automatic execution resume.
+- See [runtime persistence boundaries](../../docs/design/runtime-persistence-boundaries.md) for environment-specific candidate responsibilities and unverified assumptions.
 
 ## Candidate API and responsibility boundaries
 
