@@ -50,6 +50,30 @@
     },
     "assisted_stance": {
       "realization": "cane_assisted_stance"
+    },
+    "cane_observation": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "observation_resources": [
+        "cane_01"
+      ]
+    },
+    "cane_contact_monitor": {
+      "requires_relations": [
+        {
+          "source": "cane_01",
+          "relation": "contact",
+          "target": "floor_01"
+        }
+      ],
+      "observation_resources": [
+        "cane_01"
+      ]
     }
   },
   "realizations": {
