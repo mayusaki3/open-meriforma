@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All seven test suites user-confirmed PASS; delivery lease/crash recovery **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eight test suites user-confirmed PASS; forced process-exit crash recovery **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -66,7 +66,7 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Not a distributed exactly-once delivery guarantee, authenticated transport, physical STOP, or safety watchdog.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_delivery_leases.py` — pending
+## Confirmed: `python .\\test_delivery_leases.py`
 
 - BEGIN IMMEDIATE serializes local SQLite reservations across connections.
 - Lease expiry allows reclaim with incremented fencing generation.
@@ -74,6 +74,16 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Reopen preserves acknowledged/pending work; uncommitted writes roll back.
 - Two simultaneous workers must not both obtain the same active reservation.
 - Uses synthetic logical time; no process-kill, network partition, or hardware safety guarantee.
+- Entire test suite completed: PASS (after test fixture isolation fix).
+
+## New phase: `python .\\test_process_crash.py` — pending
+
+- Spawn a separate Python process and terminate it with `os._exit(71)`.
+- Before transaction commit: SQLite must roll back uncommitted claim changes.
+- After committed claim / before ACK: reservation remains until expiry; recovery increments fencing generation.
+- After committed ACK: acknowledged event remains suppressed after child process exit.
+- Uses isolated temporary databases and caller-supplied logical timestamps.
+- Does not simulate power loss, disk corruption, network partitions, or a real-time watchdog.
 
 ## Candidate API and responsibility boundaries
 
