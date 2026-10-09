@@ -6,6 +6,8 @@ class BodyWorldGraph:
         self.capabilities = definition.get("capabilities", {})
         self.relations: dict[str, dict] = {}
         self.realizations = definition.get("realizations", {})
+        self.constraints = set(definition.get("constraints", {}))
+        self.constraint_states: dict[str, bool | None] = {}
 
     def add_relation(
         self,
@@ -33,14 +35,30 @@ class BodyWorldGraph:
             raise RuntimeError(f"relation already exists: {relation_id}")
         self.relations[relation_id] = {"source": source, "relation": relation, "target": target}
 
+    def set_constraint_state(self, name: str, satisfied: bool | None) -> None:
+        if name not in self.constraints:
+            raise RuntimeError(f"constraint not declared: {name}")
+        if satisfied is not None and not isinstance(satisfied, bool):
+            raise ValueError("constraint state must be True, False, or None")
+        self.constraint_states[name] = satisfied
+
     def evaluate_realization(self, name: str) -> dict:
         realization = self.realizations.get(name)
         if realization is None:
             return {"available": False, "reasons": ["realization_not_declared"]}
         missing = [r for r in realization.get("requires_relations", []) if not self.has_relation(r)]
-        return {"available": not missing, "reasons": [
-            "required_relation_missing:" + ":".join(str(v) for v in r.values()) for r in missing
-        ]}
+        reasons = [
+            "required_relation_missing:" + ":".join(str(v) for v in r.values())
+            for r in missing
+        ]
+        for constraint in realization.get("requires_constraints", []):
+            if constraint not in self.constraints:
+                reasons.append(f"constraint_not_declared:{constraint}")
+            elif self.constraint_states.get(constraint) is None:
+                reasons.append(f"constraint_unknown:{constraint}")
+            elif self.constraint_states[constraint] is False:
+                reasons.append(f"constraint_unsatisfied:{constraint}")
+        return {"available": not reasons, "reasons": reasons}
 
     def remove_relation(self, relation_id: str) -> dict:
         if relation_id not in self.relations:
