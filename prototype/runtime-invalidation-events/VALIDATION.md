@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All five test suites user-confirmed PASS; end-to-end correlation **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All six test suites user-confirmed PASS; durable delivery/timeout **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -48,13 +48,22 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Relation restoration does not auto-resume; explicit finish releases rights.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_correlation.py` — pending
+## Confirmed: `python .\\test_correlation.py`
 
 - Link Event ID, Action ID, Execution lifecycle identity, and evidence generation.
 - Reject cross-action, cross-event, cross-execution, stale lifecycle/generation results.
 - Reject incomplete STOP actions, invalid generations, and duplicate evidence generation.
 - Accept correlated verification for advisory policy only; no automatic resume or lease changes.
 - Current identity/generation are trusted caller inputs in this prototype; no cryptographic proof, durable replay protection, or distributed sequencing.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_durable_delivery.py` — pending
+
+- SQLite local outbox with stable event keys and at-least-once polling.
+- Missing ACK triggers retry after interval; ACK and dedup survive process restart.
+- Action deadlines transition to timed_out once; late completion cannot overwrite terminal timeout.
+- Tests use caller-supplied logical timestamps and a temporary local SQLite database.
+- Not a distributed exactly-once delivery guarantee, authenticated transport, physical STOP, or safety watchdog.
 
 ## Candidate API and responsibility boundaries
 
