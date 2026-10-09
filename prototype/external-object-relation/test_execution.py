@@ -2,12 +2,13 @@ import json
 from pathlib import Path
 
 from runtime import BodyWorldGraph
-from execution import CapabilityExecution
+from execution import CapabilityExecution, ResourceLeases
 
 definition = json.loads((Path(__file__).resolve().parent / "model.json").read_text(encoding="utf-8"))
 graph = BodyWorldGraph(definition)
+leases = ResourceLeases(definition)
 
-rejected = CapabilityExecution(graph, "assisted_stance")
+rejected = CapabilityExecution(graph, "assisted_stance", leases)
 assert rejected.start() is False and rejected.state == "rejected"
 rejected.finish()
 print("PASS execution rejects unavailable realization without starting")
@@ -49,5 +50,32 @@ graph.set_constraint_state("contact_stability", True)
 assert constraint_execution.validate()["state"] == "invalidated"
 constraint_execution.finish()
 print("PASS unknown constraint invalidates without automatic restart")
+
+assert not leases.holders
+active = CapabilityExecution(graph, "assisted_stance", leases)
+assert active.start() is True
+assert set(leases.holders) == {"hand_01:gripper", "foot_01:ankle"}
+competitor = CapabilityExecution(graph, "supported_stance", leases)
+assert competitor.start() is False
+assert competitor.reasons == ["resource_lease_conflict"]
+assert set(leases.holders) == {"hand_01:gripper", "foot_01:ankle"}
+print("PASS body control resources leased atomically and competing execution rejected")
+
+graph.remove_relation("contact")
+assert active.validate()["state"] == "invalidated"
+assert set(leases.holders) == {"hand_01:gripper", "foot_01:ankle"}
+active.finish()
+assert not leases.holders
+print("PASS invalidation retains leases until explicit finish")
+graph.add_world_relation("contact", "cane_01", "contact", "floor_01")
+
+again = CapabilityExecution(graph, "supported_stance", leases)
+assert again.start() is True
+assert set(leases.holders) == {"foot_01:ankle"}
+again.finish()
+assert not leases.holders
+print("PASS finished execution releases only its acquired resources")
+assert "cane_01" not in leases.known and "floor_01" not in leases.known
+print("PASS world objects remain relations, not body control resources")
 
 print("PASS all external-object execution checks")
