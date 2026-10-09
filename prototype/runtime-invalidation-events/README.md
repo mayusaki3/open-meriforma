@@ -30,3 +30,12 @@ Run `python .\\test_actions.py` to check `requested → accepted → executing �
 A completed action is only a **reported completion**; it is not proof of physical STOP or safe state.
 Event acknowledgment, action status, and explicit execution finish remain separate.
 No real action executor is implemented.
+
+## Synthetic safety-state verification (next phase)
+
+Run `python .\\test_safety_verification.py` after the two existing tests.
+The STOP verifier compares **synthetic** drive-disabled and joint-velocity observations
+with a provisional threshold. Results: `verified`, `not_verified`, `unknown`.
+An Action's `completed` report is independent from the verification result.
+This is not physical STOP verification: freshness, sensor integrity, scope,
+redundancy, and real safety policy remain unimplemented.
