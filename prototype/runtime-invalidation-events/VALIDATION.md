@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -30,12 +30,21 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Handoff actions cannot use STOP verification; verification result cannot be silently overwritten.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_observation_evidence.py` — pending
+## Confirmed: `python .\\test_observation_evidence.py`
 
 - Freshness, complete joint coverage, simulated integrity, and stability window.
 - Unknown on stale/incomplete/invalid/untrusted evidence.
 - Not verified if any valid observation reports motion or enabled drive.
 - Uses caller-supplied monotonic timestamps; no sensor authenticity or clock synchronization.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_recovery_policy.py` — pending
+
+- verified: hold for explicit recovery; never auto-resume.
+- not_verified: request stop escalation (advisory only).
+- unknown: request evidence or safe fallback (advisory only).
+- Decisions do not release control or external object rights.
+- Reject duplicate decisions, action mismatches, and handoff actions.
 
 ## Limitations
 
