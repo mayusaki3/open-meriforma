@@ -43,6 +43,9 @@
           "relation": "support",
           "world": "floor_01"
         }
+      ],
+      "control_resources": [
+        "foot_01:ankle"
       ]
     },
     "assisted_stance": {
@@ -71,6 +74,10 @@
       "requires_constraints": [
         "cane_load_capacity",
         "contact_stability"
+      ],
+      "control_resources": [
+        "hand_01:gripper",
+        "foot_01:ankle"
       ]
     }
   },
