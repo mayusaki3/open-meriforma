@@ -1,19 +1,63 @@
-class CapabilityExecution:
-    """Prototype lifecycle only: no resource leasing or safety actuation."""
+class ResourceLeases:
+    """Exclusive body control resource leases, independent of World relations."""
 
-    def __init__(self, graph, capability: str) -> None:
+    def __init__(self, definition: dict) -> None:
+        self.known = {
+            f"{unit}:{resource}"
+            for unit, data in definition["body"]["units"].items()
+            for resource in data.get("resources", [])
+        }
+        self.holders: dict[str, object] = {}
+
+    def acquire(self, resources: list[str], lease: object) -> bool:
+        if any(resource not in self.known for resource in resources):
+            raise RuntimeError("unknown body control resource")
+        if any(resource in self.holders and self.holders[resource] is not lease for resource in resources):
+            return False
+        for resource in resources:
+            self.holders[resource] = lease
+        return True
+
+    def release(self, lease: object) -> None:
+        for resource in list(self.holders):
+            if self.holders[resource] is lease:
+                del self.holders[resource]
+
+
+class CapabilityExecution:
+    """Execution lifecycle with explicit body resource lease release; no safety actuation."""
+
+    def __init__(self, graph, capability: str, leases: ResourceLeases | None = None) -> None:
         self.graph = graph
         self.capability = capability
+        self.leases = leases
         self.state = "idle"
         self.reasons: list[str] = []
+
+    def control_resources(self) -> list[str]:
+        capability = self.graph.capabilities.get(self.capability, {})
+        realization = self.graph.realizations.get(capability.get("realization"), {})
+        return list(realization.get("control_resources", capability.get("control_resources", [])))
 
     def start(self) -> bool:
         if self.state != "idle":
             raise RuntimeError(f"cannot start execution from {self.state}")
         evaluation = self.graph.evaluate_capability(self.capability)
         self.reasons = list(evaluation["reasons"])
-        self.state = "active" if evaluation["available"] else "rejected"
-        return self.state == "active"
+        if not evaluation["available"]:
+            self.state = "rejected"
+            return False
+        resources = self.control_resources()
+        if resources and self.leases is None:
+            self.reasons = ["resource_leases_not_configured"]
+            self.state = "rejected"
+            return False
+        if self.leases is not None and not self.leases.acquire(resources, self):
+            self.reasons = ["resource_lease_conflict"]
+            self.state = "rejected"
+            return False
+        self.state = "active"
+        return True
 
     def validate(self) -> dict:
         if self.state != "active":
@@ -22,9 +66,16 @@ class CapabilityExecution:
         if not evaluation["available"]:
             self.state = "invalidated"
             self.reasons = list(evaluation["reasons"])
+        elif self.leases is not None and any(
+            self.leases.holders.get(resource) is not self for resource in self.control_resources()
+        ):
+            self.state = "invalidated"
+            self.reasons = ["resource_lease_lost"]
         return {"state": self.state, "reasons": list(self.reasons)}
 
     def finish(self) -> None:
         if self.state not in {"active", "invalidated", "rejected"}:
             raise RuntimeError(f"cannot finish execution from {self.state}")
+        if self.leases is not None:
+            self.leases.release(self)
         self.state = "finished"
