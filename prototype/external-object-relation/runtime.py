@@ -91,8 +91,7 @@ class BodyWorldGraph:
         return {
             "available": not missing,
             "reasons": [
-                "required_relation_missing:"
-                ":".join(str(value) for value in item.values())
+                "required_relation_missing:" + ":".join(str(value) for value in item.values())
                 for item in missing
             ],
         }
