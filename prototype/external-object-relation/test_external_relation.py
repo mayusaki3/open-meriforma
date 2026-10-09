@@ -62,8 +62,31 @@ assert graph.evaluate_capability("assisted_stance")["available"] is False
 graph.add_relation("hand_cane_grasp", "hand_01", "grasp", "cane_01")
 assert graph.evaluate_capability("assisted_stance")["available"] is False
 graph.add_world_relation("cane_floor_contact", "cane_01", "contact", "floor_01")
+assert graph.evaluate_capability("assisted_stance")["available"] is False
+assert set(graph.evaluate_capability("assisted_stance")["reasons"]) == {
+    "constraint_unknown:cane_load_capacity",
+    "constraint_unknown:contact_stability",
+}
+print("PASS all required relations still fail closed when constraints are unknown")
+graph.set_constraint_state("cane_load_capacity", True)
+graph.set_constraint_state("contact_stability", True)
 assert graph.evaluate_capability("assisted_stance")["available"] is True
-print("PASS assisted stance requires body-world and world-world relations")
+print("PASS satisfied constraints and relations enable assisted stance")
+graph.set_constraint_state("cane_load_capacity", False)
+assert graph.evaluate_capability("assisted_stance")["reasons"] == [
+    "constraint_unsatisfied:cane_load_capacity"
+]
+graph.set_constraint_state("contact_stability", None)
+assert set(graph.evaluate_capability("assisted_stance")["reasons"]) == {
+    "constraint_unsatisfied:cane_load_capacity",
+    "constraint_unknown:contact_stability",
+}
+assert graph.evaluate_capability("supported_stance")["available"] is True
+print("PASS unsatisfied and unknown constraints reported independently")
+graph.set_constraint_state("cane_load_capacity", True)
+graph.set_constraint_state("contact_stability", True)
+assert graph.evaluate_capability("assisted_stance")["available"] is True
+print("PASS constraint recovery restores availability without relation changes")
 
 graph.remove_relation("cane_floor_contact")
 assert graph.evaluate_capability("assisted_stance")["available"] is False
