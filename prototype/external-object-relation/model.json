@@ -152,6 +152,24 @@
           "group": "carry_02"
         }
       ]
+    },
+    "cane_controlled_use": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        }
+      ],
+      "control_resources": [
+        "hand_01:gripper"
+      ],
+      "object_use": [
+        {
+          "object": "cane_01",
+          "mode": "exclusive"
+        }
+      ]
     }
   },
   "realizations": {
