@@ -27,10 +27,11 @@ class ResourceLeases:
 class CapabilityExecution:
     """Execution lifecycle with explicit body resource lease release; no safety actuation."""
 
-    def __init__(self, graph, capability: str, leases: ResourceLeases | None = None) -> None:
+    def __init__(self, graph, capability: str, leases: ResourceLeases | None = None, object_use=None) -> None:
         self.graph = graph
         self.capability = capability
         self.leases = leases
+        self.object_use = object_use
         self.state = "idle"
         self.reasons: list[str] = []
 
@@ -38,6 +39,11 @@ class CapabilityExecution:
         capability = self.graph.capabilities.get(self.capability, {})
         realization = self.graph.realizations.get(capability.get("realization"), {})
         return list(realization.get("control_resources", capability.get("control_resources", [])))
+
+    def object_requests(self) -> list[dict]:
+        capability = self.graph.capabilities.get(self.capability, {})
+        realization = self.graph.realizations.get(capability.get("realization"), {})
+        return list(realization.get("object_use", capability.get("object_use", [])))
 
     def start(self) -> bool:
         if self.state != "idle":
@@ -54,6 +60,19 @@ class CapabilityExecution:
             return False
         if self.leases is not None and not self.leases.acquire(resources, self):
             self.reasons = ["resource_lease_conflict"]
+            self.state = "rejected"
+            return False
+        requests = self.object_requests()
+        if requests and self.object_use is None:
+            if self.leases is not None:
+                self.leases.release(self)
+            self.reasons = ["object_use_not_configured"]
+            self.state = "rejected"
+            return False
+        if self.object_use is not None and not self.object_use.acquire(requests, self):
+            if self.leases is not None:
+                self.leases.release(self)
+            self.reasons = ["object_use_conflict"]
             self.state = "rejected"
             return False
         self.state = "active"
@@ -78,4 +97,6 @@ class CapabilityExecution:
             raise RuntimeError(f"cannot finish execution from {self.state}")
         if self.leases is not None:
             self.leases.release(self)
+        if self.object_use is not None:
+            self.object_use.release(self)
         self.state = "finished"
