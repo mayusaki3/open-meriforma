@@ -61,3 +61,13 @@ Run `python .\\test_correlation.py` to check Event ID, Action ID,
 Execution lifecycle ID and evidence generation before advisory recovery.
 The caller supplies the authoritative current lifecycle/generation; this
 prototype cannot authenticate them. Replay protection is in-memory only.
+
+## Durable delivery / timeout (next phase)
+
+Run `python .\\test_durable_delivery.py` for SQLite-backed local outbox
+retries, ACK/replay behavior across process restart, and action deadline
+handling. Tests use a temporary SQLite database and synthetic logical time.
+This does **not** implement distributed exactly-once delivery, a real-time
+safety watchdog, or physical STOP. The producer must provide stable unique
+keys; the consumer must deduplicate deliveries. Caller clocks must remain
+consistent across restarts.
