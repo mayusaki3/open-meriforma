@@ -67,7 +67,19 @@
           "relation": "support",
           "world": "floor_01"
         }
+      ],
+      "requires_constraints": [
+        "cane_load_capacity",
+        "contact_stability"
       ]
+    }
+  },
+  "constraints": {
+    "cane_load_capacity": {
+      "description": "Prototype load capacity condition"
+    },
+    "contact_stability": {
+      "description": "Prototype stable contact condition"
     }
   }
 }
