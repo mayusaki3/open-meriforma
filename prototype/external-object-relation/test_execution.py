@@ -135,4 +135,37 @@ observe.finish()
 assert not uses.holders and not leases.holders
 print("PASS object-use rights release independently of body resource leases")
 
+# Losing object-use authority must not implicitly release body control.
+uses = ExternalObjectUse(graph.world_entities)
+combined = CapabilityExecution(graph, "cane_controlled_use", leases, uses)
+assert combined.start() is True
+assert leases.holders.get("hand_01:gripper") is combined
+uses.release(combined)  # Simulated external revocation
+result = combined.validate()
+assert result["state"] == "invalidated"
+assert result["reasons"] == ["object_use_lost"]
+assert leases.holders.get("hand_01:gripper") is combined
+assert combined.validate()["state"] == "invalidated"
+print("PASS object-use loss invalidates execution without releasing body lease")
+assert uses.acquire(combined.object_requests(), combined)
+assert combined.validate()["state"] == "invalidated"
+combined.finish()
+assert not uses.holders and not leases.holders
+print("PASS object-use recovery does not reactivate invalidated execution")
+
+# Independent causes are preserved if relation and object-use authority fail together.
+combined = CapabilityExecution(graph, "cane_controlled_use", leases, uses)
+assert combined.start() is True
+graph.remove_relation("grasp")
+uses.release(combined)
+result = combined.validate()
+assert result["state"] == "invalidated"
+assert "object_use_lost" in result["reasons"]
+assert any(reason.startswith("required_relation_missing:") for reason in result["reasons"])
+assert leases.holders.get("hand_01:gripper") is combined
+combined.finish()
+graph.add_relation("grasp", "hand_01", "grasp", "cane_01")
+assert not leases.holders and not uses.holders
+print("PASS relation loss and object-use loss reported separately")
+
 print("PASS all external-object execution checks")
