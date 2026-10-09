@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **awaiting local execution**.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **awaiting local execution**.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -21,14 +21,21 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Explicit Execution finish independently releases rights.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_safety_verification.py` — pending
+## Confirmed: `python .\\test_safety_verification.py`
 
 - Synthetic STOP evidence assessed independently from Action completed report.
 - Enabled drive or moving joint is not_verified.
 - Missing, incomplete, or non-finite evidence is unknown (fail closed).
 - Unfinished Action cannot be verified from observation alone.
 - Handoff actions cannot use STOP verification; verification result cannot be silently overwritten.
-- No actual sensor, timestamp, freshness, fault-tolerant verification, or real actuator.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_observation_evidence.py` — pending
+
+- Freshness, complete joint coverage, simulated integrity, and stability window.
+- Unknown on stale/incomplete/invalid/untrusted evidence.
+- Not verified if any valid observation reports motion or enabled drive.
+- Uses caller-supplied monotonic timestamps; no sensor authenticity or clock synchronization.
 
 ## Limitations
 
