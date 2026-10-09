@@ -1,25 +1,72 @@
 {
   "body": {
     "units": {
-      "hand_01": {"resources": ["gripper"]},
-      "foot_01": {"resources": ["ankle"]}
+      "hand_01": {
+        "resources": [
+          "gripper"
+        ]
+      },
+      "foot_01": {
+        "resources": [
+          "ankle"
+        ]
+      }
     }
   },
   "world": {
     "objects": {
-      "tool_01": {"kind": "tool"},
-      "floor_01": {"kind": "surface"}
+      "tool_01": {
+        "kind": "tool"
+      },
+      "floor_01": {
+        "kind": "surface"
+      },
+      "cane_01": {
+        "kind": "assistive_tool"
+      }
     }
   },
   "capabilities": {
     "tool_use": {
       "requires_relations": [
-        {"body": "hand_01", "relation": "grasp", "world": "tool_01"}
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "tool_01"
+        }
       ]
     },
     "supported_stance": {
       "requires_relations": [
-        {"body": "foot_01", "relation": "support", "world": "floor_01"}
+        {
+          "body": "foot_01",
+          "relation": "support",
+          "world": "floor_01"
+        }
+      ]
+    },
+    "assisted_stance": {
+      "realization": "cane_assisted_stance"
+    }
+  },
+  "realizations": {
+    "cane_assisted_stance": {
+      "requires_relations": [
+        {
+          "body": "hand_01",
+          "relation": "grasp",
+          "world": "cane_01"
+        },
+        {
+          "source": "cane_01",
+          "relation": "contact",
+          "target": "floor_01"
+        },
+        {
+          "body": "foot_01",
+          "relation": "support",
+          "world": "floor_01"
+        }
       ]
     }
   }
