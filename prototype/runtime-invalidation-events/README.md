@@ -80,3 +80,11 @@ simultaneous-thread race. This separate experimental API does not replace
 `DurableDelivery.deliver()`; callers must migrate to the lease API to
 avoid duplicate active reservations. No real process kill, network partition,
 clock synchronization or hardware safety is tested.
+
+## Forced process-exit crash recovery (next phase)
+
+Run `python .\\test_process_crash.py`. The parent starts disposable child
+Python processes that call `os._exit(71)` at selected transaction/ACK
+boundaries. This does not terminate the test runner or modify production DBs.
+The test uses temporary SQLite files and synthetic logical time; it is not a
+power-loss, filesystem durability, network-partition, or hardware-safety test.
