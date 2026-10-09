@@ -30,7 +30,9 @@ with tempfile.TemporaryDirectory() as directory:
     b.close()
     reopened = DeliveryLeases(path)
     assert reopened.is_acknowledged("event:1")
-    assert reopened.claim("worker_c", 21.0, 3.0)["event_key"] == "event:2"
+    restored_claim = reopened.claim("worker_c", 21.0, 3.0)
+    assert restored_claim["event_key"] == "event:2"
+    assert reopened.acknowledge("event:2", "worker_c", restored_claim["generation"], 21.0)
     reopened.close()
     print("PASS acknowledged state and pending work persist across restart")
 
