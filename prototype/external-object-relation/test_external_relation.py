@@ -58,4 +58,23 @@ except RuntimeError as exc:
 else:
     raise AssertionError("invalid world endpoint accepted")
 
+assert graph.evaluate_capability("assisted_stance")["available"] is False
+graph.add_relation("hand_cane_grasp", "hand_01", "grasp", "cane_01")
+assert graph.evaluate_capability("assisted_stance")["available"] is False
+graph.add_world_relation("cane_floor_contact", "cane_01", "contact", "floor_01")
+assert graph.evaluate_capability("assisted_stance")["available"] is True
+print("PASS assisted stance requires body-world and world-world relations")
+
+graph.remove_relation("cane_floor_contact")
+assert graph.evaluate_capability("assisted_stance")["available"] is False
+assert graph.evaluate_capability("supported_stance")["available"] is True
+assert "cane_01" in graph.world_entities
+print("PASS losing cane-floor contact invalidates only assisted realization")
+
+graph.add_world_relation("cane_floor_contact", "cane_01", "contact", "floor_01")
+assert graph.evaluate_capability("assisted_stance")["available"] is True
+graph.remove_relation("hand_cane_grasp")
+assert graph.evaluate_capability("assisted_stance")["available"] is False
+print("PASS losing grasp invalidates assisted realization without deleting object")
+
 print("PASS all external-object-relation checks")
