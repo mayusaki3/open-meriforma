@@ -112,3 +112,12 @@ Open MeriForma runtime dependency or wire protocol. MCU persistence may use
 other media or none, depending on its responsibilities. Safety actions must not
 wait for a storage transaction, and persisted history cannot authorize motion.
 See [runtime persistence boundaries](../../docs/design/runtime-persistence-boundaries.md).
+
+## Atomic snapshot and reconciliation integration
+
+Run `python .\\test_snapshot_reconciliation.py`. A storage-neutral adapter
+accepts a store with `read(key)`, checks snapshot Revision independently from
+Correlation Generation, and invokes the pure historical record evaluator.
+The test covers SQLite reopen and an in-memory store. Atomic commit does not
+prove data correctness or current physical safety; no automatic resume or
+lease changes occur. Run `test_restart_reconciliation.py` again as regression.
