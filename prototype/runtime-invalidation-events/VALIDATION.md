@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eleven test suites user-confirmed PASS (2026-10-09); storage technology remains provisional.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eleven test suites user-confirmed PASS (2026-10-10); atomic snapshot/reconciliation integration awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -103,6 +103,14 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Forced child exit after commit must preserve the new complete snapshot.
 - Snapshot storage is independent of earlier reconciliation table; no automatic integration or external/hardware atomicity.
 - Entire test suite completed: PASS.
+
+## New phase: `python .\\test_snapshot_reconciliation.py` — pending
+
+- Extract pure historical-record evaluation from the existing SQLite reconciliation wrapper.
+- Adapt AtomicState snapshots via a minimal read(key) interface, with no SQLite dependency in the adapter.
+- Validate snapshot Revision separately from evidence Generation; inconsistent but atomically committed data remains unknown.
+- Verify reopened SQLite snapshots and a memory-only store; no automatic resume or lease mutation.
+- This does not validate current physical safety, authenticated generations, or cross-device atomicity.
 
 ## Persistence technology boundary
 
