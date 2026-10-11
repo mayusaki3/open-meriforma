@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for thirteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for fourteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -98,3 +98,14 @@ readiness alone must not grant robot-wide authority. The prototype currently
 checks the same abstract predicates for both roles; the actual ownership,
 communication timeout, watchdog, power stage behavior, and inter-controller
 handshake remain to be designed and verified on hardware.
+
+## Candidate Main–Forma coordinated boot (2026-10-11)
+
+The [coordinated boot prototype](../../prototype/runtime-invalidation-events/README.md)
+requires both Main and Forma boot gates to validate their local predicates,
+observe each other's boot epoch and obtain explicit authorization before
+reporting *advisory* coordinated eligibility. Either controller's local safety
+loss, communication loss or restart invalidates the pair. An eligible Main
+alone cannot override an unready Forma. The prototype is a single-process
+model; it does not provide distributed atomic handshakes, watchdog timing,
+a physical motor-inhibit signal or real CAN-FD delivery guarantees.
