@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for eighteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for nineteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -156,3 +156,13 @@ limit is provisional and exceeds one CAN-FD data frame; transport-specific
 fragmentation/reassembly, per-frame timing, bus identifiers, arbitration,
 RS485 framing, message authentication and safety behavior remain unimplemented.
 CRC32 detects accidental corruption, not malicious modification.
+
+## Candidate CAN-FD fragmentation boundary (2026-10-12)
+
+The [fragment adapter](../../prototype/runtime-invalidation-events/README.md)
+uses a provisional 9-byte header and up to 55 bytes of data in each 64-byte
+CAN-FD-sized payload. Transfer identity combines a trusted peer/source and
+16-bit transfer ID. Reassembly is bounded and timed out; complete envelopes
+are still subject to CRC32 and session/heartbeat checks. CAN arbitration IDs,
+DLC encoding, retransmission, bus-off handling, transfer-ID reuse/wraparound,
+source authentication and physical motor control are not implemented.
