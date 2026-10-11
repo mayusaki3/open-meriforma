@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twelve test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for thirteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -79,3 +79,22 @@ A common abstract operation does not require every MCU to implement it. In parti
 5. Require explicit higher-level authorization and live readiness/safety checks before any new execution.
 
 **Unresolved:** exactly which identity/calibration fields each controller owns, safe startup behavior for each actuator, power-fail storage guarantees, write frequency/wear, clock continuity, firmware migration, authenticated peer epochs and distributed recovery. These require hardware-specific decisions and tests.
+
+## Candidate Main / Forma boot authorization model (2026-10-11)
+
+The [Boot Safety prototype](../../prototype/runtime-invalidation-events/README.md)
+models separate `main` and `forma` boot gates, without hardware actuation.
+Both begin without command eligibility. A candidate authorization requires
+validated configuration and calibration, local safety checks, communication,
+peer identity and boot epoch, fresh observations and an explicit request.
+Restart, communication loss, peer epoch change or failed calibration invalidates
+eligibility; previous execution rights and leases are never reinstated.
+
+**Responsibility distinction:** Main Controller is a candidate coordinator of
+robot-wide readiness and command authority; each Forma Controller is responsible
+for its own local startup checks and actuator-specific safe behavior. Main's
+readiness report must not substitute for Forma's local checks, and Forma's local
+readiness alone must not grant robot-wide authority. The prototype currently
+checks the same abstract predicates for both roles; the actual ownership,
+communication timeout, watchdog, power stage behavior, and inter-controller
+handshake remain to be designed and verified on hardware.
