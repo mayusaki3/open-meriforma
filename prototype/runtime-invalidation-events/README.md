@@ -130,3 +130,11 @@ authority. Valid configuration is only **candidate reusable**; actual startup
 requires device-specific checks and explicit authorization. The policy cannot
 actuate, restore a lease or prove current physical safety. See
 [runtime persistence boundaries](../../docs/design/runtime-persistence-boundaries.md).
+
+## Synthetic Main / Forma boot safety gates
+
+Run `python .\\test_boot_safety.py` for role-specific boot authorization
+eligibility, explicit reauthorization, peer epoch changes, link loss, and
+configuration rejection. The gate never drives hardware or restores control
+leases. This is a **candidate policy simulation**, not a safety-certified
+startup controller or real STOP implementation.
