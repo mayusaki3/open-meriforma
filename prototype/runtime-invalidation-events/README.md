@@ -155,3 +155,12 @@ and multiple required Forma controllers. Caller time is monotonic and trusted;
 no CAN-FD transport, physical watchdog or authenticated epoch continuity is
 implemented. Main reboot resets its peer history; preventing replay across
 Main reboot requires a separate authenticated or durable generation design.
+
+## Reboot-fenced multi-Forma sessions
+
+Run `python .\\test_forma_sessions.py` to validate separate Main boot ID,
+Main challenge, Forma boot ID and session ID, plus stale-session rejection,
+partial Forma restart, Main restart and explicit reauthorization. The test
+assumes trusted unique challenges and honest peer identities. It does not
+implement authentication, persistent replay protection, real CAN-FD frames,
+or physical safety actuation.
