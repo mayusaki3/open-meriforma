@@ -164,3 +164,12 @@ partial Forma restart, Main restart and explicit reauthorization. The test
 assumes trusted unique challenges and honest peer identities. It does not
 implement authentication, persistent replay protection, real CAN-FD frames,
 or physical safety actuation.
+
+## Transport-neutral protocol boundary
+
+Run `python .\\test_protocol_boundary.py` to exercise strict synthetic
+message dictionaries across the existing session and heartbeat models.
+The boundary rejects unknown fields and message kinds, stale session/sequence,
+and coordinates timeout-driven authorization invalidation. This is a
+provisional in-process interface, **not** a CAN-FD/RS485 wire format,
+message authentication, transport timing guarantee or physical motor stop.
