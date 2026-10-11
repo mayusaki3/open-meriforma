@@ -121,3 +121,12 @@ Correlation Generation, and invokes the pure historical record evaluator.
 The test covers SQLite reopen and an in-memory store. Atomic commit does not
 prove data correctness or current physical safety; no automatic resume or
 lease changes occur. Run `test_restart_reconciliation.py` again as regression.
+
+## Candidate reboot state classification
+
+Run `python .\\test_reboot_state_policy.py` to validate a pure, storage-independent
+classification of persistent configuration, historical records and volatile live
+authority. Valid configuration is only **candidate reusable**; actual startup
+requires device-specific checks and explicit authorization. The policy cannot
+actuate, restore a lease or prove current physical safety. See
+[runtime persistence boundaries](../../docs/design/runtime-persistence-boundaries.md).
