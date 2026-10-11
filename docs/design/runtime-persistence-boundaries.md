@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for sixteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for seventeen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -134,3 +134,14 @@ eligibility until explicit reauthorization. The model assumes challenge
 uniqueness and trustworthy peer identities; an actual implementation needs
 cryptographic authentication or equivalent trusted replay fencing and a
 specified boot-ID persistence/reset policy. No physical STOP is verified.
+
+## Candidate transport-neutral message boundary (2026-10-12)
+
+The [protocol boundary prototype](../../prototype/runtime-invalidation-events/README.md)
+passes strictly validated synthetic messages into separate session and
+heartbeat monitors. The receiving side checks peer/session identity and
+monotonic sequence, while link freshness gates advisory authorization.
+A timeout must invalidate authority **before** a recovery heartbeat can
+be considered. This is an in-process Python dictionary interface, not a
+standard wire schema or an implementation of CAN-FD, RS485, authenticated
+messages, network timing, or physical safety outputs.
