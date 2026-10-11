@@ -18,7 +18,12 @@ assert m.authorize(explicit=True, now=0.62)
 print("PASS timeout revokes eligibility and recovery never auto-resumes")
 
 assert not m.heartbeat("left", epoch=1, sequence=1, ready=True, now=0.63)
-assert not m.heartbeat("left", epoch=0, sequence=9, ready=True, now=0.64)
+try:
+    m.heartbeat("left", epoch=0, sequence=9, ready=True, now=0.64)
+except ValueError:
+    pass
+else:
+    raise AssertionError("invalid epoch accepted")
 assert m.eligible(now=0.64)
 assert m.heartbeat("left", epoch=2, sequence=0, ready=True, now=0.65)
 assert not m.eligible(now=0.65)
