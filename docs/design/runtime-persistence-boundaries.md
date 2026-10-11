@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for fourteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for fifteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -109,3 +109,17 @@ loss, communication loss or restart invalidates the pair. An eligible Main
 alone cannot override an unready Forma. The prototype is a single-process
 model; it does not provide distributed atomic handshakes, watchdog timing,
 a physical motor-inhibit signal or real CAN-FD delivery guarantees.
+
+## Candidate multi-Forma heartbeat monitor (2026-10-11)
+
+A new synthetic [heartbeat prototype](../../prototype/runtime-invalidation-events/README.md)
+checks all required Forma peers, heartbeat age, per-peer boot epoch and
+monotonically increasing message sequence. Timeout or local readiness loss
+invalidates coordinated eligibility; receiving new heartbeats does **not**
+automatically reauthorize execution. Main reboot clears its local peer history.
+
+Limitations: caller-provided time/epochs and `ready` flags are not authenticated;
+old messages could be replayed after Main loses its peer history. The monitor
+is not a physical watchdog or real-time bus implementation. Production design
+must specify peer-epoch continuity, authenticated identity or replay fencing,
+clock reset handling, deadlines and behavior for optional vs required units.
