@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All sixteen test suites user-confirmed PASS (2026-10-11); multi-Forma session test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All seventeen test suites user-confirmed PASS (2026-10-12); protocol boundary test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -142,11 +142,18 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Main restart resets observations; anti-replay across Main reboot is not guaranteed without a durable or authenticated peer-epoch protocol.
 - Entire test suite completed: PASS (after invalid epoch test expectation fix).
 
-## New phase: `python .\\test_forma_sessions.py` — pending
+## Confirmed: `python .\\test_forma_sessions.py`
 
 - Separates Main boot ID, Main challenge, Forma boot ID and session ID; rejects old-session messages and duplicate sequences.
 - Requires all required Forma peers to re-establish readiness and explicit authorization after restart or session change.
 - Main challenge uniqueness across real restarts and authenticity of messages are **assumed**, not implemented; no cryptographic handshake or motor control.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_protocol_boundary.py` — pending
+
+- Transport-neutral strict message dictionary schema connects SessionMonitor and FormaLinkMonitor.
+- Duplicate/out-of-order messages, stale sessions, missing required peers, timeout, readiness loss and restarts must not restore authorization automatically.
+- Synthetic dictionary API, not a CAN-FD/RS485 frame encoding, cryptographic authentication, real-time transport or motor safety implementation.
 
 ## Persistence technology boundary
 
