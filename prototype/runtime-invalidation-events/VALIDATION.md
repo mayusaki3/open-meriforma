@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirteen test suites user-confirmed PASS (2026-10-11); boot safety model awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All fourteen test suites user-confirmed PASS (2026-10-11); Main–Forma coordinated boot awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -120,11 +120,18 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Candidate policy only; no MCU boot sequence, physical actuator, storage driver or power-loss test.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_boot_safety.py` — pending
+## Confirmed: `python .\\test_boot_safety.py`
 
 - Main/Forma boot gates require configuration, calibration, local checks, communication, peer identity/epoch, fresh observations and explicit authorization.
 - Communication loss, peer restart, local restart and invalid calibration revoke eligibility.
 - Eligibility is advisory only: no physical motor command, STOP output, watchdog or safety guarantee.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_main_forma_boot.py` — pending
+
+- Main readiness cannot override unready Forma; coordinated eligibility requires fresh checks and explicit authorization on both sides.
+- Local safety loss, communication loss, and either peer restart invalidate the coordinated state.
+- Synthetic pair model only: no actual CAN-FD handshake, motor output, watchdog, or distributed atomic authorization.
 
 ## Persistence technology boundary
 
