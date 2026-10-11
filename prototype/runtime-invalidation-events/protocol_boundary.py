@@ -25,7 +25,7 @@ class ProtocolBoundary:
             challenge=challenge, session=session)
         if accepted:
             # An old link's heartbeat must never satisfy the new session.
-            self.links.peer_lost(unit) if hasattr(self.links, "peer_lost") else self._clear_link(unit)
+            self._clear_link(unit)
         return accepted
 
     def _clear_link(self, unit):
