@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twelve test suites user-confirmed PASS (2026-10-11); reboot-state classification awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirteen test suites user-confirmed PASS (2026-10-11); boot safety model awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -113,11 +113,18 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - This does not validate current physical safety, authenticated generations, or cross-device atomicity.
 - Entire test suite completed: PASS; existing restart reconciliation regression also PASS.
 
-## New phase: `python .\\test_reboot_state_policy.py` — pending
+## Confirmed: `python .\\test_reboot_state_policy.py`
 
 - Pure classification of reusable configuration, historical-only records, discarded active authority and reobserved runtime state.
 - Invalid or unrecognized input fails closed; no automatic resume, lease mutation or current physical safety claim.
 - Candidate policy only; no MCU boot sequence, physical actuator, storage driver or power-loss test.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_boot_safety.py` — pending
+
+- Main/Forma boot gates require configuration, calibration, local checks, communication, peer identity/epoch, fresh observations and explicit authorization.
+- Communication loss, peer restart, local restart and invalid calibration revoke eligibility.
+- Eligibility is advisory only: no physical motor command, STOP output, watchdog or safety guarantee.
 
 ## Persistence technology boundary
 
