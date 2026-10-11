@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eighteen test suites user-confirmed PASS (2026-10-12); binary envelope test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All nineteen test suites user-confirmed PASS (2026-10-12); CAN-FD fragmentation test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -156,12 +156,21 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Synthetic dictionary API, not a CAN-FD/RS485 frame encoding, cryptographic authentication, real-time transport or motor safety implementation.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_wire_envelope.py` — pending
+## Confirmed: `python .\\test_wire_envelope.py`
 
 - Versioned binary envelope with magic, kind, sequence, readiness, payload length, five length-prefixed UTF-8 identifiers and CRC32.
 - Round trip, truncation, corruption, invalid header, field bounds, and integration with ProtocolBoundary.
 - Max frame 256 bytes is an experimental logical limit, **not** a CAN-FD frame size; segmentation and reassembly are not implemented.
 - CRC32 is not authentication or protection against deliberate forgery.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_canfd_fragments.py` — pending
+
+- Fragment logical envelopes into at most 64-byte payloads using a provisional 9-byte fragment header.
+- Reassemble out-of-order fragments, allow identical duplicates, reject conflicting duplicates and malformed headers.
+- Bound active transfers and expire incomplete transfers using synthetic monotonic time.
+- Separate transfers by trusted source and 16-bit transfer ID; reassembled messages must pass envelope CRC and session validation.
+- No actual CAN identifiers, transport drivers, authentication, transfer-ID wraparound policy, or physical safety guarantee.
 
 ## Persistence technology boundary
 
