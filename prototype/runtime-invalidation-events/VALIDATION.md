@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eleven test suites user-confirmed PASS (2026-10-10); atomic snapshot/reconciliation integration awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twelve test suites user-confirmed PASS (2026-10-11); reboot-state classification awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -104,13 +104,20 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Snapshot storage is independent of earlier reconciliation table; no automatic integration or external/hardware atomicity.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_snapshot_reconciliation.py` — pending
+## Confirmed: `python .\\test_snapshot_reconciliation.py`
 
 - Extract pure historical-record evaluation from the existing SQLite reconciliation wrapper.
 - Adapt AtomicState snapshots via a minimal read(key) interface, with no SQLite dependency in the adapter.
 - Validate snapshot Revision separately from evidence Generation; inconsistent but atomically committed data remains unknown.
 - Verify reopened SQLite snapshots and a memory-only store; no automatic resume or lease mutation.
 - This does not validate current physical safety, authenticated generations, or cross-device atomicity.
+- Entire test suite completed: PASS; existing restart reconciliation regression also PASS.
+
+## New phase: `python .\\test_reboot_state_policy.py` — pending
+
+- Pure classification of reusable configuration, historical-only records, discarded active authority and reobserved runtime state.
+- Invalid or unrecognized input fails closed; no automatic resume, lease mutation or current physical safety claim.
+- Candidate policy only; no MCU boot sequence, physical actuator, storage driver or power-loss test.
 
 ## Persistence technology boundary
 
