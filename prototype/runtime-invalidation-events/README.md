@@ -146,3 +146,12 @@ eligibility, peer restart, local readiness loss and communication failure.
 Both controller gates must be ready and explicitly authorized; a peer epoch
 change invalidates the pair. This is an in-process simulation, **not** an
 atomic distributed handshake or proof of real motor inhibition.
+
+## Multi-Forma heartbeat and timeout prototype
+
+Run `python .\\test_forma_heartbeat.py` for synthetic heartbeat freshness,
+sequence/epoch rejection, timeout-driven invalidation, explicit reauthorization,
+and multiple required Forma controllers. Caller time is monotonic and trusted;
+no CAN-FD transport, physical watchdog or authenticated epoch continuity is
+implemented. Main reboot resets its peer history; preventing replay across
+Main reboot requires a separate authenticated or durable generation design.
