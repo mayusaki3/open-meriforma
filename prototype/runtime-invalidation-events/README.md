@@ -173,3 +173,12 @@ The boundary rejects unknown fields and message kinds, stale session/sequence,
 and coordinates timeout-driven authorization invalidation. This is a
 provisional in-process interface, **not** a CAN-FD/RS485 wire format,
 message authentication, transport timing guarantee or physical motor stop.
+
+## Provisional binary message envelope
+
+Run `python .\\test_wire_envelope.py` for encode/decode, strict bounds,
+CRC32 corruption checks and integration with the protocol boundary. The
+version-1 envelope uses big-endian fixed header fields and length-prefixed
+UTF-8 identifiers; max logical frame size is 256 bytes. This is **not**
+a CAN-FD frame specification: physical transport fragmentation/reassembly,
+message authentication, timing guarantees and safety actuation are out of scope.
