@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All fifteen test suites user-confirmed PASS (2026-10-11); multi-Forma heartbeat test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All sixteen test suites user-confirmed PASS (2026-10-11); multi-Forma session test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -134,12 +134,19 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Synthetic pair model only: no actual CAN-FD handshake, motor output, watchdog, or distributed atomic authorization.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_forma_heartbeat.py` — pending
+## Confirmed: `python .\\test_forma_heartbeat.py`
 
 - Synthetic monotonic clock, required-unit heartbeat freshness, sequence and epoch rejection, and explicit reauthorization after timeout.
 - All required Forma units must be ready; any missing/unready/timed-out unit invalidates coordinated eligibility.
 - Epochs and timestamps are trusted local inputs; no physical watchdog, network delivery, clock synchronization, authenticated identity or real motor inhibition.
 - Main restart resets observations; anti-replay across Main reboot is not guaranteed without a durable or authenticated peer-epoch protocol.
+- Entire test suite completed: PASS (after invalid epoch test expectation fix).
+
+## New phase: `python .\\test_forma_sessions.py` — pending
+
+- Separates Main boot ID, Main challenge, Forma boot ID and session ID; rejects old-session messages and duplicate sequences.
+- Requires all required Forma peers to re-establish readiness and explicit authorization after restart or session change.
+- Main challenge uniqueness across real restarts and authenticity of messages are **assumed**, not implemented; no cryptographic handshake or motor control.
 
 ## Persistence technology boundary
 
