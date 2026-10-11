@@ -138,3 +138,11 @@ eligibility, explicit reauthorization, peer epoch changes, link loss, and
 configuration rejection. The gate never drives hardware or restores control
 leases. This is a **candidate policy simulation**, not a safety-certified
 startup controller or real STOP implementation.
+
+## Main–Forma coordinated boot prototype
+
+Run `python .\\test_main_forma_boot.py` to check paired controller boot
+eligibility, peer restart, local readiness loss and communication failure.
+Both controller gates must be ready and explicitly authorized; a peer epoch
+change invalidates the pair. This is an in-process simulation, **not** an
+atomic distributed handshake or proof of real motor inhibition.
