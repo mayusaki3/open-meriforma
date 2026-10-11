@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All seventeen test suites user-confirmed PASS (2026-10-12); protocol boundary test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All eighteen test suites user-confirmed PASS (2026-10-12); binary envelope test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -149,11 +149,19 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Main challenge uniqueness across real restarts and authenticity of messages are **assumed**, not implemented; no cryptographic handshake or motor control.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_protocol_boundary.py` — pending
+## Confirmed: `python .\\test_protocol_boundary.py`
 
 - Transport-neutral strict message dictionary schema connects SessionMonitor and FormaLinkMonitor.
 - Duplicate/out-of-order messages, stale sessions, missing required peers, timeout, readiness loss and restarts must not restore authorization automatically.
 - Synthetic dictionary API, not a CAN-FD/RS485 frame encoding, cryptographic authentication, real-time transport or motor safety implementation.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_wire_envelope.py` — pending
+
+- Versioned binary envelope with magic, kind, sequence, readiness, payload length, five length-prefixed UTF-8 identifiers and CRC32.
+- Round trip, truncation, corruption, invalid header, field bounds, and integration with ProtocolBoundary.
+- Max frame 256 bytes is an experimental logical limit, **not** a CAN-FD frame size; segmentation and reassembly are not implemented.
+- CRC32 is not authentication or protection against deliberate forgery.
 
 ## Persistence technology boundary
 
