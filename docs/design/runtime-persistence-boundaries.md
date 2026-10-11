@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for seventeen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for eighteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -145,3 +145,14 @@ A timeout must invalidate authority **before** a recovery heartbeat can
 be considered. This is an in-process Python dictionary interface, not a
 standard wire schema or an implementation of CAN-FD, RS485, authenticated
 messages, network timing, or physical safety outputs.
+
+## Candidate binary message envelope (2026-10-12)
+
+The [binary envelope prototype](../../prototype/runtime-invalidation-events/README.md)
+serializes a versioned, transport-neutral logical message. It validates
+identifier lengths, sequence range, total payload length and CRC32 before
+passing a decoded dictionary to the existing protocol boundary. The 256-byte
+limit is provisional and exceeds one CAN-FD data frame; transport-specific
+fragmentation/reassembly, per-frame timing, bus identifiers, arbitration,
+RS485 framing, message authentication and safety behavior remain unimplemented.
+CRC32 detects accidental corruption, not malicious modification.
