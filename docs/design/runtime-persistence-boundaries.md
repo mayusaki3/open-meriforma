@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for fifteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for sixteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -123,3 +123,14 @@ old messages could be replayed after Main loses its peer history. The monitor
 is not a physical watchdog or real-time bus implementation. Production design
 must specify peer-epoch continuity, authenticated identity or replay fencing,
 clock reset handling, deadlines and behavior for optional vs required units.
+
+## Candidate reboot-fenced communication sessions (2026-10-12)
+
+The [session prototype](../../prototype/runtime-invalidation-events/README.md)
+separates Main boot identity/challenge from Forma boot identity and a
+per-link session identifier. A new Main challenge invalidates messages from
+prior sessions; a single Forma session change invalidates coordinated
+eligibility until explicit reauthorization. The model assumes challenge
+uniqueness and trustworthy peer identities; an actual implementation needs
+cryptographic authentication or equivalent trusted replay fencing and a
+specified boot-ID persistence/reset policy. No physical STOP is verified.
