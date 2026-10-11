@@ -182,3 +182,13 @@ version-1 envelope uses big-endian fixed header fields and length-prefixed
 UTF-8 identifiers; max logical frame size is 256 bytes. This is **not**
 a CAN-FD frame specification: physical transport fragmentation/reassembly,
 message authentication, timing guarantees and safety actuation are out of scope.
+
+## CAN-FD-sized synthetic fragments
+
+Run `python .\\test_canfd_fragments.py`. The adapter splits an encoded
+logical envelope into pieces no longer than 64 bytes, including a provisional
+9-byte fragmentation header. Reassembly accepts out-of-order fragments,
+rejects conflicting duplicates, and bounds incomplete transfers by count and
+synthetic timeout. The source ID is a trusted caller input, and transfer IDs
+must not be reused while a previous transfer can still arrive. This is **not**
+a CAN-FD driver, CAN ID allocation, authenticated link, or motor safety test.
