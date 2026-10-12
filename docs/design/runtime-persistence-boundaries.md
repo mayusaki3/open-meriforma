@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twenty test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twenty-one test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -176,3 +176,13 @@ clears in-flight transfers. Recovery does not restore authority: fresh Main
 challenge, Forma sessions, heartbeat observations and explicit authorization
 are required. This is not hardware bus-off handling, an interoperable retry
 protocol, cryptographic replay protection or verified physical STOP.
+
+## Candidate CAN scheduling boundary (2026-10-12)
+
+The [synthetic scheduler](../../prototype/runtime-invalidation-events/README.md)
+models priority ordering (safety > heartbeat > control > diagnostics), bounded
+queue shedding, approximate two-phase bitrate airtime and 100 Hz heartbeat
+traffic. Missing/deadline-late heartbeat invalidates authorization. Bit stuffing,
+arbitration contention, real DLC encoding, ISR latency and hardware STOP
+behavior remain outside this prototype; the approximate timings are not
+physical bus-capacity evidence.
