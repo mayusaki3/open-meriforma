@@ -208,3 +208,11 @@ nominal/data bitrate approximations and synthetic time to test safety-first
 priority, bounded queue shedding, 100 Hz two-peer heartbeat workload,
 deadline misses and missing-heartbeat invalidation. It is not an accurate
 CAN-FD arbitration, DLC, bit-stuffing or real-time hardware simulation.
+
+## Integrated Main–Forma synthetic CAN pipeline
+
+Run `python .\\test_integrated_can_link.py`. This joins binary envelope,
+fragmentation/reassembly, scheduler dispatch, transport-fault supervision and
+two-peer session/heartbeat eligibility. Only heartbeat messages are integrated;
+no real CAN bus, transport authentication, motor control or physical STOP
+verification is provided.
