@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-one test suites user-confirmed PASS (2026-10-12); CAN scheduler test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-two test suites user-confirmed PASS (2026-10-12); integrated CAN link test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -181,13 +181,21 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - No actual CAN controller, bus-off electrical detection, authenticated transport, retransmission protocol or physical motor inhibition.
 - Entire test suite completed: PASS.
 
-## New phase: `python .\\test_can_scheduler.py` — pending
+## Confirmed: `python .\\test_can_scheduler.py`
 
 - Synthetic priority scheduling: safety, heartbeat, control, diagnostics.
 - Configurable nominal/data bitrate approximation and bounded priority queue.
 - 100 Hz synthetic heartbeat workload across two Forma peers.
 - Deadline misses and missing peer heartbeat revoke authority; recovery requires explicit authorization.
 - No CAN arbitration, real CAN-FD timing, bit stuffing, hardware timing or physical safety validation.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_integrated_can_link.py` — pending
+
+- Encoded heartbeat through fragmentation, priority scheduling, reassembly, session/heartbeat validation across two Forma peers.
+- Bus-off revokes authorization; recovery requires new Main challenge, new peer sessions and explicit authorization.
+- Missing heartbeat and queue saturation fail closed.
+- No CAN hardware, actuator output or verified physical STOP. This prototype currently integrates heartbeat only.
 
 ## Persistence technology boundary
 
