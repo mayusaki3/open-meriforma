@@ -5,7 +5,7 @@ from protocol_boundary import ProtocolBoundary
 
 def msg(unit="left", seq=0):
     return dict(kind="heartbeat", unit=unit, main_boot="M1",
-                challenge="C1", forma_boot=unit + "-boot",
+                challenge="C1" + "x" * 40, forma_boot=unit + "-boot",
                 session=unit + "-session", sequence=seq, ready=True)
 
 
@@ -88,9 +88,9 @@ else:
 print("PASS end-to-end CRC32 rejects corrupted reassembly")
 
 p = ProtocolBoundary(("left",), timeout=0.5)
-p.start_main(boot_id="M1", challenge="C1")
+p.start_main(boot_id="M1", challenge="C1" + "x" * 40)
 assert p.establish("left", forma_boot="left-boot", main_boot="M1",
-                   challenge="C1", session="left-session")
+                   challenge="C1" + "x" * 40, session="left-session")
 r = Reassembler(timeout=0.5)
 for f in frames:
     received = r.accept(f, source="left", now=0.1)
