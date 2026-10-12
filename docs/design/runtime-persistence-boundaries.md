@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twenty-one test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twenty-two test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -186,3 +186,13 @@ traffic. Missing/deadline-late heartbeat invalidates authorization. Bit stuffing
 arbitration contention, real DLC encoding, ISR latency and hardware STOP
 behavior remain outside this prototype; the approximate timings are not
 physical bus-capacity evidence.
+
+## Integrated synthetic Main–Forma transport boundary (2026-10-12)
+
+The [integrated pipeline](../../prototype/runtime-invalidation-events/README.md)
+connects binary heartbeat envelopes, synthetic CAN-FD fragmentation,
+priority-based dispatch, reassembly and peer session checks. A queue overflow,
+heartbeat timeout or synthetic bus-off revokes authorization; new Main
+challenge, peer sessions and explicit reauthorization are required after
+bus-off. This does not verify hardware timing, bus-level interoperability,
+actuator shutdown or a physical safe state.
