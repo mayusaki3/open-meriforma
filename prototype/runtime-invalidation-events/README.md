@@ -192,3 +192,11 @@ rejects conflicting duplicates, and bounds incomplete transfers by count and
 synthetic timeout. The source ID is a trusted caller input, and transfer IDs
 must not be reused while a previous transfer can still arrive. This is **not**
 a CAN-FD driver, CAN ID allocation, authenticated link, or motor safety test.
+
+## Synthetic CAN transport fault supervisor
+
+Run `python .\\test_can_fault_supervisor.py`. This in-process test models
+bounded whole-transfer retries, transfer-ID nonreuse in a session, bus-off
+invalidation, and explicit reauthorization after a fresh Main challenge and
+Forma sessions. Recovery is advisory only; no real CAN controller, bus-off
+hardware detection, authenticated source, or motor safety action is present.
