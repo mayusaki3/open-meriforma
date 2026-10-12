@@ -4,7 +4,7 @@ Status: **design clarification, not a storage standard or implementation mandate
 
 ## Purpose and evidence
 
-The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for nineteen test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
+The [Runtime Invalidation Events prototype](../../prototype/runtime-invalidation-events/VALIDATION.md) has user-confirmed PASS results for twenty test suites, including local SQLite delivery, leases, process termination, restart reconciliation, and atomic snapshots. These results establish properties of **those reference implementations only**, not universal runtime guarantees.
 
 ## Storage technology is not a protocol requirement
 
@@ -166,3 +166,13 @@ CAN-FD-sized payload. Transfer identity combines a trusted peer/source and
 are still subject to CRC32 and session/heartbeat checks. CAN arbitration IDs,
 DLC encoding, retransmission, bus-off handling, transfer-ID reuse/wraparound,
 source authentication and physical motor control are not implemented.
+
+## Candidate CAN transport fault supervision (2026-10-12)
+
+The [fault supervisor prototype](../../prototype/runtime-invalidation-events/README.md)
+models bounded whole-transfer retry, in-session transfer-ID nonreuse and
+synthetic bus-off/recovery. Bus-off invalidates coordinated authorization and
+clears in-flight transfers. Recovery does not restore authority: fresh Main
+challenge, Forma sessions, heartbeat observations and explicit authorization
+are required. This is not hardware bus-off handling, an interoperable retry
+protocol, cryptographic replay protection or verified physical STOP.
