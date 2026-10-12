@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty test suites user-confirmed PASS (2026-10-12); CAN fault supervisor test awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-one test suites user-confirmed PASS (2026-10-12); CAN scheduler test awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -173,12 +173,21 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - No actual CAN identifiers, transport drivers, authentication, transfer-ID wraparound policy, or physical safety guarantee.
 - Entire test suite completed: PASS (after fixture was extended to span multiple fragments).
 
-## New phase: `python .\\test_can_fault_supervisor.py` — pending
+## Confirmed: `python .\\test_can_fault_supervisor.py`
 
 - Synthetic bus-off revokes eligibility and discards pending transfers and incomplete reassembly.
 - Bus recovery alone cannot resume: new Main boot/challenge, peer sessions, fresh heartbeats and explicit authorization are required.
 - Bounded retry intervals, ACK cleanup, no transfer ID reuse within a synthetic session, and two-peer coordination.
 - No actual CAN controller, bus-off electrical detection, authenticated transport, retransmission protocol or physical motor inhibition.
+- Entire test suite completed: PASS.
+
+## New phase: `python .\\test_can_scheduler.py` — pending
+
+- Synthetic priority scheduling: safety, heartbeat, control, diagnostics.
+- Configurable nominal/data bitrate approximation and bounded priority queue.
+- 100 Hz synthetic heartbeat workload across two Forma peers.
+- Deadline misses and missing peer heartbeat revoke authority; recovery requires explicit authorization.
+- No CAN arbitration, real CAN-FD timing, bit stuffing, hardware timing or physical safety validation.
 
 ## Persistence technology boundary
 
