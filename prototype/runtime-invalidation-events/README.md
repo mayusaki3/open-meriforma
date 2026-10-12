@@ -200,3 +200,11 @@ bounded whole-transfer retries, transfer-ID nonreuse in a session, bus-off
 invalidation, and explicit reauthorization after a fresh Main challenge and
 Forma sessions. Recovery is advisory only; no real CAN controller, bus-off
 hardware detection, authenticated source, or motor safety action is present.
+
+## Synthetic CAN-FD scheduling
+
+Run `python .\\test_can_scheduler.py`. The scheduler uses configurable
+nominal/data bitrate approximations and synthetic time to test safety-first
+priority, bounded queue shedding, 100 Hz two-peer heartbeat workload,
+deadline misses and missing-heartbeat invalidation. It is not an accurate
+CAN-FD arbitration, DLC, bit-stuffing or real-time hardware simulation.
