@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-four test suites user-confirmed PASS (2026-10-13). Suite 25 (traffic estimator) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-five test suites user-confirmed PASS (2026-10-13). Suite 26 (burst probe) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -209,12 +209,20 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Entire test suite completed: PASS (2026-10-13).
 
 
-## New phase: `python .\\test_can_traffic_estimator.py` — pending local validation
+## Confirmed: `python .\\test_can_traffic_estimator.py`
 
 - Average synthetic CAN-FD utilization for multiple Forma peers, per-class frame rates and payload sizes.
 - Uses the same approximate frame duration as `can_scheduler.py`; configurable nominal/data bitrate and utilization threshold.
 - Supports per-row peer subsets, overload flagging and input rejection.
 - Does **not** predict burst latency, arbitration contention, retransmission load, worst-case response time, actual CAN-FD timing, or physical safety.
+- Entire test suite completed: PASS (2026-10-13).
+
+## New phase: `python .\\test_can_burst_probe.py` — pending local validation
+
+- Synthetic simultaneous safety/heartbeat/control/diagnostic frame bursts and priority ordering.
+- Deadline-miss invalidation, bounded queue shedding and residual backlog within a dispatch window.
+- Reports simulated frame duration, **not** verified end-to-end latency or physical worst-case timing.
+- Uses existing scheduler's simplified non-preemptive priority model; no arbitration, bit stuffing, driver ISR, retry or physical STOP verification.
 
 ## Persistence technology boundary
 
