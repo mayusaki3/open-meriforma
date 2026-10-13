@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-three test suites user-confirmed PASS (2026-10-13), including integrated CAN link after correcting initial-authorization and post-bus-off authorization-state handling.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-four test suites user-confirmed PASS (2026-10-13). Suite 25 (traffic estimator) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -199,13 +199,22 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Entire test suite completed: PASS (2026-10-13).
 
 
-## New phase: `python .\\test_can_id_allocation.py` — pending local validation
+## Confirmed: `python .\\test_can_id_allocation.py` local validation
 
 - Provisional standard 11-bit identifier: priority bits 10..9, class bits 8..6, node bits 5..0.
 - Four candidate classes: safety (0), heartbeat (1), control (2), diagnostic (3); reserved combinations rejected.
 - Node addresses 1..62, address 0 and 63 reserved. Deterministic inventory allocation is a local prototype, **not** distributed discovery or persistent assignment.
 - Roundtrip, collision-free mapping, cross-node arbitration priority, malformed/reserved ID rejection.
 - No physical CAN controller, standardization decision, security, bus-load verification or physical safety guarantee.
+- Entire test suite completed: PASS (2026-10-13).
+
+
+## New phase: `python .\\test_can_traffic_estimator.py` — pending local validation
+
+- Average synthetic CAN-FD utilization for multiple Forma peers, per-class frame rates and payload sizes.
+- Uses the same approximate frame duration as `can_scheduler.py`; configurable nominal/data bitrate and utilization threshold.
+- Supports per-row peer subsets, overload flagging and input rejection.
+- Does **not** predict burst latency, arbitration contention, retransmission load, worst-case response time, actual CAN-FD timing, or physical safety.
 
 ## Persistence technology boundary
 
