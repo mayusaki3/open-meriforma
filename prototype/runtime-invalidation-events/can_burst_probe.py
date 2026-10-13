@@ -31,7 +31,7 @@ def simulate_burst(units, traffic, *, nominal_bps=500_000, data_bps=2_000_000,
         rows = [r for r in sent if r["kind"] == kind]
         by_kind[kind] = {
             "sent": len(rows),
-            "max_delay": max((r["finish"] - r["start"] for r in rows), default=0.0),
+            "max_frame_duration": max((r["finish"] - r["start"] for r in rows), default=0.0),
             "missed_deadlines": sum(r["late"] for r in rows),
         }
     return {"sent": sent, "accepted_count": len(accepted),
