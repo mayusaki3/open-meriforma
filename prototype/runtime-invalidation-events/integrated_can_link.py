@@ -120,10 +120,10 @@ class IntegratedCanLink:
         if not self.scheduler.check_timeout(now=now):
             self._invalidate()
             return False
-        if not self.fault.eligible(now=now):
-            self._invalidate()
-            return False
-        return self.scheduler.authorized
+        # A healthy but not-yet-authorized fresh session is not a fault.
+        # ProtocolBoundary.eligible() also returns False before the first
+        # explicit authorization, so do not latch invalidation here.
+        return self.fault.eligible(now=now) and self.scheduler.authorized
 
     def bus_off_event(self):
         self.fault.bus_off_event()
