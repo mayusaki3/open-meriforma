@@ -198,6 +198,15 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - No CAN hardware, actuator output or verified physical STOP. This prototype currently integrates heartbeat only.
 - Entire test suite completed: PASS (2026-10-13).
 
+
+## New phase: `python .\\test_can_id_allocation.py` — pending local validation
+
+- Provisional standard 11-bit identifier: priority bits 10..9, class bits 8..6, node bits 5..0.
+- Four candidate classes: safety (0), heartbeat (1), control (2), diagnostic (3); reserved combinations rejected.
+- Node addresses 1..62, address 0 and 63 reserved. Deterministic inventory allocation is a local prototype, **not** distributed discovery or persistent assignment.
+- Roundtrip, collision-free mapping, cross-node arbitration priority, malformed/reserved ID rejection.
+- No physical CAN controller, standardization decision, security, bus-load verification or physical safety guarantee.
+
 ## Persistence technology boundary
 
 - SQLite is a PC reference/test implementation, not a mandatory Main Controller or Forma Controller dependency.
