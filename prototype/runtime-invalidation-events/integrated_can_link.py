@@ -96,7 +96,10 @@ class IntegratedCanLink:
             output.append(("received", matching, accepted))
             if accepted is True:
                 self.fault.acknowledge(matching[1])
-        if self.scheduler.invalidated or not all(\n                self.fault.protocol.links._fresh(item, until)\n                for item in self.fault.protocol.links.units.values()\n        ):
+        if self.scheduler.invalidated or not all(
+                self.fault.protocol.links._fresh(item, until)
+                for item in self.fault.protocol.links.units.values()
+        ):
             self._invalidate()
         self.events.extend(output)
         return output
