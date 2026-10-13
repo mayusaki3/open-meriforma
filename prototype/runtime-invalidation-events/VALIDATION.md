@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-five test suites user-confirmed PASS (2026-10-13). Suite 26 (burst probe) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-six test suites user-confirmed PASS (2026-10-13). Suite 27 (fragment scheduler) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -217,12 +217,20 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Does **not** predict burst latency, arbitration contention, retransmission load, worst-case response time, actual CAN-FD timing, or physical safety.
 - Entire test suite completed: PASS (2026-10-13).
 
-## New phase: `python .\\test_can_burst_probe.py` — pending local validation
+## Confirmed: `python .\\test_can_burst_probe.py`
 
 - Synthetic simultaneous safety/heartbeat/control/diagnostic frame bursts and priority ordering.
 - Deadline-miss invalidation, bounded queue shedding and residual backlog within a dispatch window.
 - Reports simulated frame duration, **not** verified end-to-end latency or physical worst-case timing.
 - Uses existing scheduler's simplified non-preemptive priority model; no arbitration, bit stuffing, driver ISR, retry or physical STOP verification.
+- Entire test suite completed: PASS (2026-10-13).
+
+## New phase: `python .\\test_fragment_scheduler.py` — pending local validation
+
+- Fragment-aware queue tracks (generation, source, transfer ID, fragment index) without relying on source-only FIFO matching.
+- Mixed-priority dispatch, deadline-miss invalidation, whole-queue fail-closed eviction, expiry and new-session fencing.
+- A new generation explicitly discards queued old-session fragments; no automatic authority restoration.
+- Standalone synthetic scheduler: not yet wired into IntegratedCanLink; does not prove real CAN arbitration, physical STOP or transfer-level ACK semantics.
 
 ## Persistence technology boundary
 
