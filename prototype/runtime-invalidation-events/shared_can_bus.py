@@ -29,7 +29,7 @@ class SharedCanBus:
         if now < self.now:
             raise ValueError("clock moved backwards")
         self.now = now
-        if direction not in ("forward", "ack") or kind not in PRIORITY:
+        if direction not in ("forward", "ack", "background") or kind not in PRIORITY:
             raise ValueError("invalid direction/priority")
         if type(source) is not str or not source or source not in self.link.units:
             raise ValueError("invalid peer")
@@ -112,7 +112,9 @@ class SharedCanBus:
             if key in dropped:
                 output.append(("dropped", key, finish))
                 continue
-            if direction == "forward":
+            if direction == "background":
+                output.append(("background", key, True, finish))
+            elif direction == "forward":
                 transfer_key = (self.generation, source, tid)
                 if transfer_key in self.link.completed_transfers:
                     accepted = True
