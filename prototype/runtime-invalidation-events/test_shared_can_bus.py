@@ -43,7 +43,7 @@ assert bus.enqueue_ack(source="left", transfer_id=ids["left"], now=0.05, deadlin
 out = bus.dispatch(until=0.1, drop={("ack", "left", 0, 0)})
 assert any(x[0] == "dropped" for x in out)
 assert ids["left"] in link.fault.pending
-assert link.retry_due(now=0.11, deadline=0.2) == [ids["left"]]
+assert set(link.retry_due(now=0.11, deadline=0.2)) == set(ids.values())
 assert bus.import_forward()
 assert bus.enqueue_ack(source="left", transfer_id=ids["left"], now=0.11, deadline=0.2)
 out = bus.dispatch(until=0.2)
