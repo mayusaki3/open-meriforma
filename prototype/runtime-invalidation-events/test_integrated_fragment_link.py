@@ -55,7 +55,9 @@ print("PASS integrated fragment deadline failure blocks authorization")
 link = IntegratedCanLink(("left", "right"), max_queue=1)
 link.start_main(boot_id="M1", challenge="C1", now=0)
 ready(link)
-assert not link.submit(msg("left"), now=0.001)
+assert link.submit(msg("left"), now=0.001)
+assert link.fragments.status()["queued"] == 1
+assert not link.submit(msg("right"), now=0.001)
 assert link.invalidated and link.fragments.status()["queued"] == 0
 assert not link.authorize(explicit=True, now=0.002)
 print("PASS incomplete transfer on queue overflow fails closed")
