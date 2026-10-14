@@ -21,6 +21,7 @@ def setup():
 link = setup()
 assert link.submit(msg("left"), now=0.001, deadline=0.05)
 tid = next(iter(link.fault.pending))
+assert link.submit(msg("right"), now=0.001, deadline=0.05)
 assert link.dispatch(until=0.05)[-1][-1] is True
 assert tid not in link.fault.pending
 assert link.retry_due(now=0.2) == []
@@ -29,6 +30,7 @@ print("PASS completed transfer receives application ACK and needs no retry")
 link = setup()
 assert link.submit(msg("left"), now=0.001, deadline=0.05)
 tid = next(iter(link.fault.pending))
+assert link.submit(msg("right"), now=0.001, deadline=0.05)
 assert link.dispatch(until=0.05, ack_drop={tid})[-1][-1] is True
 assert tid in link.fault.pending
 assert link.retry_due(now=0.11, deadline=0.2) == [tid]
@@ -40,6 +42,7 @@ print("PASS lost ACK triggers duplicate-safe retry without replaying heartbeat")
 link = setup()
 assert link.submit(msg("left"), now=0.001, deadline=0.05)
 tid = next(iter(link.fault.pending))
+assert link.submit(msg("right"), now=0.001, deadline=0.05)
 link.dispatch(until=0.05, ack_drop={tid})
 assert link.retry_due(now=0.11, deadline=0.2) == [tid]
 link.dispatch(until=0.2, ack_drop={tid})
@@ -52,6 +55,7 @@ print("PASS bounded retries exhaust without implicit transfer ACK")
 link = setup()
 assert link.submit(msg("left"), now=0.001, deadline=0.05)
 tid = next(iter(link.fault.pending))
+assert link.submit(msg("right"), now=0.001, deadline=0.05)
 link.dispatch(until=0.05, ack_drop={tid})
 link.bus_off_event()
 link.bus_recovered()
@@ -64,6 +68,7 @@ print("PASS session restart fences old ACK/retry state")
 
 link = setup()
 assert link.submit(msg("left"), now=0.001, deadline=0.05)
+assert link.submit(msg("right"), now=0.001, deadline=0.05)
 try:
     link.dispatch(until=0.05, ack_drop=[])
 except ValueError:
