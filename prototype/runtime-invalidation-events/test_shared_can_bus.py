@@ -60,7 +60,8 @@ assert bus.failed and link.invalidated
 assert ids["left"] in link.fault.pending
 print("PASS shared-bus ACK deadline violation invalidates authority")
 
-link, bus, ids = setup(capacity=1)
+link, bus, ids = setup()
+bus.max_queue = 1
 assert bus.enqueue_ack(source="left", transfer_id=ids["left"], now=0.05, deadline=0.1)
 assert not bus.enqueue_ack(source="right", transfer_id=ids["right"],
                            now=0.05, deadline=0.1)
