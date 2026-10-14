@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-two test suites user-confirmed PASS (2026-10-14). Suite 33 (shared bus endurance) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-three test suites user-confirmed PASS (2026-10-15). Suite 34 (CAN load sweep) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -301,9 +301,17 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-14).
 - No real CAN arbitration, controller timings, cryptographic authentication, motor commands, or physical STOP verification.
 
-## New phase: `python .\\test_shared_bus_endurance.py` — pending local validation
+## Confirmed: `python .\\test_shared_bus_endurance.py`
 
 - Finite deterministic 15-cycle shared-bus simulation with two Forma heartbeat streams, reverse ACKs, and diagnostic fragments.
 - Tests heartbeat priority ahead of diagnostics, ACK deadline failure, queue saturation, and bus-off/generation fencing.
 - Synthetic background traffic consumes bus airtime but does not enter the application protocol or reassembly path.
+- Entire suite user-confirmed PASS (2026-10-15).
 - This is not long-duration soak testing, physical bus arbitration, authenticated ACK, or a hardware timing guarantee.
+
+## New phase: `python .\\test_can_load_sweep.py` — pending local validation
+
+- Parametric synthetic load sweep: Forma count, heartbeat/ACK period, diagnostic frames, nominal/data bitrates.
+- Measures modeled utilization, maximum queue waiting time, deadline misses, and backlog clear time.
+- ACKs are assumed to release halfway through each cycle, independent of heartbeat delivery; not an end-to-end integrated ACK exchange.
+- No bit stuffing, real arbitration, fault retransmission, hardware timing verification, or safety certification. Load limits are comparative estimates only.
