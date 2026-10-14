@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-eight test suites user-confirmed PASS (2026-10-14). Suite 29 (integrated ACK/retry) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-nine test suites user-confirmed PASS (2026-10-14). Suite 30 (ACK wire integration) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -240,12 +240,19 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Entire suite user-confirmed PASS (2026-10-14), after correcting the queue-overflow test setup.
 - Still synthetic: no physical CAN controller, real arbitration, actuator control or physical STOP verification.
 
-## New phase: `python .\\test_integrated_ack_retry.py` — pending local validation
+## Confirmed: `python .\\test_integrated_ack_retry.py`
 
 - Synthetic application-level transfer completion ACK, independently from hardware CAN ACK.
 - Simulated lost ACK triggers bounded retry of the same transfer ID; completed logical transfer is deduplicated without replaying protocol effects.
 - Retry exhaustion leaves transfer unacknowledged; bus-off and new Main generation discard stale pending/ACK state.
-- This models an ACK-loss test switch, **not** an encoded wire ACK frame, authenticated remote ACK, hardware retry, or proof of physical safety.
+- Entire suite user-confirmed PASS (2026-10-14).
+- This models an ACK-loss test switch, **not** authenticated remote ACK, hardware retry, or proof of physical safety.
+
+## New phase: `python .\\test_ack_wire_integration.py` — pending local validation
+
+- Application ACK wire envelope: version, transfer ID, source, destination, generation, CRC32 and exact-length checks.
+- Integrated pending-transfer correlation, duplicate rejection, generation fencing and stopping retries after matching ACK.
+- Synthetic source argument is **not authenticated**. CRC32 is only accidental corruption detection. No hardware CAN ACK or actual peer ACK transmission is modeled.
 
 ## Persistence technology boundary
 
