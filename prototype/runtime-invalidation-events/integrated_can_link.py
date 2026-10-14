@@ -21,6 +21,7 @@ class IntegratedCanLink:
         self.scheduler = self._scheduler()
         self.fragments = FragmentScheduler(max_queue=max_queue)
         self.generation = None
+        self.completed_transfers = set()
         self.events = []
         self.invalidated = False
 
@@ -41,6 +42,7 @@ class IntegratedCanLink:
         self.scheduler.reset_authority(now=now)
         self.generation = f'{boot_id}:{challenge}'
         self.fragments.begin(self.generation)
+        self.completed_transfers.clear()
         self.invalidated = False
 
     def establish(self, unit, *, forma_boot, main_boot, challenge, session):
@@ -72,13 +74,16 @@ class IntegratedCanLink:
         self.fragments.invalidated = True
         self.fragments.queue.clear()
 
-    def dispatch(self, *, until, drop=None):
+    def dispatch(self, *, until, drop=None, ack_drop=None):
         """drop is an optional set of (unit, transfer_id, fragment_index)."""
         if self.fault.bus_off or self.fault.recovery_required:
             return []
         dropped = drop if drop is not None else set()
         if type(dropped) is not set:
             raise ValueError("invalid drop set")
+        missing_acks = ack_drop if ack_drop is not None else set()
+        if type(missing_acks) is not set:
+            raise ValueError("invalid ACK-drop set")
         output = []
         for record in self.fragments.dispatch(until=until):
             generation, unit, transfer_id, index = record["key"]
@@ -89,14 +94,21 @@ class IntegratedCanLink:
             if matching in dropped:
                 output.append(("dropped", matching))
                 continue
-            try:
-                accepted = self.fault.receive(record["frame"], source=unit,
-                                              now=record["finish"])
-            except ValueError:
-                self._invalidate()
-                raise
+            transfer_key = (generation, unit, transfer_id)
+            if transfer_key in self.completed_transfers:
+                # Duplicate application transfer: do not replay protocol effects.
+                accepted = True
+            else:
+                try:
+                    accepted = self.fault.receive(record["frame"], source=unit,
+                                                  now=record["finish"])
+                except ValueError:
+                    self._invalidate()
+                    raise
+                if accepted is True:
+                    self.completed_transfers.add(transfer_key)
             output.append(("received", matching, accepted))
-            if accepted is True:
+            if accepted is True and transfer_id not in missing_acks:
                 self.fault.acknowledge(transfer_id)
         if self.fragments.invalidated or not all(
                 self.fault.protocol.links._fresh(item, until)
@@ -105,6 +117,29 @@ class IntegratedCanLink:
             self._invalidate()
         self.events.extend(output)
         return output
+
+    def retry_due(self, *, now, deadline=None):
+        """Requeue application-level unacknowledged transfers, never resume authority."""
+        if self.invalidated or self.fault.bus_off or self.fault.recovery_required:
+            return []
+        due = self.fault.retry_due(now=now)
+        submitted = []
+        for tid, frames in due:
+            # Transfer ownership is retained by the original logical message.
+            # A transfer ID is unique within this generation.
+            owner = next((key[1] for key in self.completed_transfers
+                          if key[0] == self.generation and key[2] == tid), None)
+            if owner is None:
+                self._invalidate()
+                return submitted
+            for frame in frames:
+                if not self.fragments.enqueue("heartbeat", owner, frame,
+                                              generation=self.generation,
+                                              now=now, deadline=deadline):
+                    self._invalidate()
+                    return submitted
+            submitted.append(tid)
+        return submitted
 
     def authorize(self, *, explicit, now):
         if self.invalidated or self.fragments.invalidated or self.scheduler.invalidated:
