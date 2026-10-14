@@ -8,6 +8,7 @@ from can_scheduler import CanScheduler
 from fragment_scheduler import FragmentScheduler
 from can_fault_supervisor import CanFaultSupervisor
 from wire_envelope import encode
+from ack_wire import decode_ack, encode_ack
 
 
 class IntegratedCanLink:
@@ -22,6 +23,7 @@ class IntegratedCanLink:
         self.fragments = FragmentScheduler(max_queue=max_queue)
         self.generation = None
         self.completed_transfers = set()
+        self.transfer_owners = {}
         self.events = []
         self.invalidated = False
 
@@ -43,6 +45,7 @@ class IntegratedCanLink:
         self.generation = f'{boot_id}:{challenge}'
         self.fragments.begin(self.generation)
         self.completed_transfers.clear()
+        self.transfer_owners.clear()
         self.invalidated = False
 
     def establish(self, unit, *, forma_boot, main_boot, challenge, session):
@@ -57,6 +60,7 @@ class IntegratedCanLink:
         if kind != "heartbeat" or message["kind"] != "heartbeat":
             raise ValueError("integration currently supports heartbeat only")
         transfer_id, frames = self.fault.queue(encode(message), now=now)
+        self.transfer_owners[transfer_id] = message['unit']
         for frame in frames:
             if not self.fragments.enqueue(kind, message["unit"], frame,
                                           generation=self.generation, now=now,
@@ -109,7 +113,7 @@ class IntegratedCanLink:
                     self.completed_transfers.add(transfer_key)
             output.append(("received", matching, accepted))
             if accepted is True and transfer_id not in missing_acks:
-                self.fault.acknowledge(transfer_id)
+                self.receive_ack(self.make_ack(transfer_id, source=unit), source=unit)
         if self.fragments.invalidated or not all(
                 self.fault.protocol.links._fresh(item, until)
                 for item in self.fault.protocol.links.units.values()
@@ -117,6 +121,26 @@ class IntegratedCanLink:
             self._invalidate()
         self.events.extend(output)
         return output
+
+    def make_ack(self, transfer_id, *, source):
+        """Construct a synthetic peer ACK; this does not authenticate the peer."""
+        return encode_ack(transfer_id=transfer_id, source=source,
+                          destination="main", generation=self.generation)
+
+    def receive_ack(self, frame, *, source):
+        """Accept only matching outstanding ACKs. Caller-provided source is untrusted."""
+        ack = decode_ack(frame)
+        if self.invalidated or self.fault.bus_off or self.fault.recovery_required:
+            return False
+        tid = ack["transfer_id"]
+        if (ack["generation"] != self.generation or
+                ack["destination"] != "main" or
+                ack["source"] != source or
+                self.transfer_owners.get(tid) != source or
+                (self.generation, source, tid) not in self.completed_transfers or
+                tid not in self.fault.pending):
+            return False
+        return self.fault.acknowledge(tid)
 
     def retry_due(self, *, now, deadline=None):
         """Requeue application-level unacknowledged transfers, never resume authority."""
@@ -127,8 +151,9 @@ class IntegratedCanLink:
         for tid, frames in due:
             # Transfer ownership is retained by the original logical message.
             # A transfer ID is unique within this generation.
-            owner = next((key[1] for key in self.completed_transfers
-                          if key[0] == self.generation and key[2] == tid), None)
+            owner = self.transfer_owners.get(tid)
+            if (self.generation, owner, tid) not in self.completed_transfers:
+                owner = None
             if owner is None:
                 self._invalidate()
                 return submitted
