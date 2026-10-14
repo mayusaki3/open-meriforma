@@ -5,6 +5,7 @@ envelopes alone reach the session monitor; scheduler and transport faults both
 revoke authorization. Recovery requires a new challenge and fresh observations.
 """
 from can_scheduler import CanScheduler
+from fragment_scheduler import FragmentScheduler
 from can_fault_supervisor import CanFaultSupervisor
 from wire_envelope import encode
 
@@ -18,7 +19,8 @@ class IntegratedCanLink:
         self.max_queue = max_queue
         self.fault = CanFaultSupervisor(self.units, heartbeat_timeout=heartbeat_timeout)
         self.scheduler = self._scheduler()
-        self.frames = {}
+        self.fragments = FragmentScheduler(max_queue=max_queue)
+        self.generation = None
         self.events = []
         self.invalidated = False
 
@@ -37,7 +39,8 @@ class IntegratedCanLink:
         self.scheduler = self._scheduler()
         self.scheduler._time(now)
         self.scheduler.reset_authority(now=now)
-        self.frames.clear()
+        self.generation = f'{boot_id}:{challenge}'
+        self.fragments.begin(self.generation)
         self.invalidated = False
 
     def establish(self, unit, *, forma_boot, main_boot, challenge, session):
@@ -52,14 +55,13 @@ class IntegratedCanLink:
         if kind != "heartbeat" or message["kind"] != "heartbeat":
             raise ValueError("integration currently supports heartbeat only")
         transfer_id, frames = self.fault.queue(encode(message), now=now)
-        for index, frame in enumerate(frames):
-            if not self.scheduler.enqueue(kind, unit=message["unit"],
-                                           size=len(frame), now=now, deadline=deadline):
-                self.frames.clear()
+        for frame in frames:
+            if not self.fragments.enqueue(kind, message["unit"], frame,
+                                          generation=self.generation, now=now,
+                                          deadline=deadline):
                 self.fault.pending.clear()
                 self._invalidate()
                 return False
-            self.frames[(message["unit"], transfer_id, index)] = frame
         return True
 
     def _invalidate(self):
@@ -67,6 +69,8 @@ class IntegratedCanLink:
         self.fault.protocol.sessions.authorized = False
         self.fault.protocol.links.authorized = False
         self.scheduler.authorized = False
+        self.fragments.invalidated = True
+        self.fragments.queue.clear()
 
     def dispatch(self, *, until, drop=None):
         """drop is an optional set of (unit, transfer_id, fragment_index)."""
@@ -76,27 +80,25 @@ class IntegratedCanLink:
         if type(dropped) is not set:
             raise ValueError("invalid drop set")
         output = []
-        # One scheduling item corresponds to one submitted fragment; FIFO
-        # within each priority and peer is recovered from the submission log.
-        for record in self.scheduler.dispatch(until=until):
-            unit = record["unit"]
-            matching = next((key for key in self.frames if key[0] == unit), None)
-            if matching is None:
+        for record in self.fragments.dispatch(until=until):
+            generation, unit, transfer_id, index = record["key"]
+            matching = (unit, transfer_id, index)
+            if generation != self.generation or record["late"]:
                 self._invalidate()
-                raise ValueError("missing scheduled fragment")
-            frame = self.frames.pop(matching)
+                break
             if matching in dropped:
                 output.append(("dropped", matching))
                 continue
             try:
-                accepted = self.fault.receive(frame, source=unit, now=record["finish"])
+                accepted = self.fault.receive(record["frame"], source=unit,
+                                              now=record["finish"])
             except ValueError:
                 self._invalidate()
                 raise
             output.append(("received", matching, accepted))
             if accepted is True:
-                self.fault.acknowledge(matching[1])
-        if self.scheduler.invalidated or not all(
+                self.fault.acknowledge(transfer_id)
+        if self.fragments.invalidated or not all(
                 self.fault.protocol.links._fresh(item, until)
                 for item in self.fault.protocol.links.units.values()
         ):
@@ -105,7 +107,7 @@ class IntegratedCanLink:
         return output
 
     def authorize(self, *, explicit, now):
-        if self.invalidated or self.scheduler.invalidated:
+        if self.invalidated or self.fragments.invalidated or self.scheduler.invalidated:
             return False
         if not self.fault.authorize(explicit=explicit, now=now):
             return False
@@ -127,7 +129,8 @@ class IntegratedCanLink:
 
     def bus_off_event(self):
         self.fault.bus_off_event()
-        self.frames.clear()
+        self.fragments.queue.clear()
+        self.fragments.invalidated = True
         self.scheduler.queue.clear()
         self._invalidate()
 
