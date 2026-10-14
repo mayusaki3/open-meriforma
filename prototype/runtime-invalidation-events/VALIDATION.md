@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-nine test suites user-confirmed PASS (2026-10-14). Suite 30 (ACK wire integration) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty test suites user-confirmed PASS (2026-10-14). Suite 31 (ACK return path) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -248,10 +248,11 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Entire suite user-confirmed PASS (2026-10-14).
 - This models an ACK-loss test switch, **not** authenticated remote ACK, hardware retry, or proof of physical safety.
 
-## New phase: `python .\\test_ack_wire_integration.py` — pending local validation
+## Confirmed: `python .\\test_ack_wire_integration.py`
 
 - Application ACK wire envelope: version, transfer ID, source, destination, generation, CRC32 and exact-length checks.
 - Integrated pending-transfer correlation, duplicate rejection, generation fencing and stopping retries after matching ACK.
+- Entire suite user-confirmed PASS (2026-10-14).
 - Synthetic source argument is **not authenticated**. CRC32 is only accidental corruption detection. No hardware CAN ACK or actual peer ACK transmission is modeled.
 
 ## Persistence technology boundary
@@ -284,3 +285,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - No physical stop/fallback, actual executor, hardware confirmation, retry policy, or safe reauthorization workflow.
 - No persistence, durable event acknowledgment, deduplication across restarts, delivery guarantees, or distributed ordering.
 - No atomic distributed lease/authority transfer, real-time deadline, fault injection, or hardware safety certification.
+
+## New phase: `python .\\test_ack_return_path.py` — pending local validation
+
+- Synthetic Forma-to-Main ACK return path: ACK bytes -> CAN-FD-sized fragments -> priority scheduler -> reassembly -> IntegratedCanLink.receive_ack.
+- Checks reverse-order peer completion, dropped ACK fragments, ACK deadline failure, and generation fencing.
+- No physical CAN controller, authenticated sender, real bus arbitration, actuator command, or verified physical STOP.
