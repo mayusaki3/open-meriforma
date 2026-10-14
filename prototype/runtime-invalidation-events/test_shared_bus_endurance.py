@@ -76,10 +76,11 @@ assert any(e[0] == "late" for e in events)
 assert bus.failed and link.invalidated and tid in link.fault.pending
 print("PASS ACK deadline under contention fails closed, without false completion")
 
-link, bus = setup(capacity=2)
+link, bus = setup(capacity=128)
 for unit in link.units:
     assert link.submit(heartbeat(unit, 0), now=0.001, deadline=0.04)
 assert bus.import_forward()
+bus.max_queue = len(bus.queue)
 assert not bus.enqueue(direction="background", source="left",
                        frame=fragment(b"x", transfer_id=90)[0],
                        kind="diagnostic", now=0.001, deadline=0.04)
