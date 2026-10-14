@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-seven test suites user-confirmed PASS (2026-10-14). Suite 28 (integrated fragment link) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All twenty-eight test suites user-confirmed PASS (2026-10-14). Suite 29 (integrated ACK/retry) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -233,11 +233,19 @@ Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); poli
 - Suite 27 user-confirmed PASS (2026-10-14).
 - The standalone scheduler is now wired into IntegratedCanLink for suite 28; this does not prove real CAN arbitration, physical STOP or transfer-level ACK semantics.
 
-## New phase: `python .\\test_integrated_fragment_link.py` — pending local validation
+## Confirmed: `python .\\test_integrated_fragment_link.py`
 
 - IntegratedCanLink now dispatches exact (generation, source, transfer ID, fragment index) records rather than source-only FIFO matching.
 - Regression checks: two-peer heartbeat authorization, concurrent same-peer transfers, fragment deadline failure, queue overflow, and bus-off recovery with old-generation rejection.
+- Entire suite user-confirmed PASS (2026-10-14), after correcting the queue-overflow test setup.
 - Still synthetic: no physical CAN controller, real arbitration, actuator control or physical STOP verification.
+
+## New phase: `python .\\test_integrated_ack_retry.py` — pending local validation
+
+- Synthetic application-level transfer completion ACK, independently from hardware CAN ACK.
+- Simulated lost ACK triggers bounded retry of the same transfer ID; completed logical transfer is deduplicated without replaying protocol effects.
+- Retry exhaustion leaves transfer unacknowledged; bus-off and new Main generation discard stale pending/ACK state.
+- This models an ACK-loss test switch, **not** an encoded wire ACK frame, authenticated remote ACK, hardware retry, or proof of physical safety.
 
 ## Persistence technology boundary
 
