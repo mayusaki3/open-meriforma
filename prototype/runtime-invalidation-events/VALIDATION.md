@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-one test suites user-confirmed PASS (2026-10-14). Suite 32 (shared CAN bus) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-two test suites user-confirmed PASS (2026-10-14). Suite 33 (shared bus endurance) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -293,9 +293,17 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-14).
 - No physical CAN controller, authenticated sender, real bus arbitration, actuator command, or verified physical STOP.
 
-## New phase: `python .\\test_shared_can_bus.py` — pending local validation
+## Confirmed: `python .\\test_shared_can_bus.py`
 
 - Shared synthetic airtime clock and priority queue for Main-to-Forma heartbeat and Forma-to-Main ACK frames.
 - ACK loss/retry, shared deadlines, queue saturation, and bus-off/generation fencing.
 - Forward frames are imported from the existing IntegratedCanLink queue. ACKs are explicitly queued after application transfer completion; this is not an autonomous peer implementation.
+- Entire suite user-confirmed PASS (2026-10-14).
 - No real CAN arbitration, controller timings, cryptographic authentication, motor commands, or physical STOP verification.
+
+## New phase: `python .\\test_shared_bus_endurance.py` — pending local validation
+
+- Finite deterministic 15-cycle shared-bus simulation with two Forma heartbeat streams, reverse ACKs, and diagnostic fragments.
+- Tests heartbeat priority ahead of diagnostics, ACK deadline failure, queue saturation, and bus-off/generation fencing.
+- Synthetic background traffic consumes bus airtime but does not enter the application protocol or reassembly path.
+- This is not long-duration soak testing, physical bus arbitration, authenticated ACK, or a hardware timing guarantee.
