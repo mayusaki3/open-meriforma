@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty test suites user-confirmed PASS (2026-10-14). Suite 31 (ACK return path) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-one test suites user-confirmed PASS (2026-10-14). Suite 32 (shared CAN bus) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -286,8 +286,16 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - No persistence, durable event acknowledgment, deduplication across restarts, delivery guarantees, or distributed ordering.
 - No atomic distributed lease/authority transfer, real-time deadline, fault injection, or hardware safety certification.
 
-## New phase: `python .\\test_ack_return_path.py` — pending local validation
+## Confirmed: `python .\\test_ack_return_path.py`
 
 - Synthetic Forma-to-Main ACK return path: ACK bytes -> CAN-FD-sized fragments -> priority scheduler -> reassembly -> IntegratedCanLink.receive_ack.
 - Checks reverse-order peer completion, dropped ACK fragments, ACK deadline failure, and generation fencing.
+- Entire suite user-confirmed PASS (2026-10-14).
 - No physical CAN controller, authenticated sender, real bus arbitration, actuator command, or verified physical STOP.
+
+## New phase: `python .\\test_shared_can_bus.py` — pending local validation
+
+- Shared synthetic airtime clock and priority queue for Main-to-Forma heartbeat and Forma-to-Main ACK frames.
+- ACK loss/retry, shared deadlines, queue saturation, and bus-off/generation fencing.
+- Forward frames are imported from the existing IntegratedCanLink queue. ACKs are explicitly queued after application transfer completion; this is not an autonomous peer implementation.
+- No real CAN arbitration, controller timings, cryptographic authentication, motor commands, or physical STOP verification.
