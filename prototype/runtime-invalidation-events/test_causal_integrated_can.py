@@ -3,7 +3,7 @@ from causal_integrated_can import CausalIntegratedCan
 
 
 def setup(**kwargs):
-    model = CausalIntegratedCan(("left", "right"), **kwargs)
+    model = CausalIntegratedCan(("left",), **kwargs)
     model.start()
     return model
 
