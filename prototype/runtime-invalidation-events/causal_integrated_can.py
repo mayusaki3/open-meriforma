@@ -57,11 +57,17 @@ class CausalIntegratedCan:
             key = (self.link.generation, source, transfer_id)
             if key in self.ack_scheduled:
                 continue
-            self.ack_scheduled.add(key)
             received_at = event[-1]
+            enqueue_at = max(until, received_at + self.ack_delay)
+            ack_deadline = received_at + self.ack_window
+            if enqueue_at > ack_deadline:
+                # An expired ACK cannot be queued. Fail closed rather than
+                # leaking a ValueError or silently extending the deadline.
+                self.bus._fail()
+                break
+            self.ack_scheduled.add(key)
             if not self.bus.enqueue_ack(source=source, transfer_id=transfer_id,
-                                        now=max(until, received_at + self.ack_delay),
-                                        deadline=received_at + self.ack_window):
+                                        now=enqueue_at, deadline=ack_deadline):
                 if not self.bus.failed:
                     self.bus._fail()
                 break
