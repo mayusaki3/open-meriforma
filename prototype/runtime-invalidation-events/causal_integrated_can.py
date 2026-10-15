@@ -60,7 +60,7 @@ class CausalIntegratedCan:
             self.ack_scheduled.add(key)
             received_at = event[-1]
             if not self.bus.enqueue_ack(source=source, transfer_id=transfer_id,
-                                        now=until,
+                                        now=max(until, received_at + self.ack_delay),
                                         deadline=received_at + self.ack_window):
                 if not self.bus.failed:
                     self.bus._fail()
