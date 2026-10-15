@@ -13,7 +13,7 @@ assert model.submit("left", 0, now=0.001, deadline=0.04)
 assert model.status()["ack_scheduled"] == 0
 forward = model.advance(until=0.02)
 assert any(e[0] == "forward" and e[2] is True for e in forward)
-assert model.status()["ack_scheduled"] == 1
+assert model.status()["ack_scheduled"] == 1, (forward, model.status(), model.link.completed_transfers, model.link.fault.pending)
 assert model.status()["pending"] == 1
 acks = model.deliver_acks(until=0.04)
 assert any(e[0] == "ack" and e[2] is True for e in acks)
