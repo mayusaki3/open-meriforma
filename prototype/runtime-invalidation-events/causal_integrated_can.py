@@ -74,6 +74,9 @@ class CausalIntegratedCan:
 
     def retry(self, *, now, deadline):
         ids = self.link.retry_due(now=now, deadline=deadline)
+        for tid in ids:
+            owner = self.link.transfer_owners.get(tid)
+            self.ack_scheduled.discard((self.link.generation, owner, tid))
         if ids and not self.bus.import_forward():
             return []
         return ids
