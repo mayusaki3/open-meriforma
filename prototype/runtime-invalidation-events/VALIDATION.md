@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-five test suites user-confirmed PASS (2026-10-15). Suite 36 (CAN configuration report) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-six test suites user-confirmed PASS (2026-10-15). Suite 37 (CAN stream profile) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -325,9 +325,17 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-15).
 - Capacity is an **estimate**, not a validated hardware limit or recommended production configuration; ranking ignores cost, transceiver/controller capabilities, wiring, arbitration details and real safety constraints.
 
-## New phase: `python .\\test_can_configuration_report.py` — pending local validation
+## Confirmed: `python .\\test_can_configuration_report.py`
 
 - Deterministic JSON and Markdown reports of candidate capacity, modeled utilization, headroom, wait and deadline misses.
 - Includes explicit no-feasible-candidate output and simulation limitations; never interprets these as hardware certification.
 - CLI: `python .\\can_configuration_report.py --output-dir .\\validation-output` (optional `--candidates path.json`).
+- Entire suite user-confirmed PASS (2026-10-15); CLI sample report generation also succeeded.
 - Generated files are local outputs, not committed design decisions; no physical bus timing, controller support, wiring, cost or safety verification.
+
+## New phase: `python .\\test_can_stream_profile.py` — pending local validation
+
+- Independently configurable heartbeat, ACK, control and diagnostic periodic streams: name, kind, bytes (0..64), period, offset, deadline, per-unit multiplier, and frames per release.
+- One non-preemptive shared bus with existing synthetic priority/airtime model; reports per-stream counts, waits and misses, plus overall utilization/backlog.
+- `example_streams()` is illustrative and is **not** the validated Forma protocol traffic profile. ACK release remains time-based, not causally dependent on heartbeat delivery.
+- No real arbitration, bit stuffing, retransmission overhead, actual bus timing, or physical safety verification.
