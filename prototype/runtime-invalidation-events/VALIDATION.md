@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-eight test suites user-confirmed PASS (2026-10-15). Suite 39 (causal integrated CAN) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-nine test suites user-confirmed PASS (2026-10-16). Suite 40 (multi-Forma causal CAN) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -349,8 +349,15 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-15).
 - Does not authorize control or issue motor commands. Retry does not automatically restore authority.
 
-## New phase: `python .\\test_causal_integrated_can.py` — pending local validation
+## Confirmed: `python .\\test_causal_integrated_can.py`
 
 - Integrates existing IntegratedCanLink fragment/session completion with SharedCanBus ACK frames. ACK scheduling occurs only after a completed forward transfer.
 - Covers dropped heartbeat, dropped ACK followed by retry, ACK deadline failure, bus-off and generation fencing.
 - Synthetic integration only; ACKs remain unauthenticated, no real CAN controller, physical STOP, or motor output. ACKs are enqueued after the explicit forward dispatch boundary, which adds simulation scheduling delay.
+
+- Entire suite user-confirmed PASS (2026-10-16), including corrected missing-peer fixture and pre-enqueue ACK deadline failure.
+
+## New phase: `python .\\test_multi_forma_causal.py` — pending local validation
+
+- Two required Forma peers: both heartbeat/ACK paths, missing-peer fail-closed, single-peer ACK loss and retry, shared ACK deadline failure, bus-off and fresh generation without automatic authority.
+- Tests synthetic shared-bus and protocol states, not authenticated hardware peers, actual CAN arbitration, physical STOP or motor control.
