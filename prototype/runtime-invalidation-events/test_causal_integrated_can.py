@@ -47,7 +47,7 @@ model = setup(ack_window=0.000001)
 assert model.submit("left", 0, now=0.001, deadline=0.04)
 model.advance(until=0.02)
 out = model.deliver_acks(until=0.04)
-assert any(e[0] == "late" for e in out)
+assert out == []  # Deadline already expired before ACK enqueue.
 assert model.status()["failed"] and model.link.invalidated
 assert not model.status()["motor_command_issued"]
 print("PASS ACK deadline breach fails closed")
