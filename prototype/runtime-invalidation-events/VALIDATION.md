@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-six test suites user-confirmed PASS (2026-10-15). Suite 37 (CAN stream profile) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-seven test suites user-confirmed PASS (2026-10-15). Suite 38 (causal roundtrip) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -333,9 +333,17 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-15); CLI sample report generation also succeeded.
 - Generated files are local outputs, not committed design decisions; no physical bus timing, controller support, wiring, cost or safety verification.
 
-## New phase: `python .\\test_can_stream_profile.py` — pending local validation
+## Confirmed: `python .\\test_can_stream_profile.py`
 
 - Independently configurable heartbeat, ACK, control and diagnostic periodic streams: name, kind, bytes (0..64), period, offset, deadline, per-unit multiplier, and frames per release.
 - One non-preemptive shared bus with existing synthetic priority/airtime model; reports per-stream counts, waits and misses, plus overall utilization/backlog.
 - `example_streams()` is illustrative and is **not** the validated Forma protocol traffic profile. ACK release remains time-based, not causally dependent on heartbeat delivery.
+- Entire suite user-confirmed PASS (2026-10-15).
 - No real arbitration, bit stuffing, retransmission overhead, actual bus timing, or physical safety verification.
+
+## New phase: `python .\\test_can_causal_roundtrip.py` — pending local validation
+
+- Synthetic heartbeat arrival triggers ACK creation after configured processing delay; a lost heartbeat never creates an ACK.
+- Simulates heartbeat loss, ACK loss, one optional heartbeat retransmission, shared bus contention and end-to-end deadlines.
+- Simplified independent messages; no integration with the authenticated session/fragment reassembler, no real CAN arbitration, no hardware retry behavior or physical safety verification.
+- Does not authorize control or issue motor commands. Retry does not automatically restore authority.
