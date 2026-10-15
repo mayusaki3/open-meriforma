@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-three test suites user-confirmed PASS (2026-10-15). Suite 34 (CAN load sweep) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-four test suites user-confirmed PASS (2026-10-15). Suite 35 (CAN configuration review) awaits local execution.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -309,9 +309,17 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - Entire suite user-confirmed PASS (2026-10-15).
 - This is not long-duration soak testing, physical bus arbitration, authenticated ACK, or a hardware timing guarantee.
 
-## New phase: `python .\\test_can_load_sweep.py` — pending local validation
+## Confirmed: `python .\\test_can_load_sweep.py`
 
 - Parametric synthetic load sweep: Forma count, heartbeat/ACK period, diagnostic frames, nominal/data bitrates.
 - Measures modeled utilization, maximum queue waiting time, deadline misses, and backlog clear time.
 - ACKs are assumed to release halfway through each cycle, independent of heartbeat delivery; not an end-to-end integrated ACK exchange.
+- Entire suite user-confirmed PASS (2026-10-15).
 - No bit stuffing, real arbitration, fault retransmission, hardware timing verification, or safety certification. Load limits are comparative estimates only.
+
+## New phase: `python .\\test_can_configuration_review.py` — pending local validation
+
+- Compares candidate nominal/data rates, periods, diagnostics and modeled Forma unit capacity.
+- Screening requires both zero modeled deadline misses and utilization at or below the configured threshold (default 70%).
+- Reports highest passing unit count, utilization headroom, ranked candidates and explicitly infeasible configurations.
+- Capacity is an **estimate**, not a validated hardware limit or recommended production configuration; ranking ignores cost, transceiver/controller capabilities, wiring, arbitration details and real safety constraints.
