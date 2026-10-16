@@ -67,7 +67,8 @@ model.bus.bus_off()
 assert model.link.invalidated and model.status()["failed"]
 model.link.bus_recovered()
 model.start(boot_id="M2", challenge="C2", now=0.05)
-assert old_bus.generation != model.bus.generation\nassert old_bus.failed
+assert old_bus.generation != model.bus.generation
+assert old_bus.failed
 assert not model.link.fault.protocol.links.authorized
 assert not model.status()["automatic_resume"]
 send_both(model, at=0.061, deadline=0.1)
