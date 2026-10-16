@@ -361,3 +361,10 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - Two required Forma peers: both heartbeat/ACK paths, missing-peer fail-closed, single-peer ACK loss and retry, shared ACK deadline failure, bus-off and fresh generation without automatic authority.
 - Tests synthetic shared-bus and protocol states, not authenticated hardware peers, actual CAN arbitration, physical STOP or motor control.
+
+- Entire suite user-confirmed PASS (2026-10-17), including two required peers, missing-peer invalidation, per-peer ACK retry, deadline fault and bus-off recovery without automatic authority.
+
+## New phase: `python .\\test_multi_forma_authority.py` — pending local validation
+
+- Requires fresh ready observations from both required peers and explicit authorization; checks missing peer, bus-off/new generation and peer session replacement.
+- Authorization is synthetic protocol state only, not motor enablement, hardware STOP validation or an authenticated CAN peer.
