@@ -7,7 +7,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 ## Current phase
 - Completed: synthetic validation suites 1–46. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
-- Suite 45 confirmed: authority-gated control frames on the SharedCanBus synthetic queue, with pre-dispatch cancellation and bus-off generation fencing. Mixed heartbeat/ACK/control priority remains untested.
+- Suites 45–46 confirmed: authority-gated SharedCanBus synthetic queue and mixed heartbeat/ACK/control priority.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
 - Do not equate 46/46 suite PASS with hardware safety certification or comprehensive regression.
 
@@ -37,13 +37,13 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Maintain Worklog as the source of truth for work continuity, rather than chat memory.
 
 ## Pending
-- Suite 46 mixed heartbeat/ACK/control priority and cancellation: user-confirmed 4/4 PASS on 2026-10-18; suites 45, 44 and 43 regressions also 4/4 each PASS (16/16 total). Earlier clock regression resolved by processing queued protocol frames before advancing authority time; no hardware timing guarantees. Suites 45 and 44 regressions passed.
+- Suite 47 deterministic boundary-injection test committed (test_authority_shared_bus_boundary.py); pending user validation. Injection occurs between protocol dispatch and control eligibility check, not at actual hardware transmit.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
 
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
-2. Confirm suite 44 user PASS and update validation documentation at the next appropriate checkpoint.
-3. Design next validation for revocation between shared-bus protocol dispatch and control transmit boundary; test fail-closed semantics and preserve regressions.
+2. Preserve suite 46 PASS and run suite 47 boundary-injection test.
+3. Run suites 47, 46, 45, 44 and 43; record results and investigate failures.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
