@@ -39,7 +39,7 @@ print("PASS heartbeat and ACK outrank control on shared synthetic bus")
 model = setup()
 bus = model.bus
 assert bus.enqueue_control("left", b"control", now=0.041, deadline=0.8)
-assert bus.enqueue_ack(source="right", transfer_id=0, now=0.041, deadline=0.8)
+assert bus.enqueue_ack(source="right", transfer_id=1, now=0.041, deadline=0.8)
 events = bus.dispatch(until=0.55)
 assert not any(event[0] == "background" for event in events)
 assert bus.control_revoked
@@ -49,7 +49,7 @@ print("PASS heartbeat expiry prevents queued control amid ACK traffic")
 model = setup()
 bus = model.bus
 assert bus.enqueue_control("left", b"control", now=0.041, deadline=0.09)
-assert bus.enqueue_ack(source="right", transfer_id=0, now=0.041, deadline=0.09)
+assert bus.enqueue_ack(source="right", transfer_id=1, now=0.041, deadline=0.09)
 assert model.link.fault.protocol.receive(dict(
     kind="heartbeat", unit="right", main_boot="M1", challenge="C1",
     forma_boot="right-boot", session="right-session", sequence=1,
