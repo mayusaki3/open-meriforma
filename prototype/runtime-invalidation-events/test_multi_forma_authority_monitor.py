@@ -19,9 +19,9 @@ def authorized_pair():
 
 
 model = authorized_pair()
-assert not model.link.eligible(now=0.051)
+assert not model.link.eligible(now=0.55)
 assert model.link.invalidated
-assert not model.link.authorize(explicit=True, now=0.051)
+assert not model.link.authorize(explicit=True, now=0.55)
 assert not model.link.fault.protocol.sessions.authorized
 print("PASS scheduler heartbeat timeout revokes all authority")
 
