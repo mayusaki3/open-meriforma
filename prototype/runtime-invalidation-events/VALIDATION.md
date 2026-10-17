@@ -402,3 +402,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 4/4 checks for Heartbeat/ACK priority over control, heartbeat expiry, Ready=false and bus-off queue clearing.
 - Regression checks also PASS: suite 45 (`test_authority_shared_bus.py`) 4/4, suite 44 (`test_authority_can_scheduler.py`) 4/4, suite 43 (`test_authority_command_race.py`) 4/4; 16/16 checks total.
 - The initial suite 46 monotonic-clock failure was corrected by processing queued protocol frames before the control authorization check. No real CAN arbitration, physical motor inhibit or mid-transmission revocation is verified.
+
+## Confirmed: `python .\\test_authority_shared_bus_boundary.py`
+
+- User-confirmed PASS (2026-10-18): 4/4 checks for authorized control at boundary, Ready=false revocation, bus-off revocation and generation mismatch revocation.
+- Suites 46/45/44/43 regression checks also user-confirmed PASS (4/4 each); 20/20 checks in this run.
+- Boundary injection is deterministic synthetic behavior before eligibility checking, not physical CAN transmission or motor inhibition.
