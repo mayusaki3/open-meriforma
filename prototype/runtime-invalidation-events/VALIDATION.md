@@ -391,3 +391,8 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - This adapter is a separate synthetic control scheduler, not the SharedCanBus physical transmit path; it does not prove race-free hardware sends, CAN arbitration or motor inhibition.
 
 - Entire suite user-confirmed PASS (2026-10-17), with suite 43 regression PASS. This confirms only the synthetic separate CanScheduler adapter, not SharedCanBus control transport or physical actuation.
+
+## Confirmed: `python .\\test_authority_shared_bus.py`
+
+- User-confirmed PASS (2026-10-17): 4/4 checks for authorized shared-queue control, heartbeat timeout cancellation, Ready=false cancellation and bus-off generation fencing.
+- Suite 44 and 43 regressions also PASS (4/4 each). These tests use synthetic background-direction control payloads, not an actual control protocol or motor output. Mixed heartbeat/ACK/control priority is not yet validated.
