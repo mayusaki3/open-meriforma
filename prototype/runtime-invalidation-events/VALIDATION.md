@@ -378,7 +378,14 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - Entire suite user-confirmed PASS (2026-10-17), including timeout, Ready=false, session replacement and bus-off recovery.
 
-## New phase: `python .\\test_authority_command_race.py` — pending local validation
+## Confirmed: `python .\\test_authority_command_race.py`
 
 - Synthetic authority-gated command staging with checks at enqueue and dispatch, fail-closed queue discard after timeout, Ready=false and bus-off/generation change.
 - The adapter is intentionally not wired to CAN control frames or actuators. Its dispatch result is a simulated accepted command, not a motor command. A revoked gate requires explicit recreation after recovery; this is a prototype policy, not a verified physical safety mechanism.
+
+- Entire suite user-confirmed PASS (2026-10-17), including pre-dispatch timeout, Ready=false, bus-off and generation fencing.
+
+## New phase: `python .\\test_authority_can_scheduler.py` — pending local validation
+
+- Integrates existing CanScheduler with IntegratedCanLink authority checks at control enqueue and before simulated dispatch. Tests two-peer normal scheduling, timeout, one-peer Ready=false, and bus-off generation fencing.
+- This adapter is a separate synthetic control scheduler, not the SharedCanBus physical transmit path; it does not prove race-free hardware sends, CAN arbitration or motor inhibition.
