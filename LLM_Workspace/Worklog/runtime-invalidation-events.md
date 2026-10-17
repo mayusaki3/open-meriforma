@@ -36,7 +36,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Maintain Worklog as the source of truth for work continuity, rather than chat memory.
 
 ## Pending
-- Suite 46 mixed heartbeat/ACK/control priority and cancellation test committed; pending user local validation.
+- Suite 46 mixed heartbeat/ACK/control priority and cancellation test: user run failed at first case with ValueError('clock moved backwards') in CanFaultSupervisor.receive. Fixture replacement bus airtime started at 0 despite supervisor having advanced to 0.04. Fixture aligned to 0.04 in commit 4efd8a1; pending local retest. Suites 45 and 44 regressions passed.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -44,5 +44,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Confirm suite 44 user PASS and update validation documentation at the next appropriate checkpoint.
-3. User to run test_authority_shared_bus_mixed.py and regressions; diagnose any failure.
+3. User to rerun test_authority_shared_bus_mixed.py after fixture clock alignment; investigate any further failure.
 4. Record suite 46 outcome in Worklog and VALIDATION.md; continue HLDocS spec/testspec preparation after checking templates/prompts.
