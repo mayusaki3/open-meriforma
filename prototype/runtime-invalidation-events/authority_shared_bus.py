@@ -41,6 +41,10 @@ class AuthoritySharedBus(SharedCanBus):
                 return False
         return True
 
+    def _before_control_gate(self, *, until):
+        """Test seam after protocol dispatch, before control authorization."""
+        pass
+
     def dispatch(self, *, until, drop=None):
         # Process earlier-priority protocol traffic before checking authority
         # at the control transmit boundary. eligible(now=until) advances the
@@ -54,6 +58,8 @@ class AuthoritySharedBus(SharedCanBus):
                       if not (item[2] == "background" and item[0] == 2)]
         heapq.heapify(self.queue)
         protocol_events = super().dispatch(until=until, drop=drop)
+        if not self.failed:
+            self._before_control_gate(until=until)
         if (self.failed or self.control_revoked
                 or self.control_generation != self.link.generation
                 or not self.link.eligible(now=until)):
