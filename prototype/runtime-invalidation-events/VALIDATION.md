@@ -357,14 +357,21 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - Entire suite user-confirmed PASS (2026-10-16), including corrected missing-peer fixture and pre-enqueue ACK deadline failure.
 
-## New phase: `python .\\test_multi_forma_causal.py` — pending local validation
+## Confirmed: `python .\\test_multi_forma_causal.py`
 
 - Two required Forma peers: both heartbeat/ACK paths, missing-peer fail-closed, single-peer ACK loss and retry, shared ACK deadline failure, bus-off and fresh generation without automatic authority.
 - Tests synthetic shared-bus and protocol states, not authenticated hardware peers, actual CAN arbitration, physical STOP or motor control.
 
 - Entire suite user-confirmed PASS (2026-10-17), including two required peers, missing-peer invalidation, per-peer ACK retry, deadline fault and bus-off recovery without automatic authority.
 
-## New phase: `python .\\test_multi_forma_authority.py` — pending local validation
+## Confirmed: `python .\\test_multi_forma_authority.py`
 
 - Requires fresh ready observations from both required peers and explicit authorization; checks missing peer, bus-off/new generation and peer session replacement.
 - Authorization is synthetic protocol state only, not motor enablement, hardware STOP validation or an authenticated CAN peer.
+
+- Entire suite user-confirmed PASS (2026-10-17), including fresh Ready peers, explicit grant, bus-off recovery and peer session replacement.
+
+## New phase: `python .\\test_multi_forma_authority_monitor.py` — pending local validation
+
+- Synthetic continuous authority revocation: scheduler timeout, one peer Ready=false, one peer session replacement, and bus-off recovery with fresh explicit authorization.
+- The scheduler timeout uses its configured deadline; this is not physical heartbeat timing, actuator inhibit or physical STOP verification.
