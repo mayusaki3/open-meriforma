@@ -216,3 +216,11 @@ fragmentation/reassembly, scheduler dispatch, transport-fault supervision and
 two-peer session/heartbeat eligibility. Only heartbeat messages are integrated;
 no real CAN bus, transport authentication, motor control or physical STOP
 verification is provided.
+
+## Current work-state and architecture
+
+- [Provisional architecture and limits](./ARCHITECTURE.md)
+- [Validation history](./VALIDATION.md)
+- [Authoritative active Worklog](../../LLM_Workspace/Worklog/runtime-invalidation-events.md)
+
+The Worklog is the authoritative source for current phase, latest confirmed results, pending work and next steps. The architecture overview is provisional and not yet a formally validated HLDocS spec/testspec.
