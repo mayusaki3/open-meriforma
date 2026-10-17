@@ -15,6 +15,10 @@ def setup():
     model.deliver_acks(until=0.04)
     assert model.link.authorize(explicit=True, now=0.04)
     model.bus = AuthoritySharedBus(model.link)
+    # The replacement bus begins after the prior bus's 0.04 s ACK boundary.
+    # Align its airtime clock with the already-advanced fault supervisor.
+    model.bus.available_at = 0.04
+    model.bus.now = 0.04
     return model
 
 
