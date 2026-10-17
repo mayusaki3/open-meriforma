@@ -371,7 +371,14 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - Entire suite user-confirmed PASS (2026-10-17), including fresh Ready peers, explicit grant, bus-off recovery and peer session replacement.
 
-## New phase: `python .\\test_multi_forma_authority_monitor.py` — pending local validation
+## Confirmed: `python .\\test_multi_forma_authority_monitor.py`
 
 - Synthetic continuous authority revocation: scheduler timeout, one peer Ready=false, one peer session replacement, and bus-off recovery with fresh explicit authorization.
 - The scheduler timeout uses its configured deadline; this is not physical heartbeat timing, actuator inhibit or physical STOP verification.
+
+- Entire suite user-confirmed PASS (2026-10-17), including timeout, Ready=false, session replacement and bus-off recovery.
+
+## New phase: `python .\\test_authority_command_race.py` — pending local validation
+
+- Synthetic authority-gated command staging with checks at enqueue and dispatch, fail-closed queue discard after timeout, Ready=false and bus-off/generation change.
+- The adapter is intentionally not wired to CAN control frames or actuators. Its dispatch result is a simulated accepted command, not a motor command. A revoked gate requires explicit recreation after recovery; this is a prototype policy, not a verified physical safety mechanism.
