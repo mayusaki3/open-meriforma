@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Worklog
 
-Updated: 2026-10-17 (JST)
+Updated: 2026-10-18 (JST)
 Repository: mayusaki3/open-meriforma
 Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
@@ -9,7 +9,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Completed: synthetic validation suites 1–45. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
 - Suite 45 confirmed: authority-gated control frames on the SharedCanBus synthetic queue, with pre-dispatch cancellation and bus-off generation fencing. Mixed heartbeat/ACK/control priority remains untested.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
-- Do not equate 44/44 suite PASS with hardware safety certification or comprehensive regression.
+- Do not equate 45/45 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
 - prototype/runtime-invalidation-events/authority_can_scheduler.py
@@ -36,7 +36,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Maintain Worklog as the source of truth for work continuity, rather than chat memory.
 
 ## Pending
-- Next: mixed heartbeat/ACK/control priority and cancellation validation on SharedCanBus; not yet implemented.
+- Suite 46 mixed heartbeat/ACK/control priority and cancellation test committed; pending user local validation.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -44,5 +44,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Confirm suite 44 user PASS and update validation documentation at the next appropriate checkpoint.
-3. Design next synthetic test for mixed heartbeat/ACK/control shared-bus scheduling and authority revocation.
-4. Preserve suite 45 PASS evidence and continue HLDocS spec/testspec preparation after checking templates/prompts.
+3. User to run test_authority_shared_bus_mixed.py and regressions; diagnose any failure.
+4. Record suite 46 outcome in Worklog and VALIDATION.md; continue HLDocS spec/testspec preparation after checking templates/prompts.
