@@ -6,10 +6,10 @@ Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
 
 ## Current phase
-- Completed: synthetic validation suites 1–45. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
+- Completed: synthetic validation suites 1–46. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
 - Suite 45 confirmed: authority-gated control frames on the SharedCanBus synthetic queue, with pre-dispatch cancellation and bus-off generation fencing. Mixed heartbeat/ACK/control priority remains untested.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
-- Do not equate 45/45 suite PASS with hardware safety certification or comprehensive regression.
+- Do not equate 46/46 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
 - prototype/runtime-invalidation-events/authority_can_scheduler.py
@@ -21,6 +21,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - prototype/runtime-invalidation-events/ARCHITECTURE.md (provisional implementation overview)
 
 ## Verified results
+- Suite 46: 4/4 PASS; suites 45/44/43 regression 12/12 PASS, reported by user on 2026-10-18.
 - Suite 45: 4/4 PASS, with suites 44 and 43 regressions (8/8 PASS), reported by user on 2026-10-17.
 - Suite 44: 4/4 checks PASS, plus suite 43 regression 4/4 PASS, reported by user.
 - Suite 43: 4/4 checks PASS; suite 42 regression 4/4 PASS, reported by user.
@@ -36,7 +37,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Maintain Worklog as the source of truth for work continuity, rather than chat memory.
 
 ## Pending
-- Suite 46 mixed heartbeat/ACK/control priority and cancellation test: user run failed at first case with ValueError('clock moved backwards') in CanFaultSupervisor.receive. Fixture replacement bus airtime started at 0 despite supervisor having advanced to 0.04. Fixture aligned to 0.04 in commit 4efd8a1 but error persisted. Root cause: AuthoritySharedBus.dispatch checked eligible(now=until) before processing earlier queued heartbeat frames, advancing CanFaultSupervisor.last_now ahead of their receive timestamps. Adapter now dispatches protocol frames first, checks authority, then dispatches controls (commit 17901cb); pending local retest. Suites 45 and 44 regressions passed.
+- Suite 46 mixed heartbeat/ACK/control priority and cancellation: user-confirmed 4/4 PASS on 2026-10-18; suites 45, 44 and 43 regressions also 4/4 each PASS (16/16 total). Earlier clock regression resolved by processing queued protocol frames before advancing authority time; no hardware timing guarantees. Suites 45 and 44 regressions passed.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -44,5 +45,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Confirm suite 44 user PASS and update validation documentation at the next appropriate checkpoint.
-3. User to rerun test_authority_shared_bus_mixed.py and suites 45/44 after protocol-before-control dispatch fix; investigate any further failure.
-4. Record suite 46 outcome in Worklog and VALIDATION.md; continue HLDocS spec/testspec preparation after checking templates/prompts.
+3. Design next validation for revocation between shared-bus protocol dispatch and control transmit boundary; test fail-closed semantics and preserve regressions.
+4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
