@@ -396,3 +396,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - User-confirmed PASS (2026-10-17): 4/4 checks for authorized shared-queue control, heartbeat timeout cancellation, Ready=false cancellation and bus-off generation fencing.
 - Suite 44 and 43 regressions also PASS (4/4 each). These tests use synthetic background-direction control payloads, not an actual control protocol or motor output. Mixed heartbeat/ACK/control priority is not yet validated.
+
+## Confirmed: `python .\\test_authority_shared_bus_mixed.py`
+
+- User-confirmed PASS (2026-10-18): 4/4 checks for Heartbeat/ACK priority over control, heartbeat expiry, Ready=false and bus-off queue clearing.
+- Regression checks also PASS: suite 45 (`test_authority_shared_bus.py`) 4/4, suite 44 (`test_authority_can_scheduler.py`) 4/4, suite 43 (`test_authority_command_race.py`) 4/4; 16/16 checks total.
+- The initial suite 46 monotonic-clock failure was corrected by processing queued protocol frames before the control authorization check. No real CAN arbitration, physical motor inhibit or mid-transmission revocation is verified.
