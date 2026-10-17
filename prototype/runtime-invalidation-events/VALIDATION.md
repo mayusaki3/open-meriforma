@@ -385,7 +385,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 
 - Entire suite user-confirmed PASS (2026-10-17), including pre-dispatch timeout, Ready=false, bus-off and generation fencing.
 
-## New phase: `python .\\test_authority_can_scheduler.py` — pending local validation
+## Confirmed: `python .\\test_authority_can_scheduler.py`
 
 - Integrates existing CanScheduler with IntegratedCanLink authority checks at control enqueue and before simulated dispatch. Tests two-peer normal scheduling, timeout, one-peer Ready=false, and bus-off generation fencing.
 - This adapter is a separate synthetic control scheduler, not the SharedCanBus physical transmit path; it does not prove race-free hardware sends, CAN arbitration or motor inhibition.
+
+- Entire suite user-confirmed PASS (2026-10-17), with suite 43 regression PASS. This confirms only the synthetic separate CanScheduler adapter, not SharedCanBus control transport or physical actuation.
