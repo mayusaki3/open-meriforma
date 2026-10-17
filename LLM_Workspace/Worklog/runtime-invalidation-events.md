@@ -7,8 +7,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 ## Current phase
 - Completed: synthetic validation suites 1–44. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
-- Next planned: suite 45, integrating authority gating with SharedCanBus's actual synthetic shared queue, including heartbeat/ACK/control priorities, pre-dispatch authority check, cancellation, bus-off generation fencing.
-- Suite 45 is NOT implemented or validated.
+- Current pending local validation: suite 45, integrating authority gating with SharedCanBus's actual synthetic shared queue, including heartbeat/ACK/control priorities, pre-dispatch authority check, cancellation, bus-off generation fencing.
+- Suite 45 files committed (authority_shared_bus.py, test_authority_shared_bus.py), NOT locally validated.
 - Do not equate 44/44 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
@@ -35,7 +35,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Maintain Worklog as the source of truth for work continuity, rather than chat memory.
 
 ## Pending
-- Suite 45: design and test before declaring PASS.
+- Suite 45: run local test and regressions; do not declare PASS until user confirms.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -43,5 +43,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Confirm suite 44 user PASS and update validation documentation at the next appropriate checkpoint.
-3. Design suite 45 for the SharedCanBus synthetic path; preserve previous behavior.
-4. Have user run the new suite and relevant regressions; record results here immediately.
+3. Run suite 45 synthetic SharedCanBus control-gate test and regressions; diagnose any failures.
+4. Record user-confirmed results here immediately; continue HLDocS spec/testspec preparation after checking templates/prompts.
