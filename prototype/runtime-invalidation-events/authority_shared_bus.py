@@ -42,10 +42,23 @@ class AuthoritySharedBus(SharedCanBus):
         return True
 
     def dispatch(self, *, until, drop=None):
-        # Fail closed for queued control frames before the shared dispatch.
-        # This is a simulated pre-dispatch check, not an atomic hardware gate.
-        if any(item[2] == "background" and item[0] == 2 for item in self.queue):
-            if (self.control_revoked or self.control_generation != self.link.generation
-                    or not self.link.eligible(now=until)):
-                self._drop_control()
-        return super().dispatch(until=until, drop=drop)
+        # Process earlier-priority protocol traffic before checking authority
+        # at the control transmit boundary. eligible(now=until) advances the
+        # supervisor clock, so calling it before receiving queued heartbeats
+        # would make their earlier arrival timestamps run backwards.
+        controls = [item for item in self.queue
+                    if item[2] == "background" and item[0] == 2]
+        if not controls:
+            return super().dispatch(until=until, drop=drop)
+        self.queue = [item for item in self.queue
+                      if not (item[2] == "background" and item[0] == 2)]
+        heapq.heapify(self.queue)
+        protocol_events = super().dispatch(until=until, drop=drop)
+        if (self.failed or self.control_revoked
+                or self.control_generation != self.link.generation
+                or not self.link.eligible(now=until)):
+            self.control_revoked = True
+            return protocol_events
+        for item in controls:
+            heapq.heappush(self.queue, item)
+        return protocol_events + super().dispatch(until=until, drop=drop)
