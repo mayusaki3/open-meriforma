@@ -432,3 +432,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 5/5 checks for duplicate completed command, late final fragment, expired transfer ID reuse, stale generation and per-source transfer ID independence.
 - Suites 50, 49 and 48 regression checks also PASS (5/5, 4/4, 4/4 respectively), 18/18 checks in this run.
 - Transfer-ID history remains per test receiver instance; no bounded-history or ID-wrap policy, actual Forma firmware, physical CAN, or motor-output safety verified.
+
+## Confirmed: `python .\\test_forma_command_receiver_capacity.py`
+
+- User-confirmed PASS (2026-10-18): 5/5 checks for bounded transfer-ID history, 16-bit wrap, expired partial ID capacity, new-generation receiver isolation and invalid capacity rejection.
+- Suites 51, 50 and 49 regression checks also PASS (5/5, 5/5, 4/4), 19/19 checks in this run.
+- No actual embedded memory budget, session rollover firmware, physical CAN, or motor-output safety verified.
