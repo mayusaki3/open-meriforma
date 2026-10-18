@@ -43,6 +43,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 47 deterministic boundary-injection test user-confirmed PASS (4/4) on 2026-10-18, with four preceding suites PASS (16/16). Injection occurs between protocol dispatch and control eligibility check, not at actual hardware transmit.
 - Suite 48 per-control-frame synthetic revocation test user-confirmed PASS (4/4) on 2026-10-18, with suites 47 and 46 regression PASS (8/8). Earlier injection clock regression corrected to 0.06. An already dispatched frame is not retractable; no physical CAN atomicity is claimed.
 - Suite 49 test_authority_shared_bus_partial_command.py user-confirmed PASS (4/4) on 2026-10-18, with suites 48/47/46 regressions PASS (12/12). A test-only Reassembler represents the receiver, not actual Forma firmware. It checks complete 110-byte payload versus interrupted two-fragment transfer and partial-buffer discard.
+- Suite 50 FormaCommandReceiver test-only model added, pending local validation. It gates each fragment and completed command on generation, deadline, and current link authority; acceptance is abstract and never motor execution.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -50,5 +51,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Specify the Forma-side command receive boundary: complete reassembly, generation, deadline, authority and execution permission; do not infer hardware implementation from synthetic tests.
+3. Run suite 50 test_forma_command_receiver.py and regressions 49–47. Confirm synthetic receiver checks without claiming firmware implementation.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
