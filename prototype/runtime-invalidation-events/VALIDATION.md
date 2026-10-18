@@ -420,3 +420,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 4/4 checks for complete two-fragment reconstruction and cancellation/partial-buffer discard on Ready=false, bus-off and generation change.
 - Suites 48, 47 and 46 regression checks also PASS (4/4 each), 16/16 checks in this run.
 - Receiver is a test-only Reassembler, not Forma firmware; successful synthetic reconstruction does not establish actuator command execution safety.
+
+## Confirmed: `python .\\test_forma_command_receiver.py`
+
+- User-confirmed PASS (2026-10-18): 5/5 checks for complete command, deadline expiry, stale generation, Ready=false and bus-off authority loss.
+- Suites 49, 48 and 47 regression checks also PASS (4/4 each), 17/17 checks in this run.
+- Receiver remains test-only; no Forma firmware, physical CAN, or motor-output safety verified.
