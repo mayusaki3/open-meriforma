@@ -10,12 +10,12 @@ class ReceiverGenerationRegistry:
         self.generations = set()
         self.current = None
 
-    def bind(self, link, *, max_transfer_ids=65536):
+    def bind(self, link, *, now, max_transfer_ids=65536):
         generation = link.generation
         # Never reconstruct a fresh history for a generation already used.
         if generation in self.generations:
             raise ValueError("generation already bound; history reset forbidden")
-        if not link.eligible(now=0.04):
+        if not link.eligible(now=now):
             raise ValueError("generation requires explicit live authorization")
         self.generations.add(generation)
         if self.current is not None:
