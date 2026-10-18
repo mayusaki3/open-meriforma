@@ -57,7 +57,7 @@ def ready_false(link, index):
         assert link.fault.protocol.receive(dict(
             kind="heartbeat", unit="right", main_boot="M1", challenge="C1",
             forma_boot="right-boot", session="right-session", sequence=1,
-            ready=False), now=0.05)
+            ready=False), now=0.06)
 
 
 run(ready_false, blocked=True)
