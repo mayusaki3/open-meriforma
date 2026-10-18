@@ -438,3 +438,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 5/5 checks for bounded transfer-ID history, 16-bit wrap, expired partial ID capacity, new-generation receiver isolation and invalid capacity rejection.
 - Suites 51, 50 and 49 regression checks also PASS (5/5, 5/5, 4/4), 19/19 checks in this run.
 - No actual embedded memory budget, session rollover firmware, physical CAN, or motor-output safety verified.
+
+## Confirmed: `python .\\test_receiver_generation_registry.py`
+
+- User-confirmed PASS (2026-10-18): 5/5 checks for global cross-source capacity, same-generation receiver rebuild rejection, unauthorized new-generation rejection, authorized fresh-generation bind, and previously used generation rejection.
+- Suites 52, 51 and 50 regression checks also PASS (5/5 each), 20/20 checks in this run.
+- Registry is process-local only; no durable restart anti-replay, authenticated epoch, physical CAN, or motor safety verified.
