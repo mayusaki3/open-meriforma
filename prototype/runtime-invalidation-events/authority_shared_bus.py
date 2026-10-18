@@ -41,6 +41,18 @@ class AuthoritySharedBus(SharedCanBus):
                 return False
         return True
 
+    def _before_control_frame(self, *, until, key):
+        """Test seam before each synthetic control fragment is dispatched."""
+        pass
+
+    def _before_background_frame(self, *, until, key):
+        self._before_control_frame(until=until, key=key)
+        if (self.control_revoked or self.control_generation != self.link.generation
+                or not self.link.eligible(now=until)):
+            self._drop_control()
+            return False
+        return True
+
     def _before_control_gate(self, *, until):
         """Test seam after protocol dispatch, before control authorization."""
         pass
