@@ -6,10 +6,10 @@ Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
 
 ## Current phase
-- Completed: synthetic validation suites 1–51. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
+- Completed: synthetic validation suites 1–52. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
 - Suites 45–46 confirmed: authority-gated SharedCanBus synthetic queue and mixed heartbeat/ACK/control priority.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
-- Do not equate 51/51 suite PASS with hardware safety certification or comprehensive regression.
+- Do not equate 52/52 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
 - prototype/runtime-invalidation-events/authority_can_scheduler.py
@@ -21,6 +21,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - prototype/runtime-invalidation-events/ARCHITECTURE.md (provisional implementation overview)
 
 ## Verified results
+- Suite 52: 5/5 PASS, with suites 51/50/49 regressions 14/14 PASS, reported by user on 2026-10-18.
 - Suite 51: 5/5 PASS, with suites 50/49/48 regressions 13/13 PASS, reported by user on 2026-10-18.
 - Suite 50: 5/5 PASS, with suites 49/48/47 regressions 12/12 PASS, reported by user on 2026-10-18.
 - Suite 49: 4/4 PASS, with suites 48/47/46 regressions 12/12 PASS, reported by user on 2026-10-18.
@@ -47,7 +48,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 49 test_authority_shared_bus_partial_command.py user-confirmed PASS (4/4) on 2026-10-18, with suites 48/47/46 regressions PASS (12/12). A test-only Reassembler represents the receiver, not actual Forma firmware. It checks complete 110-byte payload versus interrupted two-fragment transfer and partial-buffer discard.
 - Suite 50 FormaCommandReceiver test-only model user-confirmed PASS (5/5) on 2026-10-18, with suites 49/48/47 regressions PASS (12/12). It gates each fragment and completed command on generation, deadline, and current link authority; acceptance is abstract and never motor execution.
 - Suite 51 synthetic receiver replay and partial timeout test user-confirmed PASS (5/5) on 2026-10-18, with suites 50/49/48 regressions PASS (13/13). Completed transfer IDs and expired partial IDs are retained per receiver instance, with no persistence, wraparound strategy, or real firmware protection claimed.
-- Suite 52 bounded replay-history / ID-wrap / fresh-generation receiver test added, pending local validation. No eviction within generation; exhausted receiver denies new commands until a new generation and receiver instance. Default cap 65536 entries; bounded but memory budget and embedded implementation unverified.
+- Suite 52 bounded replay-history / ID-wrap / fresh-generation receiver test user-confirmed PASS (5/5) on 2026-10-18, with suites 51/50/49 regressions PASS (14/14). No eviction within generation; exhausted receiver denies new commands until a new generation and receiver instance. Default cap 65536 entries; bounded but memory budget and embedded implementation unverified.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -55,5 +56,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Run suite 52 test_forma_command_receiver_capacity.py and regressions suites 51/50; confirm fail-closed ID exhaustion and generation reset.
+3. Review receiver memory budget and session-generation rollover contract before suite 53; do not equate test-only receiver with Forma firmware.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
