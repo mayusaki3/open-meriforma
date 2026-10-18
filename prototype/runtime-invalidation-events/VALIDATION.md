@@ -426,3 +426,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 5/5 checks for complete command, deadline expiry, stale generation, Ready=false and bus-off authority loss.
 - Suites 49, 48 and 47 regression checks also PASS (4/4 each), 17/17 checks in this run.
 - Receiver remains test-only; no Forma firmware, physical CAN, or motor-output safety verified.
+
+## Confirmed: `python .\\test_forma_command_receiver_replay.py`
+
+- User-confirmed PASS (2026-10-18): 5/5 checks for duplicate completed command, late final fragment, expired transfer ID reuse, stale generation and per-source transfer ID independence.
+- Suites 50, 49 and 48 regression checks also PASS (5/5, 4/4, 4/4 respectively), 18/18 checks in this run.
+- Transfer-ID history remains per test receiver instance; no bounded-history or ID-wrap policy, actual Forma firmware, physical CAN, or motor-output safety verified.
