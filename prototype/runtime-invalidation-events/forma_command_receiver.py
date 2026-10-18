@@ -7,7 +7,10 @@ from canfd_fragments import Reassembler, parse
 
 
 class FormaCommandReceiver:
-    def __init__(self, link, *, timeout=0.2):
+    def __init__(self, link, *, timeout=0.2, max_transfer_ids=65536):
+        if type(max_transfer_ids) is not int or not 1 <= max_transfer_ids <= 65536:
+            raise ValueError('invalid transfer ID capacity')
+        self.max_transfer_ids = max_transfer_ids
         self.link = link
         self.generation = link.generation
         self.parts = Reassembler(timeout=timeout)
@@ -15,6 +18,7 @@ class FormaCommandReceiver:
         self.revoked = False
         self.seen_transfers = set()
         self.expired_transfers = set()
+        self.reserved_transfers = set()
 
     def _deny(self):
         self.parts.active.clear()
@@ -42,6 +46,12 @@ class FormaCommandReceiver:
             self.expired_transfers.update((generation, *k) for k in expired)
             if key in self.expired_transfers:
                 return False
+            # Never evict old IDs: eviction would enable replay. Once the
+            # bounded history fills, fail closed until a new generation.
+            if key not in self.reserved_transfers:
+                if len(self.reserved_transfers) >= self.max_transfer_ids:
+                    return self._deny()
+                self.reserved_transfers.add(key)
             payload = self.parts.accept(frame, source=source, now=now)
         except ValueError:
             return self._deny()
