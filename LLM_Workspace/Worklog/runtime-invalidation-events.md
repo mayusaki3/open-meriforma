@@ -50,6 +50,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 51 synthetic receiver replay and partial timeout test user-confirmed PASS (5/5) on 2026-10-18, with suites 50/49/48 regressions PASS (13/13). Completed transfer IDs and expired partial IDs are retained per receiver instance, with no persistence, wraparound strategy, or real firmware protection claimed.
 - Suite 52 bounded replay-history / ID-wrap / fresh-generation receiver test user-confirmed PASS (5/5) on 2026-10-18, with suites 51/50/49 regressions PASS (14/14). No eviction within generation; exhausted receiver denies new commands until a new generation and receiver instance. Default cap 65536 entries; bounded but memory budget and embedded implementation unverified.
 - Receiver ID lifecycle review added at prototype/runtime-invalidation-events/RECEIVER_ID_LIFECYCLE.md (2026-10-18). Identified shared global 65536-key budget, per-source namespace, theoretical bitmap sizing, required explicit reauthorization and unverified epoch authenticity. Suite 53 implementation pending design gate.
+- Suite 53 receiver_generation_registry.py and test_receiver_generation_registry.py added, pending user local execution. Process-local generation registry prevents same-generation history reset, requires explicit authorization before fresh bind, and tests global capacity across two sources. Registry itself is volatile and does not authenticate or persist generations.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -57,5 +58,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Review RECEIVER_ID_LIFECYCLE.md; resolve per-source vs global capacity, authenticated epoch freshness and firmware memory budget before implementing suite 53.
+3. Run suite 53 test_receiver_generation_registry.py plus suites 52/51/50 regressions; review results. Epoch authentication, persistence, and embedded memory budget remain open.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
