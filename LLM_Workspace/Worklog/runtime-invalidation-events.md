@@ -39,7 +39,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 ## Pending
 - Suite 47 deterministic boundary-injection test user-confirmed PASS (4/4) on 2026-10-18, with four preceding suites PASS (16/16). Injection occurs between protocol dispatch and control eligibility check, not at actual hardware transmit.
-- Suite 48 per-control-frame synthetic revocation test added; pending user local validation. It checks revocation between two control frames; an already dispatched frame is not retractable. No physical CAN atomicity is claimed.
+- Suite 48 per-control-frame synthetic revocation test: user run confirmed first valid-control case PASS, second Ready=false case failed because injected heartbeat timestamp 0.05 was behind link clock 0.06. Test timestamp corrected to 0.06 in commit 1b05cf2; local rerun pending. Suites 47–43 regressions all PASS (20/20). An already dispatched frame is not retractable; no physical CAN atomicity is claimed.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
