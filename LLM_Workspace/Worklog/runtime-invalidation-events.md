@@ -39,6 +39,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 ## Pending
 - Suite 47 deterministic boundary-injection test user-confirmed PASS (4/4) on 2026-10-18, with four preceding suites PASS (16/16). Injection occurs between protocol dispatch and control eligibility check, not at actual hardware transmit.
+- Suite 48 per-control-frame synthetic revocation test added; pending user local validation. It checks revocation between two control frames; an already dispatched frame is not retractable. No physical CAN atomicity is claimed.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -46,5 +47,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Plan next validation for control transmit boundary and revocation without implying hardware atomicity.
+3. Run test_authority_shared_bus_frame_boundary.py and regressions 47–43; record results without implying hardware atomicity.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
