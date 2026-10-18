@@ -84,6 +84,10 @@ class SharedCanBus:
         self.acks.active.clear()
         self.link._invalidate()
 
+    def _before_background_frame(self, *, until, key):
+        """Extension point for synthetic background dispatch; no physical TX."""
+        return True
+
     def dispatch(self, *, until, drop=None):
         until = finite(until)
         if until < self.now:
@@ -113,6 +117,9 @@ class SharedCanBus:
                 output.append(("dropped", key, finish))
                 continue
             if direction == "background":
+                if not self._before_background_frame(until=until, key=key):
+                    output.append(("blocked", key, False, finish))
+                    break
                 output.append(("background", key, True, finish))
             elif direction == "forward":
                 transfer_key = (self.generation, source, tid)
