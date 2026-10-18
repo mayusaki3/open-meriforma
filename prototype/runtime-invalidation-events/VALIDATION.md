@@ -414,3 +414,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 4/4 checks for both controls dispatched while authorized, Ready=false between frames, bus-off between frames and generation change between frames.
 - Suites 47 and 46 regression checks also PASS (4/4 each), 12/12 checks in this run.
 - The earlier test injection timestamp 0.05 caused a clock regression; corrected to 0.06 before the successful run. Synthetic per-frame checks do not retract already dispatched frames or verify hardware motor inhibition.
+
+## Confirmed: `python .\\test_authority_shared_bus_partial_command.py`
+
+- User-confirmed PASS (2026-10-18): 4/4 checks for complete two-fragment reconstruction and cancellation/partial-buffer discard on Ready=false, bus-off and generation change.
+- Suites 48, 47 and 46 regression checks also PASS (4/4 each), 16/16 checks in this run.
+- Receiver is a test-only Reassembler, not Forma firmware; successful synthetic reconstruction does not establish actuator command execution safety.
