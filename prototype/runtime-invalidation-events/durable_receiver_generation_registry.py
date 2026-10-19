@@ -29,6 +29,9 @@ class DurableReceiverGenerationRegistry:
             check = self.db.execute("PRAGMA quick_check").fetchone()
             if check != ("ok",):
                 raise ValueError("corrupt history")
+            bad = self.db.execute("SELECT 1 FROM generations WHERE typeof(generation) != ? OR length(generation) = 0 LIMIT 1", ("text",)).fetchone()
+            if bad:
+                raise ValueError("invalid persisted generation")
         except sqlite3.DatabaseError:
             raise ValueError("history unavailable") from None
 
