@@ -76,6 +76,8 @@ class MonotonicGenerationGuard:
                 raise ValueError("anchor update failed")
             self.registry.db.execute("COMMIT")
         except (sqlite3.DatabaseError, ValueError):
+            if self.registry.current is not None:
+                self.registry.current._deny()
             if self.registry.db.in_transaction:
                 self.registry.db.execute("ROLLBACK")
             raise ValueError("generation reservation failed; witness may be ahead") from None
