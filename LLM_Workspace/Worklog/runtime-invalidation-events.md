@@ -6,10 +6,10 @@ Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
 
 ## Current phase
-- Completed: synthetic validation suites 1–57. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
+- Completed: synthetic validation suites 1–58. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
 - Suites 45–46 confirmed: authority-gated SharedCanBus synthetic queue and mixed heartbeat/ACK/control priority.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
-- Do not equate 57/57 suite PASS with hardware safety certification or comprehensive regression.
+- Do not equate 58/58 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
 - prototype/runtime-invalidation-events/authority_can_scheduler.py
@@ -21,6 +21,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - prototype/runtime-invalidation-events/ARCHITECTURE.md (provisional implementation overview)
 
 ## Verified results
+- Suite 58: 5/5 PASS, with suites 57/56/55 regressions 14/14 PASS, reported by user on 2026-10-20. Simulated monotonic witness detects rollback mismatch; no hardware trust demonstrated.
 - Suite 57: 5/5 PASS, with suites 56/55/54 regressions 14/14 PASS, reported by user on 2026-10-19. Demonstrated coherent history rollback vulnerability; this PASS does not establish anti-rollback protection.
 - Suite 56: 5/5 PASS, with suites 55/54/53 regressions 14/14 PASS, reported by user on 2026-10-19.
 - Suite 55: 4/4 PASS after Windows SQLite connection-close fix, reported by user on 2026-10-19; suites 54/53/52 regressions 15/15 PASS in preceding run.
@@ -60,7 +61,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 55 test_durable_receiver_generation_crash.py user-confirmed PASS (4/4) after contextlib.closing fix on 2026-10-19. Windows WinError 32 during temporary-file cleanup resolved. Forced child exit tests cover before/after SQLite COMMIT and replay refusal after reopen; no physical power-loss or fsync durability claim.
 - Suite 56 integrity checks in test_durable_receiver_generation_integrity.py user-confirmed PASS (5/5) on 2026-10-19, with suites 55/54/53 regressions PASS (14/14). Startup validation refuses empty or non-TEXT stored generation values; fixtures also cover truncated database, incompatible schema and valid existing history. SQLite quick_check and schema checks are not a cryptographic anti-rollback guarantee.
 - Suite 57 coherent rollback reproduction (test_durable_receiver_generation_rollback.py, GENERATION_ROLLBACK_BOUNDARY.md) user-confirmed PASS (5/5) on 2026-10-19, with suites 56/55/54 regressions PASS (14/14). Restored coherent snapshot passes SQLite validation and permits old generation rebind. Independent witness is a test oracle only, not a production security mechanism.
-- Suite 58 simulated independent monotonic witness and guard added (monotonic_generation_guard.py, test_monotonic_generation_guard.py); local validation pending. Witness advances before atomic SQLite generation+anchor commit, so a failed reservation strands the system closed. Fixture witness is assumed independent/non-rollbackable, not trusted hardware; no automatic recovery.
+- Suite 58 simulated independent monotonic witness and guard (monotonic_generation_guard.py, test_monotonic_generation_guard.py) user-confirmed PASS (5/5), with suites 57/56/55 regressions PASS (14/14). Witness advances before SQLite generation+anchor commit; a failed reservation strands the system closed. Fixture witness is assumed independent/non-rollbackable, not trusted hardware; no automatic recovery.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -68,5 +69,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Run suite 58 monotonic witness test and suites 57/56/55 regressions on Windows; review cross-store crash gap and hardware trust assumptions.
+3. Design suite 59 for crash boundaries across independent witness advancement and SQLite COMMIT; verify fail-closed behavior on restart and explicitly document recovery policy.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
