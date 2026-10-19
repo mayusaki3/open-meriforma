@@ -450,3 +450,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-19): 5/5 checks for persisted generation reuse denial after reopen, explicit authorization for fresh generation, missing database refusal, corrupt database refusal and missing schema refusal.
 - Suites 53, 52 and 51 regression checks also PASS (5/5 each), 20/20 checks in this run.
 - No process-kill/power-loss durability, authenticated epoch, physical CAN, or motor safety verified.
+
+## Confirmed: `python .\\test_durable_receiver_generation_crash.py`
+
+- User-confirmed PASS (2026-10-19): 4/4 checks after explicit SQLite connection closure fix: uncommitted generation rolled back on forced child exit, committed generation retained, replay rejected after restart, and rolled-back generation could be committed on a later authorized run.
+- Suites 54/53/52 regressions 15/15 PASS in the immediately preceding user run; no full regression claimed.
+- PC SQLite process termination only, not power-loss durability, authenticated generations or hardware STOP.
