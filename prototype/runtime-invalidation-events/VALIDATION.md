@@ -444,3 +444,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-18): 5/5 checks for global cross-source capacity, same-generation receiver rebuild rejection, unauthorized new-generation rejection, authorized fresh-generation bind, and previously used generation rejection.
 - Suites 52, 51 and 50 regression checks also PASS (5/5 each), 20/20 checks in this run.
 - Registry is process-local only; no durable restart anti-replay, authenticated epoch, physical CAN, or motor safety verified.
+
+## Confirmed: `python .\\test_durable_receiver_generation_registry.py`
+
+- User-confirmed PASS (2026-10-19): 5/5 checks for persisted generation reuse denial after reopen, explicit authorization for fresh generation, missing database refusal, corrupt database refusal and missing schema refusal.
+- Suites 53, 52 and 51 regression checks also PASS (5/5 each), 20/20 checks in this run.
+- No process-kill/power-loss durability, authenticated epoch, physical CAN, or motor safety verified.
