@@ -456,3 +456,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-19): 4/4 checks after explicit SQLite connection closure fix: uncommitted generation rolled back on forced child exit, committed generation retained, replay rejected after restart, and rolled-back generation could be committed on a later authorized run.
 - Suites 54/53/52 regressions 15/15 PASS in the immediately preceding user run; no full regression claimed.
 - PC SQLite process termination only, not power-loss durability, authenticated generations or hardware STOP.
+
+## Confirmed: `python .\\test_durable_receiver_generation_integrity.py`
+
+- User-confirmed PASS (2026-10-19): 5/5 checks for empty and non-text generation rejection, truncated SQLite rejection, incompatible schema rejection, and valid history loading.
+- Suites 55/54/53 regression checks PASS (4/4, 5/5, 5/5), 19/19 checks in this run.
+- Synthetic PC SQLite validation only. No guarantee against coherent history rollback, physical power loss, authenticated generations, or motor safety.
