@@ -1,4 +1,5 @@
 """Suite 56: startup refusal for malformed durable generation history."""
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 from tempfile import TemporaryDirectory
@@ -24,14 +25,14 @@ def prepared(folder, name):
 
 with TemporaryDirectory() as folder:
     path = prepared(folder, "empty.sqlite")
-    with sqlite3.connect(path) as db:
+    with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", ("",))
     refuses(path)
     print("PASS empty persisted generation refuses startup")
 
 with TemporaryDirectory() as folder:
     path = prepared(folder, "blob.sqlite")
-    with sqlite3.connect(path) as db:
+    with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", (sqlite3.Binary(b"opaque"),))
     refuses(path)
     print("PASS non-text persisted generation refuses startup")
@@ -45,7 +46,7 @@ with TemporaryDirectory() as folder:
 
 with TemporaryDirectory() as folder:
     path = prepared(folder, "schema.sqlite")
-    with sqlite3.connect(path) as db:
+    with closing(sqlite3.connect(path)) as db:
         db.execute("DROP TABLE generations")
         db.execute("CREATE TABLE generations (generation BLOB PRIMARY KEY)")
     refuses(path)
@@ -53,7 +54,7 @@ with TemporaryDirectory() as folder:
 
 with TemporaryDirectory() as folder:
     path = prepared(folder, "valid.sqlite")
-    with sqlite3.connect(path) as db:
+    with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", ("M1:C1",))
     store = Registry(str(path))
     store.close()
