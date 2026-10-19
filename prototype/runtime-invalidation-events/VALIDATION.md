@@ -462,3 +462,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-19): 5/5 checks for empty and non-text generation rejection, truncated SQLite rejection, incompatible schema rejection, and valid history loading.
 - Suites 55/54/53 regression checks PASS (4/4, 5/5, 5/5), 19/19 checks in this run.
 - Synthetic PC SQLite validation only. No guarantee against coherent history rollback, physical power loss, authenticated generations, or motor safety.
+
+## Confirmed: `python .\\test_durable_receiver_generation_rollback.py`
+
+- User-confirmed PASS (2026-10-19): 5/5 checks showing newer generation before rollback, coherent old snapshot accepted by SQLite/registry, independent up-to-date witness detects missing generation, stale witness misses it, and registry can rebind lost generation after rollback.
+- Suites 56/55/54 regressions PASS (5/5, 4/4, 5/5), 19/19 checks in this run.
+- PASS demonstrates the vulnerability; no production anti-rollback protection, authenticated epoch, hardware storage or physical STOP verified.
