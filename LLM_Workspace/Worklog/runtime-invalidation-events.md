@@ -6,10 +6,10 @@ Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
 
 ## Current phase
-- Completed: synthetic validation suites 1–55. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
+- Completed: synthetic validation suites 1–56. User confirmed suite 44 and suite 43 regression PASS on 2026-10-17.
 - Suites 45–46 confirmed: authority-gated SharedCanBus synthetic queue and mixed heartbeat/ACK/control priority.
 - Suite 45 user-confirmed PASS on 2026-10-17: 4/4 checks; suites 44 and 43 regressions 4/4 each PASS.
-- Do not equate 55/55 suite PASS with hardware safety certification or comprehensive regression.
+- Do not equate 56/56 suite PASS with hardware safety certification or comprehensive regression.
 
 ## Latest authoritative artifacts
 - prototype/runtime-invalidation-events/authority_can_scheduler.py
@@ -21,6 +21,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - prototype/runtime-invalidation-events/ARCHITECTURE.md (provisional implementation overview)
 
 ## Verified results
+- Suite 56: 5/5 PASS, with suites 55/54/53 regressions 14/14 PASS, reported by user on 2026-10-19.
 - Suite 55: 4/4 PASS after Windows SQLite connection-close fix, reported by user on 2026-10-19; suites 54/53/52 regressions 15/15 PASS in preceding run.
 - Suite 54: 5/5 PASS, with suites 53/52/51 regressions 15/15 PASS, reported by user on 2026-10-19.
 - Suite 53: 5/5 PASS, with suites 52/51/50 regressions 15/15 PASS, reported by user on 2026-10-18.
@@ -56,7 +57,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 53 receiver_generation_registry.py and test_receiver_generation_registry.py user-confirmed PASS (5/5) on 2026-10-18, with suites 52/51/50 regressions PASS (15/15). Process-local generation registry prevents same-generation history reset, requires explicit authorization before fresh bind, and tests global capacity across two sources. Registry itself is volatile and does not authenticate or persist generations.
 - Suite 54 SQLite-backed durable_receiver_generation_registry.py and test_durable_receiver_generation_registry.py user-confirmed PASS (5/5) on 2026-10-19, with suites 53/52/51 regressions PASS (15/15). Explicit initialization, committed generation insert before receiver activation, reopen reuse denial, missing/corrupt schema fail-closed. No physical power-loss durability or cryptographic epoch authenticity verified.
 - Suite 55 test_durable_receiver_generation_crash.py user-confirmed PASS (4/4) after contextlib.closing fix on 2026-10-19. Windows WinError 32 during temporary-file cleanup resolved. Forced child exit tests cover before/after SQLite COMMIT and replay refusal after reopen; no physical power-loss or fsync durability claim.
-- Suite 56 integrity checks added in test_durable_receiver_generation_integrity.py; local verification pending. Startup validation now refuses empty or non-TEXT stored generation values; fixtures also cover truncated database, incompatible schema and valid existing history. SQLite quick_check and schema checks are not a cryptographic anti-rollback guarantee.
+- Suite 56 integrity checks in test_durable_receiver_generation_integrity.py user-confirmed PASS (5/5) on 2026-10-19, with suites 55/54/53 regressions PASS (14/14). Startup validation refuses empty or non-TEXT stored generation values; fixtures also cover truncated database, incompatible schema and valid existing history. SQLite quick_check and schema checks are not a cryptographic anti-rollback guarantee.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -64,5 +65,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Run suite 56 integrity checks plus 55/54/53 regressions on Windows; authentication, physical power-loss durability and embedded memory budget remain open.
+3. Plan suite 57 for semantic generation identity and durable history rollback threat model, separating local integrity from authenticated anti-rollback and hardware persistence.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
