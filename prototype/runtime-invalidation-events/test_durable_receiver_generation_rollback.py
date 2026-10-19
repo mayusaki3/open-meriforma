@@ -10,6 +10,7 @@ import sqlite3
 from tempfile import TemporaryDirectory
 
 from durable_receiver_generation_registry import DurableReceiverGenerationRegistry as Registry
+from causal_integrated_can import CausalIntegratedCan
 
 
 def insert(path, generation):
@@ -60,8 +61,19 @@ with TemporaryDirectory() as folder:
     print("PASS stale witness cannot detect a newer missing generation")
 
     # Without an external witness, a lost generation is available for reuse.
-    insert(live, "M2:C2")
+    model = CausalIntegratedCan(("left", "right"))
+    model.start(boot_id="M2", challenge="C2")
+    for unit in model.link.units:
+        assert model.submit(unit, 0, now=0.001, deadline=0.04)
+    model.advance(until=0.02)
+    model.deliver_acks(until=0.04)
+    assert model.link.authorize(explicit=True, now=0.04)
+    assert model.link.generation == "M2:C2"
+    reopened = Registry(str(live))
+    receiver = reopened.bind(model.link, now=0.04)
+    assert receiver is reopened.current
+    reopened.close()
     assert generations(live) == {"M1:C1", "M2:C2"}
-    print("PASS local history alone permits lost generation reuse after rollback")
+    print("PASS registry can rebind lost generation after coherent rollback")
 
 print("PASS all durable-receiver-generation-rollback checks")
