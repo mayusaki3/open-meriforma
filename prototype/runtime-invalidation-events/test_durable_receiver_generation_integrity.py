@@ -27,6 +27,7 @@ with TemporaryDirectory() as folder:
     path = prepared(folder, "empty.sqlite")
     with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", ("",))
+        db.commit()
     refuses(path)
     print("PASS empty persisted generation refuses startup")
 
@@ -34,6 +35,7 @@ with TemporaryDirectory() as folder:
     path = prepared(folder, "blob.sqlite")
     with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", (sqlite3.Binary(b"opaque"),))
+        db.commit()
     refuses(path)
     print("PASS non-text persisted generation refuses startup")
 
@@ -49,6 +51,7 @@ with TemporaryDirectory() as folder:
     with closing(sqlite3.connect(path)) as db:
         db.execute("DROP TABLE generations")
         db.execute("CREATE TABLE generations (generation BLOB PRIMARY KEY)")
+        db.commit()
     refuses(path)
     print("PASS incompatible history schema refuses startup")
 
@@ -56,6 +59,7 @@ with TemporaryDirectory() as folder:
     path = prepared(folder, "valid.sqlite")
     with closing(sqlite3.connect(path)) as db:
         db.execute("INSERT INTO generations VALUES (?)", ("M1:C1",))
+        db.commit()
     store = Registry(str(path))
     store.close()
     print("PASS valid existing history remains loadable")
