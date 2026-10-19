@@ -2,6 +2,7 @@
 
 SQLite process crash simulation, not sudden power loss or authenticated epoch.
 """
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 import subprocess
@@ -20,7 +21,9 @@ def crash(path, phase):
 
 
 def history(path):
-    with sqlite3.connect(path) as db:
+    # sqlite3.Connection context manager commits/rolls back but does NOT close.
+    # Explicitly close before TemporaryDirectory cleanup on Windows.
+    with closing(sqlite3.connect(path)) as db:
         return [row[0] for row in db.execute("SELECT generation FROM generations ORDER BY generation")]
 
 
