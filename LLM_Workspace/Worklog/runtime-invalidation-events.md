@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Worklog
 
-Updated: 2026-10-18 (JST)
+Updated: 2026-10-19 (JST)
 Repository: mayusaki3/open-meriforma
 Branch: develop
 Status: active technical validation; this Worklog is the authoritative work-state record.
@@ -52,6 +52,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 52 bounded replay-history / ID-wrap / fresh-generation receiver test user-confirmed PASS (5/5) on 2026-10-18, with suites 51/50/49 regressions PASS (14/14). No eviction within generation; exhausted receiver denies new commands until a new generation and receiver instance. Default cap 65536 entries; bounded but memory budget and embedded implementation unverified.
 - Receiver ID lifecycle review added at prototype/runtime-invalidation-events/RECEIVER_ID_LIFECYCLE.md (2026-10-18). Identified shared global 65536-key budget, per-source namespace, theoretical bitmap sizing, required explicit reauthorization and unverified epoch authenticity. Suite 53 implementation pending design gate.
 - Suite 53 receiver_generation_registry.py and test_receiver_generation_registry.py user-confirmed PASS (5/5) on 2026-10-18, with suites 52/51/50 regressions PASS (15/15). Process-local generation registry prevents same-generation history reset, requires explicit authorization before fresh bind, and tests global capacity across two sources. Registry itself is volatile and does not authenticate or persist generations.
+- Suite 54 SQLite-backed durable_receiver_generation_registry.py and test_durable_receiver_generation_registry.py added; local validation pending. Explicit initialization, committed generation insert before receiver activation, reopen reuse denial, missing/corrupt schema fail-closed. No physical power-loss durability or cryptographic epoch authenticity verified.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -59,5 +60,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Design suite 54 for restart-era generation persistence and recovery fail-closed behavior, while keeping authentication and embedded memory budget open.
+3. Run suite 54 test_durable_receiver_generation_registry.py and regressions suites 53/52/51; review results. Authentication, power-loss durability and embedded memory budget remain open.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
