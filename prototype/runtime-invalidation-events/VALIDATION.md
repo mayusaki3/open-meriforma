@@ -468,3 +468,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-19): 5/5 checks showing newer generation before rollback, coherent old snapshot accepted by SQLite/registry, independent up-to-date witness detects missing generation, stale witness misses it, and registry can rebind lost generation after rollback.
 - Suites 56/55/54 regressions PASS (5/5, 4/4, 5/5), 19/19 checks in this run.
 - PASS demonstrates the vulnerability; no production anti-rollback protection, authenticated epoch, hardware storage or physical STOP verified.
+
+## Confirmed: `python .\\test_monotonic_generation_guard.py`
+
+- User-confirmed PASS (2026-10-20): 5/5 checks for witness advancement, coherent SQLite rollback rejection, stale witness rejection, witness-ahead interrupted-commit rejection, and duplicate reservation failure revoking receiver.
+- Suites 57/56/55 regressions PASS (5/5, 5/5, 4/4), 19/19 checks in this run.
+- Witness is synthetic process-local state; no independent hardware trust, power-loss guarantee or physical STOP established.
