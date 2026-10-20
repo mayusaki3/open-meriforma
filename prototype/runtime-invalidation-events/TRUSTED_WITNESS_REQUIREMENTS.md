@@ -1,6 +1,6 @@
 # Suite 61 — Trusted generation witness and recovery requirements (design gate)
 
-Status: **requirements draft / review pending**. This is not a verified hardware implementation. Builds on suites 54–60; especially the demonstrated coherent two-store rollback vulnerability.
+Status: **requirements draft / architecture direction provisionally reviewed; hardware decision pending**. This is not a verified hardware implementation. Builds on suites 54–60; especially the demonstrated coherent two-store rollback vulnerability.
 
 ## Safety objective and trust boundary
 
@@ -54,9 +54,13 @@ A protected counter alone does not authenticate Main, Forma, or the binding of a
 4. Actual CAN-FD authentication/authority validation and actuator inhibit/STOP verification under faults.
 5. Formal HLDocS specification, test specification, traceability and acceptance review after checking the applicable templates.
 
+## Provisional architecture direction
+
+See [MULTI_FORMA_WITNESS_DESIGN.md](MULTI_FORMA_WITNESS_DESIGN.md). Prefer a **protected witness owned by each Forma** and a Main-coordinated, all-required-peers group authorization. This is a review proposal, not a hardware or protocol implementation. Main-side SQLite is not the sole trust anchor; individual Forma acceptance does not imply group acceptance. An interrupted reservation may strand counters without distributed atomic rollback.
+
 ## Open design decisions
 
-- Which component owns the authoritative counter: each Forma, Main, or an independent module? What is the multi-Forma consistency rule?
+- Provisional: each Forma owns its authoritative counter; confirm hardware feasibility and implement authenticated group-commit/peer-set semantics before final approval.
 - Can a witness advance be proven committed when a request times out? What is the safe resynchronization protocol?
 - What identity/key rollover and device replacement rules prevent reuse of an old generation?
 - How are service credentials, operator approval, audit logs, and recovery authorization protected?
