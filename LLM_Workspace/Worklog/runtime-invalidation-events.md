@@ -62,6 +62,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 56 integrity checks in test_durable_receiver_generation_integrity.py user-confirmed PASS (5/5) on 2026-10-19, with suites 55/54/53 regressions PASS (14/14). Startup validation refuses empty or non-TEXT stored generation values; fixtures also cover truncated database, incompatible schema and valid existing history. SQLite quick_check and schema checks are not a cryptographic anti-rollback guarantee.
 - Suite 57 coherent rollback reproduction (test_durable_receiver_generation_rollback.py, GENERATION_ROLLBACK_BOUNDARY.md) user-confirmed PASS (5/5) on 2026-10-19, with suites 56/55/54 regressions PASS (14/14). Restored coherent snapshot passes SQLite validation and permits old generation rebind. Independent witness is a test oracle only, not a production security mechanism.
 - Suite 58 simulated independent monotonic witness and guard (monotonic_generation_guard.py, test_monotonic_generation_guard.py) user-confirmed PASS (5/5), with suites 57/56/55 regressions PASS (14/14). Witness advances before SQLite generation+anchor commit; a failed reservation strands the system closed. Fixture witness is assumed independent/non-rollbackable, not trusted hardware; no automatic recovery.
+- Suite 59 subprocess crash-window fixture added (monotonic_generation_crash_worker.py, test_monotonic_generation_crash.py, MONOTONIC_WITNESS_CRASH_BOUNDARY.md); Windows local validation pending. FileWitness is untrusted, process exit is not physical power loss; recovery remains fail-closed and manual policy unspecified.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -69,5 +70,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Design suite 59 for crash boundaries across independent witness advancement and SQLite COMMIT; verify fail-closed behavior on restart and explicitly document recovery policy.
+3. Run suite 59 cross-store crash windows plus suites 58/57/56 regressions on Windows. Record observed output before planning further failure injection.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
