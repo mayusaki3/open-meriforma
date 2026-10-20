@@ -12,6 +12,7 @@ class MultiFormaGenerationGroup:
         self.required = tuple(peers)
         self.guards = {}
         self.enabled = False
+        self.poisoned = False
 
     def attach(self, peer, guard):
         if peer not in self.required or peer in self.guards:
@@ -22,16 +23,17 @@ class MultiFormaGenerationGroup:
 
     def reserve(self, links, *, now):
         self.enabled = False
+        if self.poisoned:
+            return False
         if set(self.guards) != set(self.required) or set(links) != set(self.required):
             return False
         # A failed or ambiguous reservation poisons this group instance.
         # A fresh group instance does not itself establish authentication.
-        reserved = []
         try:
             for peer in self.required:
                 self.guards[peer].bind(links[peer], now=now)
-                reserved.append(peer)
         except (ValueError, KeyError, OSError):
+            self.poisoned = True
             for guard in self.guards.values():
                 if guard.registry.current is not None:
                     guard.registry.current._deny()
