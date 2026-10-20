@@ -67,6 +67,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 59 subprocess crash-window fixture (monotonic_generation_crash_worker.py, test_monotonic_generation_crash.py, MONOTONIC_WITNESS_CRASH_BOUNDARY.md) user-confirmed PASS (3/3), with suites 58/57/56 regressions PASS (15/15). FileWitness is untrusted, process exit is not physical power loss; recovery remains fail-closed and manual policy unspecified.
 - Suite 60 witness file validation, malformed/missing/mismatched witness checks, and coherent two-store rollback limitation (test_monotonic_witness_integrity.py, WITNESS_INTEGRITY_BOUNDARY.md) user-confirmed PASS (5/5), with suites 59/58/57 regressions PASS (13/13). Ordinary file witness is not trusted anti-rollback storage.
 - Suite 61 requirements draft (TRUSTED_WITNESS_REQUIREMENTS.md) expanded with provisional per-Forma protected witness ownership and all-required-peers group authorization (MULTI_FORMA_WITNESS_DESIGN.md). Hardware feasibility, authentication, group-commit protocol, and service recovery require review; **not** an implemented/tested 61st suite. Suites 1–60 remain the last user-confirmed validation count.
+- Suite 62 synthetic multi-Forma group reservation prototype and five test cases added (multi_forma_generation_group.py, test_multi_forma_generation_group.py, MULTI_FORMA_GROUP_TEST_BOUNDARY.md); Windows validation pending. This is not authenticated distributed group commit or physical motor inhibition.
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -74,5 +75,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Review the provisional per-Forma witness ownership and group-commit contract; next prototype should test synthetic partial group reservation failures without claiming hardware anti-rollback.
+3. Run suite 62 synthetic multi-Forma partial reservation tests plus suites 60/59/58 regressions on Windows; record observed results.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
