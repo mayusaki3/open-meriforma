@@ -474,3 +474,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-20): 5/5 checks for witness advancement, coherent SQLite rollback rejection, stale witness rejection, witness-ahead interrupted-commit rejection, and duplicate reservation failure revoking receiver.
 - Suites 57/56/55 regressions PASS (5/5, 5/5, 4/4), 19/19 checks in this run.
 - Witness is synthetic process-local state; no independent hardware trust, power-loss guarantee or physical STOP established.
+
+## Confirmed: `python .\\test_monotonic_generation_crash.py`
+
+- User-confirmed PASS (2026-10-20): 3/3 checks for crash before witness advance, after witness advance/before SQLite commit, and after SQLite commit.
+- Suites 58/57/56 regressions PASS (5/5 each), 18/18 checks in this run.
+- Plain-file witness is untrusted; subprocess exit does not prove real power-loss durability, anti-rollback protection, or physical STOP.
