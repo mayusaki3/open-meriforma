@@ -13,7 +13,18 @@ class FileWitness(SimulatedWitness):
     def __init__(self, path, *, crash_on_advance=False):
         self.path = Path(path)
         self.crash_on_advance = crash_on_advance
-        super().__init__(int(self.path.read_text(encoding="ascii")))
+        try:
+            raw = self.path.read_bytes()
+            # Canonical decimal only. This is validation, not authentication.
+            if (not raw or len(raw) > 20 or not raw.isascii()
+                    or not raw.isdigit() or (len(raw) > 1 and raw.startswith(b"0"))):
+                raise ValueError("invalid witness encoding")
+            value = int(raw)
+            if value > 9223372036854775807:
+                raise ValueError("witness outside SQLite INTEGER range")
+        except (OSError, ValueError) as exc:
+            raise ValueError("witness unavailable or malformed") from exc
+        super().__init__(value)
 
     def advance(self, expected):
         next_value = super().advance(expected)
