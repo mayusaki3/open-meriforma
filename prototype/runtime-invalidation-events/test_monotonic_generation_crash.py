@@ -33,21 +33,6 @@ def state(path):
         return sequence, generations
 
 
-def run(mode):
-    with TemporaryDirectory() as folder:
-        db_path = Path(folder) / "history.sqlite"
-        witness_path = Path(folder) / "witness.txt"
-        witness_path.write_text("0", encoding="ascii")
-        guard = Guard(str(db_path), FileWitness(witness_path), initialize=True)
-        guard.close()
-        proc = subprocess.run(
-            [sys.executable, str(WORKER), str(db_path), str(witness_path), mode],
-            check=False, capture_output=True, text=True,
-        )
-        assert proc.returncode == 71, (mode, proc.returncode, proc.stdout, proc.stderr)
-        return mode, int(witness_path.read_text(encoding="ascii")), state(db_path), db_path, witness_path
-
-
 with TemporaryDirectory() as folder:
     # Use a separate fixture per mode, keeping the database alive during checks.
     for mode in ("before_witness", "after_witness", "after_commit"):
