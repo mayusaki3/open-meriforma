@@ -480,3 +480,9 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-20): 3/3 checks for crash before witness advance, after witness advance/before SQLite commit, and after SQLite commit.
 - Suites 58/57/56 regressions PASS (5/5 each), 18/18 checks in this run.
 - Plain-file witness is untrusted; subprocess exit does not prove real power-loss durability, anti-rollback protection, or physical STOP.
+
+## Confirmed: `python .\\test_monotonic_witness_integrity.py`
+
+- User-confirmed PASS (2026-10-20): 5/5 checks for missing witness, malformed encodings, witness-ahead mismatch, witness-behind mismatch, and undetectable coherent rollback of both untrusted stores.
+- Suites 59/58/57 regressions PASS (3/3, 5/5, 5/5), 18/18 checks in this run.
+- PASS does not establish secure monotonicity, power-loss durability, hardware authentication, or physical STOP.
