@@ -69,7 +69,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Suite 61 requirements draft (TRUSTED_WITNESS_REQUIREMENTS.md) expanded with provisional per-Forma protected witness ownership and all-required-peers group authorization (MULTI_FORMA_WITNESS_DESIGN.md). Hardware feasibility, authentication, group-commit protocol, and service recovery require review; **not** an implemented/tested 61st suite. Suites 1–60 remain the last user-confirmed validation count.
 - Suite 62 synthetic multi-Forma group reservation prototype user-confirmed PASS (5/5), with suites 60/59/58 regressions PASS (13/13) on Windows 2026-10-21. This is not authenticated distributed group commit or physical motor inhibition.
 - Suite 63 subprocess coordinator crash windows user-confirmed PASS (3/3) on Windows 2026-10-21, with suites 62/60/59 regressions PASS (13/13). Crashes after first and after both local reservations do not restore group authority. **Does not test peer-local group-commit enforcement.**
-- Suite 64 peer-local synthetic group-commit gate and five checks added (forma_group_commit_gate.py, test_forma_group_commit_gate.py, FORMA_GROUP_COMMIT_BOUNDARY.md); Windows validation pending. Dict proof is forgeable and not wired to FormaCommandReceiver.receive().
+- Suite 64 peer-local synthetic group-commit gate user-confirmed PASS (5/5) on Windows 2026-10-21, with suites 63/62 regressions PASS (8/8). Dict proof is forgeable and not wired to FormaCommandReceiver.receive().
 - Review prototype boundaries and create HLDocS-compliant spec/testspec and traceability documents after checking the complete template/prompt and document-type prerequisites; this Worklog is an operational state record, not a declaration of document compliance.
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
@@ -77,5 +77,5 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Run suite 64 peer-local structural proof tests and suites 63/62 regressions on Windows. Next integrate local gate with receiver acceptance while keeping cryptographic authentication explicitly out of scope.
+3. Design and test suite 65 integration of peer-local group-commit gate into FormaCommandReceiver.receive() acceptance, preserving fail-closed semantics and noting cryptographic authentication remains out of scope.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
