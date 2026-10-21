@@ -37,7 +37,7 @@ class FormaGroupCommitGate:
         committed = proof["committed_peers"]
         if (not isinstance(peers, (tuple, list))
                 or not isinstance(committed, (tuple, list))
-                or any(type(p) is not str for p in peers + committed)
+                or any(type(p) is not str for p in tuple(peers) + tuple(committed))
                 or len(set(peers)) != len(peers)
                 or len(set(committed)) != len(committed)
                 or frozenset(peers) != self.required
