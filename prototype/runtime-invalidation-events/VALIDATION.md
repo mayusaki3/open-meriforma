@@ -486,3 +486,10 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - User-confirmed PASS (2026-10-20): 5/5 checks for missing witness, malformed encodings, witness-ahead mismatch, witness-behind mismatch, and undetectable coherent rollback of both untrusted stores.
 - Suites 59/58/57 regressions PASS (3/3, 5/5, 5/5), 18/18 checks in this run.
 - PASS does not establish secure monotonicity, power-loss durability, hardware authentication, or physical STOP.
+
+## Suite 62 — Windows validation confirmed (2026-10-21)
+
+- `python -m py_compile` passed for multi_forma_generation_group.py and test_multi_forma_generation_group.py.
+- `python test_multi_forma_generation_group.py`: 5/5 PASS (all peers, missing peer, partial commit/revocation, mismatched witness, mismatched peer set).
+- Regressions: suite 60 5/5, suite 59 3/3, suite 58 5/5 PASS; 18/18 checks total.
+- Suite 61 is design-only, not an executed test. No hardware anti-rollback, authenticated distributed group commit, or physical motor inhibit demonstrated.
