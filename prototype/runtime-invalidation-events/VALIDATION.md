@@ -500,3 +500,10 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - `python test_multi_forma_crash_recovery.py`: 3/3 PASS (crash after first peer, crash after both peers, and fresh coordinator without auto-authorization).
 - Regressions: suite 62 5/5, suite 60 5/5, suite 59 3/3 PASS; 16/16 checks total.
 - Coordinator flag is volatile; independent Forma-side group-commit proof enforcement, hardware power-loss safety and physical STOP remain unverified.
+
+## Suite 64 — Windows validation confirmed (2026-10-21)
+
+- `python -m py_compile` passed for forma_group_commit_gate.py and test_forma_group_commit_gate.py.
+- `python test_forma_group_commit_gate.py`: 5/5 PASS (missing proof, exact all-peer proof, malformed/mismatched proof, stale context/revocation, restart denial).
+- Regressions: suite 63 3/3, suite 62 5/5 PASS; 13/13 checks total.
+- Proof is forgeable Python dictionary; not integrated into FormaCommandReceiver.receive(); no physical actuator inhibit verified.
