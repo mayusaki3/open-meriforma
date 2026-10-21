@@ -493,3 +493,10 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - `python test_multi_forma_generation_group.py`: 5/5 PASS (all peers, missing peer, partial commit/revocation, mismatched witness, mismatched peer set).
 - Regressions: suite 60 5/5, suite 59 3/3, suite 58 5/5 PASS; 18/18 checks total.
 - Suite 61 is design-only, not an executed test. No hardware anti-rollback, authenticated distributed group commit, or physical motor inhibit demonstrated.
+
+## Suite 63 — Windows validation confirmed (2026-10-21)
+
+- `python -m py_compile` passed for multi_forma_crash_worker.py and test_multi_forma_crash_recovery.py.
+- `python test_multi_forma_crash_recovery.py`: 3/3 PASS (crash after first peer, crash after both peers, and fresh coordinator without auto-authorization).
+- Regressions: suite 62 5/5, suite 60 5/5, suite 59 3/3 PASS; 16/16 checks total.
+- Coordinator flag is volatile; independent Forma-side group-commit proof enforcement, hardware power-loss safety and physical STOP remain unverified.
