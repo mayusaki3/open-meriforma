@@ -7,9 +7,16 @@ from canfd_fragments import Reassembler, parse
 
 
 class FormaCommandReceiver:
-    def __init__(self, link, *, timeout=0.2, max_transfer_ids=65536):
+    def __init__(self, link, *, timeout=0.2, max_transfer_ids=65536, group_gate=None):
         if type(max_transfer_ids) is not int or not 1 <= max_transfer_ids <= 65536:
             raise ValueError('invalid transfer ID capacity')
+        if group_gate is not None:
+            from forma_group_commit_gate import FormaGroupCommitGate
+            if not isinstance(group_gate, FormaGroupCommitGate):
+                raise ValueError('invalid group gate')
+            if group_gate.generation != link.generation:
+                raise ValueError('group gate generation mismatch')
+        self.group_gate = group_gate
         self.max_transfer_ids = max_transfer_ids
         self.link = link
         self.generation = link.generation
@@ -23,11 +30,18 @@ class FormaCommandReceiver:
     def _deny(self):
         self.parts.active.clear()
         self.revoked = True
+        if self.group_gate is not None:
+            self.group_gate.deny()
         return False
 
     def receive(self, frame, *, source, generation, deadline, now):
         if self.revoked:
             return False
+        if (self.group_gate is not None
+                and not self.group_gate.eligible(
+                    generation=self.generation, sequence=self.group_gate.sequence,
+                    group_epoch=self.group_gate.group_epoch)):
+            return self._deny()
         # Authority and deadline are checked on EVERY fragment, not just
         # when a message becomes complete. The fixture clock is monotonic.
         if (generation != self.generation or self.link.generation != self.generation
@@ -60,7 +74,10 @@ class FormaCommandReceiver:
         # Recheck at the execution-permission boundary. This is an abstract
         # acceptance event only, never a motor command.
         if (self.link.generation != self.generation
-                or not self.link.eligible(now=now)):
+                or not self.link.eligible(now=now)
+                or (self.group_gate is not None and not self.group_gate.eligible(
+                    generation=self.generation, sequence=self.group_gate.sequence,
+                    group_epoch=self.group_gate.group_epoch))):
             return self._deny()
         self.seen_transfers.add(key)
         self.accepted.append((source, payload))
