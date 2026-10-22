@@ -1,0 +1,5 @@
+# Suite 65 — Receiver-local group proof integration (synthetic)
+
+`FormaCommandReceiver` accepts an optional `group_gate` argument. If supplied, it requires a matching generation at construction, checks local group eligibility before every fragment and again at the completed-payload acceptance boundary. A missing or revoked proof denies and revokes the receiver; an interrupted multi-fragment transfer cannot complete after group revocation. The legacy no-gate constructor remains supported for suites 50–64 compatibility; **production must explicitly require the gate**, otherwise the optional parameter is a bypass.
+
+The local gate checks a Python dictionary and is forgeable. It is not authenticated group commit. The receiver checks the gate's own stored epoch and sequence rather than authenticated transport metadata; no independent device-bound sequence proof, durable recovery, CAN-FD authentication, actual actuator inhibition or physical STOP is demonstrated. A future suite must make group gating mandatory for a production-mode receiver and bind group epoch and sequence to authenticated, independently verifiable receiver state.
