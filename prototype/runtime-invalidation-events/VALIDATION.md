@@ -1,6 +1,6 @@
 # Runtime Invalidation Events — Validation
 
-Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). All thirty-nine test suites user-confirmed PASS (2026-10-16). Suite 40 (multi-Forma causal CAN) awaits local execution.
+Status: cross-domain event foundation **user-confirmed PASS** (2026-10-09); policy action lifecycle **user-confirmed PASS** (2026-10-09); safety-state verification **user-confirmed PASS** (2026-10-09); observation evidence extension **user-confirmed PASS** (2026-10-09); recovery policy **user-confirmed PASS** (2026-10-09). Synthetic suites 1–60 and 62–65 user-confirmed PASS as of 2026-10-22; suite 61 is design-only. This is not hardware safety validation.
 
 ## Confirmed: `python .\\test_events.py`
 
@@ -507,3 +507,11 @@ No API name, state vocabulary, threshold, or message schema is standardized by t
 - `python test_forma_group_commit_gate.py`: 5/5 PASS (missing proof, exact all-peer proof, malformed/mismatched proof, stale context/revocation, restart denial).
 - Regressions: suite 63 3/3, suite 62 5/5 PASS; 13/13 checks total.
 - Proof is forgeable Python dictionary; not integrated into FormaCommandReceiver.receive(); no physical actuator inhibit verified.
+
+## Suite 65 — Windows validation confirmed (2026-10-22)
+
+- Environment: Python 3.14.6 in repository `.venv` on Windows.
+- `python -m py_compile` passed for `forma_command_receiver.py` and `test_forma_receiver_group_gate.py`.
+- `python test_forma_receiver_group_gate.py`: 6/6 PASS (pre-proof denial, matching proof acceptance, incomplete proof denial, revocation between fragments, revoked proof reuse denial, and constructor generation mismatch rejection).
+- Regressions: suite 64 `test_forma_group_commit_gate.py` 5/5 PASS and suite 50 `test_forma_command_receiver.py` 5/5 PASS; 16/16 checks total.
+- This is a synthetic receiver acceptance model. The optional `group_gate` may be omitted in legacy mode; dictionary proofs are forgeable. No authenticated epoch/sequence binding, real CAN-FD, protected nonvolatile counter, actuator inhibition or physical STOP is demonstrated.
