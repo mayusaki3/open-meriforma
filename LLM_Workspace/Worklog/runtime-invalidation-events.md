@@ -76,8 +76,18 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Align outdated introductory status text in VALIDATION.md after the documentation consolidation.
 - Real hardware integration, authenticated peers, physical STOP, timing, watchdog, CAN bus-off and actuator inhibition remain unverified.
 
+
+## Suite 66 design decisions (2026-10-23; implementation pending)
+- Forma units remain freely interchangeable and combinable; use one common firmware/receiver rather than production/test firmware variants.
+- Maintenance entry disables normal group control and starts with motor drive denied.
+- Maintenance safety-clearance approval is per-Forma, remains valid until maintenance exit unless invalidated sooner by fault, communication loss, generation change, reboot or loss of safety conditions.
+- Each motor-drive operation requires a separate, scope-limited authorization (target, mode, direction/range and applicable limits); an authorization cannot be reused for a different operation.
+- Each Forma makes the final decision using its own safety-clearance state and unit-specific limits; Main requests but cannot override.
+- Runtime scope, cancellation, concurrent operations and authority proof representation still need detailed design and test cases. Synthetic Python checks cannot establish real actuator safety.
+- No implementation or tests for suite 66 have yet been run.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Evaluate suite 66 requirements: mandatory production-mode group gate and authenticated epoch/sequence binding. Do not implement before design and test-case review.
+3. Detail suite 66 common-receiver maintenance safety-clearance and per-operation authorization state machine, invalidation and test cases; review before implementation. Retain normal-mode group-gate enforcement. Authenticated epoch/sequence binding remains a separate unresolved design boundary.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
