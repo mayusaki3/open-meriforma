@@ -65,4 +65,11 @@ assert s.recover_fault()
 assert not ops.authorize("op-9", SCOPE)
 print("PASS 66-B-10 fault revokes grant and requires fresh clearance")
 
-print("PASS all 10 suite 66-B synthetic checks")
+s, ops = ready()
+assert ops.authorize("op-10", SCOPE)
+s.invalidate()
+assert s.approve_clearance(conditions_ok=True, generation="gen-1", session=s.session)
+assert not ops.start("op-10", SCOPE)
+print("PASS 66-B-11 clearance renewal cannot revive stale grant")
+
+print("PASS all 11 suite 66-B synthetic checks")
