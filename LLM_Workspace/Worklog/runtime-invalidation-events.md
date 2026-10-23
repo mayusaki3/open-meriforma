@@ -90,6 +90,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66 stop-scope decision (2026-10-24): conditional local stop with fail-closed fallback. Unit-wide faults, unknown impact, link loss, generation changes and maintenance exit revoke all operations; local faults may revoke only affected operations if the Forma itself positively establishes safe continuation of the others. Stop request is not proof of physical stop. Proceed with 66-A maintenance/clearance synthetic state model and test specification before code.
 
+- Suite 66-A Windows user-confirmed PASS (2026-10-24): py_compile for forma_maintenance_state.py and test_forma_maintenance_state.py succeeded; all 10/10 synthetic maintenance/clearance state checks PASS (66-A-01..10); git status clean on develop at 142e6e5. These tests do not validate hardware drive inhibit, authenticated clearance or actual STOP. Next: design 66-B per-operation authorization with scope, one-shot consumption, generation/session binding and revocation; test-first.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
