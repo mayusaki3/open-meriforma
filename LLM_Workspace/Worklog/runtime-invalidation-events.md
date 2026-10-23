@@ -86,6 +86,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 - Runtime scope, cancellation, concurrent operations and authority proof representation still need detailed design and test cases. Synthetic Python checks cannot establish real actuator safety.
 - No implementation or tests for suite 66 have yet been run.
 
+- Suite 66 concurrent maintenance operations decision (2026-10-23): choose option B. Each operation has independent authorization; Forma itself determines simultaneous eligibility against actuator overlap, mechanical interference, aggregate power/current/torque and unit-specific concurrency limits. Re-evaluate when adding operations and while running; revoke affected operations or all when safe isolation cannot be demonstrated. Detailed rules/test cases pending; no code implementation or validation yet.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
