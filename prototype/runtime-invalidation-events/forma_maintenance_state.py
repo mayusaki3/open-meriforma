@@ -13,6 +13,7 @@ class FormaMaintenanceState:
         self.mode = "normal"
         self.session = 0
         self.clearance = None
+        self.clearance_revision = 0
         self.drive_enabled = False
         self.group_authorized = False
         self.faulted = False
@@ -33,6 +34,7 @@ class FormaMaintenanceState:
                 type(session) is not int or session != self.session or
                 self.clearance is not None):
             return False
+        self.clearance_revision += 1
         self.clearance = (self.forma_id, self.generation, self.session)
         return True
 
