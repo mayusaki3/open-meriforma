@@ -92,6 +92,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-A Windows user-confirmed PASS (2026-10-24): py_compile for forma_maintenance_state.py and test_forma_maintenance_state.py succeeded; all 10/10 synthetic maintenance/clearance state checks PASS (66-A-01..10); git status clean on develop at 142e6e5. These tests do not validate hardware drive inhibit, authenticated clearance or actual STOP. Next: design 66-B per-operation authorization with scope, one-shot consumption, generation/session binding and revocation; test-first.
 
+- Suite 66-B Windows user-confirmed PASS (2026-10-24): py_compile of 66-A/66-B model and tests succeeded; 66-A regression 10/10 PASS and 66-B operation authorization 11/11 PASS (21/21 total). Git status clean at develop a113b70. Includes scope equality, one-shot grant, session/generation binding and clearance revision checks. This is synthetic authorization state only, not motor actuation, safety monitoring, concurrent-operation evaluation or authenticated wire authority. Next: design/test 66-C unit-specific FormaSafetyPolicy interface, with test-first cases and fail-closed behavior.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
