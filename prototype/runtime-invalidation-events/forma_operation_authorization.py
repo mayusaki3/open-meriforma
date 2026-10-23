@@ -32,7 +32,7 @@ class FormaOperationAuthorization:
         if (s.mode != "maintenance" or s.faulted or s.clearance is None
                 or s.clearance != (s.forma_id, s.generation, s.session)):
             return None
-        return (s.forma_id, s.generation, s.session, s.clearance)
+        return (s.forma_id, s.generation, s.session, s.clearance_revision, s.clearance)
 
     def authorize(self, operation_id, scope):
         context = self._context()
