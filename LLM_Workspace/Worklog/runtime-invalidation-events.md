@@ -88,6 +88,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66 concurrent maintenance operations decision (2026-10-23): choose option B. Each operation has independent authorization; Forma itself determines simultaneous eligibility against actuator overlap, mechanical interference, aggregate power/current/torque and unit-specific concurrency limits. Re-evaluate when adding operations and while running; revoke affected operations or all when safe isolation cannot be demonstrated. Detailed rules/test cases pending; no code implementation or validation yet.
 
+- Suite 66 stop-scope decision (2026-10-24): conditional local stop with fail-closed fallback. Unit-wide faults, unknown impact, link loss, generation changes and maintenance exit revoke all operations; local faults may revoke only affected operations if the Forma itself positively establishes safe continuation of the others. Stop request is not proof of physical stop. Proceed with 66-A maintenance/clearance synthetic state model and test specification before code.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
