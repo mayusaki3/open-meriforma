@@ -85,4 +85,20 @@ assert launch(c, "a", "thumb")
 assert c.recheck_runtime(measured_load=2) and set(c.active) == {"a"}
 print("PASS 66-D-12 valid runtime load preserves operation")
 
-print("PASS all 12 suite 66-D synthetic checks")
+s, c = setup()
+assert c.authorize("unused", scope("middle"))
+assert launch(c, "a", "thumb")
+assert not c.recheck_runtime(measured_load=None)
+assert not c.active and not c.guard.operations.grants
+assert not c.authorize("later", scope("index"))
+assert not c.start("unused", scope("middle"))
+print("PASS 66-D-13 stop clears pending grants and latches denial")
+
+s, c = setup()
+assert launch(c, "a", "thumb")
+assert not c.recheck_runtime(measured_load=99)
+assert not c.recheck_runtime(measured_load=1)
+assert not c.authorize("later", scope("index"))
+print("PASS 66-D-14 valid telemetry cannot silently reset stop latch")
+
+print("PASS all 14 suite 66-D synthetic checks")
