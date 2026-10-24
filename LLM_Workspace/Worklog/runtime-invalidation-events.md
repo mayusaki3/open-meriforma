@@ -102,6 +102,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-F Windows user-confirmed PASS (2026-10-24): py_compile 66-F model/test succeeded; 66-F 13/13, regression 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12; total 70/70 synthetic checks PASS in one Windows run at develop 748fa17; git status clean. Synthetic boundary checks explicit link state, request-ID replay prevention, generation mismatch, per-Forma disconnect invalidation, reconnection without authority revival, and independent Forma routes. Not actual network transport, authentication, timing, concurrency or hardware STOP. Next: 66-G timeout detection and explicit safe recovery protocol (test-first).
 
+- Suite 66-G Windows user-confirmed PASS (2026-10-24): py_compile 66-G model/test succeeded; 66-G 14/14 and regressions 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12, 66-F 13/13; 84/84 synthetic checks PASS in one Windows run at develop d12f8fa; git status clean. Logical-clock heartbeat, per-Forma timeout, latched stop, fresh-generation fixture replacement and fresh grants validated synthetically. No real clock scheduling, delayed/lost packets, network authentication, firmware, physical STOP or actual recovery safety proof. Next: delayed/lost packet and timeout boundary tests (test-first).
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
