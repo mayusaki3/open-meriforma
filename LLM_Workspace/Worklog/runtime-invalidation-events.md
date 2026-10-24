@@ -100,6 +100,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-E Windows user-confirmed PASS (2026-10-24): receiver integration 12/12 synthetic checks PASS at develop 5dac115; git status clean. 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14 previously confirmed; 57/57 cumulative across runs, not fresh full-suite execution at 5dac115. Receiver routes requests; per-Forma maintenance/policy/one-shot grant/concurrency gate makes final synthetic decision; unapproved Forma fixture isolated from independent Forma test. No real receiver firmware, authentication, transport, hardware interlock, physical actuation or real-world safety proof. Next: receiver–Forma communication boundary, request identity, invalidation on disconnect (test-first).
 
+- Suite 66-F Windows user-confirmed PASS (2026-10-24): py_compile 66-F model/test succeeded; 66-F 13/13, regression 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12; total 70/70 synthetic checks PASS in one Windows run at develop 748fa17; git status clean. Synthetic boundary checks explicit link state, request-ID replay prevention, generation mismatch, per-Forma disconnect invalidation, reconnection without authority revival, and independent Forma routes. Not actual network transport, authentication, timing, concurrency or hardware STOP. Next: 66-G timeout detection and explicit safe recovery protocol (test-first).
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
