@@ -104,6 +104,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-G Windows user-confirmed PASS (2026-10-24): py_compile 66-G model/test succeeded; 66-G 14/14 and regressions 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12, 66-F 13/13; 84/84 synthetic checks PASS in one Windows run at develop d12f8fa; git status clean. Logical-clock heartbeat, per-Forma timeout, latched stop, fresh-generation fixture replacement and fresh grants validated synthetically. No real clock scheduling, delayed/lost packets, network authentication, firmware, physical STOP or actual recovery safety proof. Next: delayed/lost packet and timeout boundary tests (test-first).
 
+- Suite 66-H Windows user-confirmed PASS (2026-10-24): py_compile 66-H model/test succeeded; 66-H 14/14 plus regression 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12, 66-F 13/13, 66-G 14/14; total 98/98 synthetic checks PASS in one Windows run at develop 4feb349; git status clean. Deterministic packet arrival/loss/reorder, duplicate sequence rejection, deadline-priority timeout, stale traffic rejection, per-Forma isolation. No authenticated physical transport, sequence wrap, actual packet scheduling or hardware STOP. Next: protocol requirements and security/fault-model gap review before implementation.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
