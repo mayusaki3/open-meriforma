@@ -22,6 +22,7 @@ class FormaConcurrentOperations:
         self.isolated = self._pairs(isolated)
         self.active = {}
         self.blocked = set()
+        self.halted = False
 
     @staticmethod
     def _pairs(pairs):
@@ -38,12 +39,12 @@ class FormaConcurrentOperations:
         return self.guard.approve_clearance(observed)
 
     def authorize(self, operation_id, scope):
-        return self.guard.authorize(operation_id, scope)
+        return self._context_ok() and self.guard.authorize(operation_id, scope)
 
     def _stop_all(self):
-        for operation_id in list(self.active):
-            self.guard.operations.grants.pop(operation_id, None)
+        self.guard.operations.grants.clear()
         self.active.clear()
+        self.halted = True
         return False
 
     def start(self, operation_id, scope):
@@ -67,7 +68,7 @@ class FormaConcurrentOperations:
         return True
 
     def _context_ok(self):
-        return self.guard.operations._context() is not None
+        return not self.halted and self.guard.operations._context() is not None
 
     def finish(self, operation_id):
         if not self._context_ok():
