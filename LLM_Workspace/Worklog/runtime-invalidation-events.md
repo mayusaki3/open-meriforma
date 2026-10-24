@@ -106,6 +106,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-H Windows user-confirmed PASS (2026-10-24): py_compile 66-H model/test succeeded; 66-H 14/14 plus regression 66-A 10/10, 66-B 11/11, 66-C 10/10, 66-D 14/14, 66-E 12/12, 66-F 13/13, 66-G 14/14; total 98/98 synthetic checks PASS in one Windows run at develop 4feb349; git status clean. Deterministic packet arrival/loss/reorder, duplicate sequence rejection, deadline-priority timeout, stale traffic rejection, per-Forma isolation. No authenticated physical transport, sequence wrap, actual packet scheduling or hardware STOP. Next: protocol requirements and security/fault-model gap review before implementation.
 
+- Suite 66-I design-only protocol review added (2026-10-24): prototype/runtime-invalidation-events/FORMA_COMMUNICATION_PROTOCOL_REQUIREMENTS.md. Documents provisional envelope, authenticated processing order, timeout/STOP ownership, replay/fragmentation, maintenance/group-gate integration, trusted epoch gaps and architecture gates. **No 66-I tests run; no wire/firmware implementation or physical safety claim.** 66-A–H remain user-confirmed 98/98 synthetic checks. Next: 66-J design gate on transport topology, authenticated epoch ownership and Forma-local watchdog/physical STOP responsibilities.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
