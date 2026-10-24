@@ -55,7 +55,9 @@ print("PASS 66-D-06 local fault isolates safe independent operation")
 
 s, c = setup()
 assert launch(c, "a", "thumb") and launch(c, "b", "index")
-assert c.local_fault("thumb") and not c.active
+assert c.local_fault("thumb") is False
+assert not c.active and c.halted
+assert not c.guard.operations.grants
 print("PASS 66-D-07 unknown isolation stops all")
 
 s, c = setup()
