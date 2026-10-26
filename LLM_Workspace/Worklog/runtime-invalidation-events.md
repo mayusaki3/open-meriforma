@@ -108,6 +108,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-I design-only protocol review added (2026-10-24): prototype/runtime-invalidation-events/FORMA_COMMUNICATION_PROTOCOL_REQUIREMENTS.md. Documents provisional envelope, authenticated processing order, timeout/STOP ownership, replay/fragmentation, maintenance/group-gate integration, trusted epoch gaps and architecture gates. **No 66-I tests run; no wire/firmware implementation or physical safety claim.** 66-A–H remain user-confirmed 98/98 synthetic checks. Next: 66-J design gate on transport topology, authenticated epoch ownership and Forma-local watchdog/physical STOP responsibilities.
 
+- Suite 66-J design-only architecture proposal added (2026-10-26): prototype/runtime-invalidation-events/FORMA_COMMUNICATION_ARCHITECTURE.md. Proposes Main-request/Receiver-gate/Forma-final-authority topology, independently owned Forma watchdog and STOP latch, separate device identity/boot epoch/session/clearance, recovery gates, cross-suite integration, and open CAN-FD/physical inhibit/authentication/timing decisions. **No 66-J tests or hardware work performed; no physical STOP proof.** 66-A–H remain user-confirmed 98/98 synthetic checks. Next 66-K hardware/topology/trust-anchor design gate.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
