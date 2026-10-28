@@ -110,8 +110,10 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-J design-only architecture proposal added (2026-10-26): prototype/runtime-invalidation-events/FORMA_COMMUNICATION_ARCHITECTURE.md. Proposes Main-request/Receiver-gate/Forma-final-authority topology, independently owned Forma watchdog and STOP latch, separate device identity/boot epoch/session/clearance, recovery gates, cross-suite integration, and open CAN-FD/physical inhibit/authentication/timing decisions. **No 66-J tests or hardware work performed; no physical STOP proof.** 66-A–H remain user-confirmed 98/98 synthetic checks. Next 66-K hardware/topology/trust-anchor design gate.
 
+- Suite 66-K design options added (2026-10-29): prototype/runtime-invalidation-events/FORMA_HARDWARE_BOUNDARY_OPTIONS.md. Provisional topology A (Main gateway + shared CAN-FD), stop architecture K2 (external watchdog + default-off inhibit), and trust-anchor comparison T2/T3; all require explicit approval and hardware evidence. K1 is insufficient as an independent safety mechanism; external watchdog alone does not prove STO or safe mechanical stop. **No 66-K tests, component selection or physical validation.** User-confirmed 66-A–H remains 98/98 PASS. Next: approve architecture options, then derive measurable 66-L interfaces and tests.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
-3. Detail suite 66 common-receiver maintenance safety-clearance and per-operation authorization state machine, invalidation and test cases; review before implementation. Retain normal-mode group-gate enforcement. Authenticated epoch/sequence binding remains a separate unresolved design boundary.
+3. Review and approve 66-K topology, independent watchdog/drive-inhibit and trusted epoch options before 66-L quantitative electrical/interface requirements; preserve mandatory normal group and maintenance gates.
 4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
