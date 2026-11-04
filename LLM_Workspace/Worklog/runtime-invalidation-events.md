@@ -114,6 +114,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-K architecture direction user-approved (2026-11-04): A (Main gateway + shared CAN-FD), K2 (external watchdog + default-off drive inhibit), T2-first (MCU-protected keys/boot/epoch where verified), with T3 external secure element retained for full-cost and security comparison. Updated FORMA_HARDWARE_BOUNDARY_OPTIONS.md with manufacturer reference pricing and STM32H5 feature caveats. **No part selected, no physical safety proof; 66-L MCU/watchdog/inhibit requirements and concrete BOM comparison pending.**
 
+- Suite 66-L requirements draft added (2026-11-04): prototype/runtime-invalidation-events/FORMA_MCU_SELECTION_REQUIREMENTS.md. A+K2+T2-first baseline; manufacturer-backed shortlist STM32H533, STM32H573, NXP S32K344; mandatory CAN-FD, motor I/O, external watchdog/inhibit, secure boot, protected epoch and comparable BOM gates. No exact SKU selected or tests performed. Next confirm per-Forma motor/sensor configuration before pin allocation and unit cost.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
