@@ -116,6 +116,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L requirements draft added (2026-11-04): prototype/runtime-invalidation-events/FORMA_MCU_SELECTION_REQUIREMENTS.md. A+K2+T2-first baseline; manufacturer-backed shortlist STM32H533, STM32H573, NXP S32K344; mandatory CAN-FD, motor I/O, external watchdog/inhibit, secure boot, protected epoch and comparable BOM gates. No exact SKU selected or tests performed. Next confirm per-Forma motor/sensor configuration before pin allocation and unit cost.
 
+- Suite 66-L user-approved motor-channel policy (2026-11-05): Option B, variable motor-control channel count by Forma type, with shared firmware behavior/protocol and Forma-specific hardware descriptors. Updated FORMA_MCU_SELECTION_REQUIREMENTS.md. No per-Forma channel numbers or MCU part numbers fixed; no new tests. Next determine direct MCU motor control versus external driver/controller peripheral architecture before exact pin budgeting.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
