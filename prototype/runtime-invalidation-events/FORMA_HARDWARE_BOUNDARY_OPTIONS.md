@@ -1,6 +1,6 @@
 # Suite 66-K — Forma hardware boundary and trust-anchor options
 
-Status: DESIGN OPTIONS / PROVISIONAL (2026-10-29). No component selected, circuit built, timing measured, or safety certified.
+Status: ARCHITECTURE DIRECTION APPROVED (2026-11-04); component/security mechanism selection remains OPEN. No circuit built, timing measured, or safety certified.
 Parent: FORMA_COMMUNICATION_ARCHITECTURE.md (66-J), FORMA_COMMUNICATION_PROTOCOL_REQUIREMENTS.md (66-I).
 Working design review only; not a formal HLDocS v0.6.1 specification.
 
@@ -12,7 +12,7 @@ Working design review only; not a formal HLDocS v0.6.1 specification.
 | B — dedicated gateway between Main and CAN-FD Forma bus | Main → gateway → shared bus → Forma MCUs | Independent routing, diagnostics and traffic shaping; clearer fault isolation from Main | Extra power/firmware, gateway itself can fail; cannot substitute for Forma-local watchdog |
 | C — segmented CAN-FD branches / gateways | Main → gateways → groups of Forma | Bus fault domains, scaling | More complexity, cross-group synchronization, additional latency |
 
-**Provisional baseline: A for initial prototype**, with an explicitly replaceable gateway boundary. B/C are retained as scalability and fault-containment alternatives. CAN-FD is a **candidate**, not an approved electrical design; wiring, termination, isolation, EMC, bus load and fault handling require measurement. Receiver functionality exists both at the Main-side routing boundary and Forma-local command acceptance; Main-side routing does not confer motor authority.
+**Approved baseline (2026-11-04): A for initial prototype**, with an explicitly replaceable gateway boundary. B/C are retained as scalability and fault-containment alternatives. CAN-FD is a **candidate**, not an approved electrical design; wiring, termination, isolation, EMC, bus load and fault handling require measurement. Receiver functionality exists both at the Main-side routing boundary and Forma-local command acceptance; Main-side routing does not confer motor authority.
 
 ## 2. Forma controller and safety-stop hardware options
 
@@ -22,7 +22,7 @@ Working design review only; not a formal HLDocS v0.6.1 specification.
 | K2 — MCU + independent external watchdog/latch + default-off driver enable | External circuit demands valid periodic health signal and independently removes driver enable on failure | Independent from Main and main task; inspectable electrical inhibit path | Health signal must not be trivially toggled by failed firmware; inhibit pin and driver failure modes need fault analysis |
 | K3 — MCU + dedicated safety controller + redundant inhibit / feedback | Safety controller evaluates watchdog, interlocks, feedback and dual-path drive inhibit | Better fault containment and diagnostic potential | Cost/complexity; safety integrity still depends on component choices and verification |
 
-**Provisional baseline: K2 as minimum architecture to investigate, not as proof of functional safety.** K1 may be used only for nonhazardous bench simulations with motor power physically isolated. Escalate to K3 if hazard analysis requires redundancy/diagnostic coverage. Do not claim external watchdog alone proves safe torque off (STO).
+**Approved baseline (2026-11-04): K2 as minimum architecture to investigate, not as proof of functional safety.** K1 may be used only for nonhazardous bench simulations with motor power physically isolated. Escalate to K3 if hazard analysis requires redundancy/diagnostic coverage. Do not claim external watchdog alone proves safe torque off (STO).
 
 ### Power and stop boundary
 - Boot, MCU reset, brownout, missing heartbeat, bus-off, fault and power-domain faults must default to *drive inhibited* wherever physically feasible.
@@ -39,7 +39,7 @@ Working design review only; not a formal HLDocS v0.6.1 specification.
 | T2 — MCU secure boot + protected key storage / monotonic counter where supported | Fewer components; hardware-dependent | Actual counter semantics, write endurance, rollback resistance, recovery policy and toolchain must be validated |
 | T3 — external secure element / TPM-class device with protected identity and monotonic witness capability | Key isolation and potentially independent trust | Cost, provisioning, availability, bus interface, actual counter support and transaction ordering need validation |
 
-**Provisional evaluation priority: T2 vs T3**, subject to threat model. A secure element with key storage does **not** necessarily supply a trustworthy monotonic counter; verify the exact part. Existing SQLite + file witness from suites 54–60 does not solve coherent rollback.
+**Approved selection priority (2026-11-04): T2 first for expected BOM/assembly cost; retain T3 as fallback if chosen MCU lacks verified required protections or if MCU upgrade premium exceeds external part and integration cost.** Subject to threat model. A secure element with key storage does **not** necessarily supply a trustworthy monotonic counter; verify the exact part. Existing SQLite + file witness from suites 54–60 does not solve coherent rollback.
 
 Session design shall authenticate both sides, bind identity + boot epoch + nonces + protocol version + policy, reject replay, and require fresh operation grants. Credential rotation, Forma replacement and offline service recovery remain open.
 
@@ -73,3 +73,10 @@ Session design shall authenticate both sides, bind identity + boot epoch + nonce
 5. **Next stage 66-L**: produce measurable electrical/interface requirements and a test plan after these choices; keep software simulation separate from actual safety evidence.
 
 No tests are added for suite 66-K. Last user-confirmed synthetic results: suites 66-A–H, 98/98 PASS.
+
+## 7. Approved direction and cost evidence (2026-11-04)
+- User approved A + K2 + T2-first, with T3 retained for comparison. This approves architectural direction, **not** a specific MCU, watchdog, secure element, motor driver or safety certification.
+- T2 total unit cost = suitable secure MCU + required watchdog/inhibit components + PCB/assembly/provisioning and development amortization. T3 = compatible lower-cost MCU + secure element + its PCB/assembly/provisioning + watchdog/inhibit and integration. Compare at identical CAN-FD, motor-control, security and temperature requirements.
+- As an indicative external part reference only, Microchip ATECC608B manufacturer lists variants around USD 0.58–0.99 depending on packaging and quantity (retrieved 2026-11-04; pricing and availability vary). This is **not** a full T3 BOM or confirmation of a suitable protected monotonic counter: https://www.microchip.com/en-us/product/ATECC608B
+- ST documentation describes secure storage/secure boot on some STM32H5 variants, with product-specific availability. Its EPOCH counter relates to secure-storage regression and must **not** be assumed to implement the arbitrary per-session monotonic witness required by suites 58–61. Verify exact part/reference manual, endurance and API: https://wiki.st.com/stm32mcu/wiki/Security:Secure_Storage_for_STM32H5 and https://wiki.st.com/stm32mcu/wiki/Security:Secure_Boot_for_STM32H5
+- Next gate 66-L: define functional MCU and external watchdog/inhibit requirements, then compare actual part numbers, procurement prices and security counter semantics before selecting silicon.
