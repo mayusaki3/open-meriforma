@@ -118,6 +118,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L user-approved motor-channel policy (2026-11-05): Option B, variable motor-control channel count by Forma type, with shared firmware behavior/protocol and Forma-specific hardware descriptors. Updated FORMA_MCU_SELECTION_REQUIREMENTS.md. No per-Forma channel numbers or MCU part numbers fixed; no new tests. Next determine direct MCU motor control versus external driver/controller peripheral architecture before exact pin budgeting.
 
+- Suite 66-L user-approved A/B hybrid motor control (2026-11-05): direct Forma MCU control (A) and driver-assisted control (B) may coexist within a single Forma and vary by channel. Forma-local authorization/STOP and external K2 inhibit remain mandatory. Updated FORMA_MCU_SELECTION_REQUIREMENTS.md; no MCU/driver selected or tests performed. Next: channel capability descriptor and hardware inhibit test requirements.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
