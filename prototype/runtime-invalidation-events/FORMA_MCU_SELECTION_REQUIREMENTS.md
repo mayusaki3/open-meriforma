@@ -1,6 +1,6 @@
 # Suite 66-L — Forma MCU selection requirements and preliminary shortlist
 
-Status: REQUIREMENTS DRAFT; VARIABLE MOTOR-CHANNEL POLICY APPROVED (2026-11-05). No selected MCU, purchased part, firmware or test PASS.
+Status: REQUIREMENTS DRAFT; VARIABLE MOTOR-CHANNEL AND A/B HYBRID CONTROL POLICIES APPROVED (2026-11-05). No selected MCU, purchased part, firmware or test PASS.
 Hierarchy: Open MeriForma > Runtime Invalidation Events > Suite 66-L > Forma MCU selection requirements
 References: FORMA_HARDWARE_BOUNDARY_OPTIONS.md (66-K), FORMA_COMMUNICATION_ARCHITECTURE.md (66-J), FORMA_COMMUNICATION_PROTOCOL_REQUIREMENTS.md (66-I). Working review document, not yet formal HLDocS v0.6.1 specification.
 
@@ -66,7 +66,15 @@ For each candidate obtain exact manufacturer part number, package, quantity pric
 5. Preserve distinction between existing 66-A–H synthetic 98/98 PASS and any future hardware evidence.
 
 ## 7. Approved motor-channel policy and next decision
-**Approved 2026-11-05: Option B — motor-control channel count varies by Forma type.** Common firmware behavior and protocol remain the baseline; per-Forma hardware descriptors declare available motor channels, timer/PWM/ADC/encoder assignments, electrical and mechanical limits. No specific motor-channel counts or MCU SKUs are approved yet. Next design gate: determine whether one MCU directly handles all channels on a Forma or whether external motor-driver/controller devices handle timing and feedback; then build a per-Forma peripheral budget.
+**Approved 2026-11-05: Option B — motor-control channel count varies by Forma type.** Common firmware behavior and protocol remain the baseline; per-Forma hardware descriptors declare available motor channels, timer/PWM/ADC/encoder assignments, electrical and mechanical limits. No specific motor-channel counts or MCU SKUs are approved yet. Next design gate: define the per-channel A/B capability descriptor and hardware inhibit verification, then build a per-Forma peripheral budget.
+
+## 8. Approved A/B hybrid motor-control allocation (2026-11-05)
+- **A: direct MCU control** is permitted for channels where Forma MCU performs timing, PWM, current and/or position/velocity loops, subject to driver and sensing design.
+- **B: driver-assisted control** is permitted where an external motor-driver IC supports PWM generation, current regulation, protection or motion loops; delegate only capabilities explicitly verified for the selected IC.
+- **Hybrid within one Forma is permitted:** assign A or B independently per motor channel. No uniform allocation or fixed motor count is assumed.
+- A common per-channel hardware descriptor shall identify control mode, actuator type, PWM/timer/ADC/encoder requirements, driver interface, feedback availability, limits and safety inhibit/feedback route. A descriptor is configuration, not a substitute for runtime authorization or physical safety checks.
+- For both modes, Forma-local policy and stop-latch remain authoritative; K2 external watchdog/default-off inhibit must be able to prevent drive despite MCU firmware hang or driver command acceptance. The actual electrical stop mechanism and failure coverage require hardware tests.
+- **Open gate:** whether delegated drivers accept closed-loop position commands, current commands, PWM duty commands or combinations is device-specific; no driver or MCU selected. Determine a minimal channel capability model and test cases before implementation.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Forma MCU selection requirements
