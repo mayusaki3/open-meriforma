@@ -112,6 +112,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-K design options added (2026-10-29): prototype/runtime-invalidation-events/FORMA_HARDWARE_BOUNDARY_OPTIONS.md. Provisional topology A (Main gateway + shared CAN-FD), stop architecture K2 (external watchdog + default-off inhibit), and trust-anchor comparison T2/T3; all require explicit approval and hardware evidence. K1 is insufficient as an independent safety mechanism; external watchdog alone does not prove STO or safe mechanical stop. **No 66-K tests, component selection or physical validation.** User-confirmed 66-A–H remains 98/98 PASS. Next: approve architecture options, then derive measurable 66-L interfaces and tests.
 
+- Suite 66-K architecture direction user-approved (2026-11-04): A (Main gateway + shared CAN-FD), K2 (external watchdog + default-off drive inhibit), T2-first (MCU-protected keys/boot/epoch where verified), with T3 external secure element retained for full-cost and security comparison. Updated FORMA_HARDWARE_BOUNDARY_OPTIONS.md with manufacturer reference pricing and STM32H5 feature caveats. **No part selected, no physical safety proof; 66-L MCU/watchdog/inhibit requirements and concrete BOM comparison pending.**
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
