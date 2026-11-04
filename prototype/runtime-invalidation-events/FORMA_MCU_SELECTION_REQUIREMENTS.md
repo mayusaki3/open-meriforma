@@ -1,6 +1,6 @@
 # Suite 66-L — Forma MCU selection requirements and preliminary shortlist
 
-Status: REQUIREMENTS DRAFT / NOT APPROVED (2026-11-04). No selected MCU, purchased part, firmware or test PASS.
+Status: REQUIREMENTS DRAFT; VARIABLE MOTOR-CHANNEL POLICY APPROVED (2026-11-05). No selected MCU, purchased part, firmware or test PASS.
 Hierarchy: Open MeriForma > Runtime Invalidation Events > Suite 66-L > Forma MCU selection requirements
 References: FORMA_HARDWARE_BOUNDARY_OPTIONS.md (66-K), FORMA_COMMUNICATION_ARCHITECTURE.md (66-J), FORMA_COMMUNICATION_PROTOCOL_REQUIREMENTS.md (66-I). Working review document, not yet formal HLDocS v0.6.1 specification.
 
@@ -65,8 +65,8 @@ For each candidate obtain exact manufacturer part number, package, quantity pric
 4. Only after approved design and tests, implement firmware/driver integration and execute instrumented tests.
 5. Preserve distinction between existing 66-A–H synthetic 98/98 PASS and any future hardware evidence.
 
-## 7. Next decision
-Determine whether a Forma Unit is designed for a fixed maximum number of motor channels, or whether the MCU is shared across different actuator configurations. This materially changes GPIO, timers, ADC, processing, PCB and cost; no MCU SKU should be frozen until decided.
+## 7. Approved motor-channel policy and next decision
+**Approved 2026-11-05: Option B — motor-control channel count varies by Forma type.** Common firmware behavior and protocol remain the baseline; per-Forma hardware descriptors declare available motor channels, timer/PWM/ADC/encoder assignments, electrical and mechanical limits. No specific motor-channel counts or MCU SKUs are approved yet. Next design gate: determine whether one MCU directly handles all channels on a Forma or whether external motor-driver/controller devices handle timing and feedback; then build a per-Forma peripheral budget.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Forma MCU selection requirements
