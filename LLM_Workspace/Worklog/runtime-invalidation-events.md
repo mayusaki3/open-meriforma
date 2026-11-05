@@ -122,6 +122,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L user-approved per-loop control ownership (2026-11-05): each motor channel may assign current, velocity and position loops independently to Forma MCU or capable driver/controller IC; mixed ownership within a channel is allowed, unsupported/conflicting assignments rejected without arming. Updated FORMA_MOTOR_CHANNEL_DESIGN.md. Descriptor details and numbered test cases remain proposals; no tests executed. Next decide explicit DISABLED representation for absent loops before schema freeze.
 
+- Suite 66-L user-approved explicit disabled loop policy (2026-11-05): each current/velocity/position owner field is mandatory and takes FORMA_MCU, DRIVER_IC or DISABLED; omitted field invalid; disabled loops cannot receive matching commands or silently fall back. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-013–015 tests (15 total proposals). No test implementation or execution; next define valid command modes and cross-loop compatibility before schema freeze.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
