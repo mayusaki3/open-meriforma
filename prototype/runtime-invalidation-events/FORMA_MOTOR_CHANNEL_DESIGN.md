@@ -100,5 +100,33 @@ Proposed test additions (not implemented): 66-L-CH-019 allowlisted but unsupport
 
 Next decision: should any unsupported allowlisted command invalidate the entire Forma descriptor, or only the affected channel? Recommended: entire descriptor, to avoid partial arming of an inconsistent configuration.
 
+## 8. Approved separation of environment, Forma state and channel state (2026-11-06)
+
+**Approved policy:** operating environment, Forma safety state and per-channel availability are independent dimensions. An environment label does not itself authorize motor power, bypass a stop latch or prove mechanical support.
+
+| Dimension | Initial vocabulary | Meaning |
+| --- | --- | --- |
+| Operating environment | `BENCH`, `SUPPORTED`, `FREE_STANDING` | Evidence about fixtures, external support and balance requirements; not an authorization token |
+| Forma safety state | `NORMAL`, `DEGRADED`, `PROTECTIVE_ACTION`, `INHIBITED` | Overall operating posture; transitions and priorities require separate approval |
+| Channel state | `AVAILABLE`, `UNAVAILABLE`, `FAULTED` | Per-channel capability/health; does not alone determine safe joint motion |
+
+- In `BENCH`, a channel with unsupported configuration can be excluded while independent channels are tested in `DEGRADED`, **only** with verified fixture retention, load, travel and collision constraints, service authorization, physical emergency stop and K2 inhibit. `BENCH` is not an override.
+- In `FREE_STANDING`, loss of a joint may require a prevalidated whole-body protective maneuver rather than indiscriminate drive removal. This is a design objective, **not** evidence that balance recovery is currently possible or safe.
+- `PROTECTIVE_ACTION` may use unaffected channels only with an approved, bounded recovery policy, valid sensors and actuator authority. Forma-local hardware inhibit and stop latches always take precedence when applicable.
+- If failure isolation or protective behavior is unverified, reject the relevant motion; `INHIBITED` must retain diagnostics, communication and configuration repair where safe. A disabled channel is not automatically a reason to disable unrelated diagnostic functions.
+- The earlier Section 7 recommendation to reject an entire Forma for any unsupported allowlisted command is **superseded as a recommendation**, not adopted. Define per-channel isolation versus Forma-wide inhibition using verified safety dependencies; an inconsistent descriptor cannot silently arm a channel.
+- Main-coordinated whole-body protection versus Forma-local protective action, sensor validity, transition priority, fixture evidence and recovery behavior remain **design proposals**, not approved implementation details.
+
+### Proposed tests (not implemented)
+- 66-L-CH-023: `BENCH` with one unsupported channel and verified independence: affected channel inhibited; authorized independent channel remains testable.
+- 66-L-CH-024: `BENCH` without fixture/safety evidence: environment flag alone does not enable drives.
+- 66-L-CH-025: `FREE_STANDING` with failed load-bearing joint: ordinary motion blocked; only verified protective policy may request unaffected joints.
+- 66-L-CH-026: `INHIBITED` maintains safe read-only diagnostics and configuration repair while motor power remains disabled.
+- 66-L-CH-027: Changing environment/state does not clear stop latch, restore expired grants or defeat external inhibit.
+
+Total proposed channel test IDs: 27; none implemented or executed.
+
+**Next approval gate:** define who supplies and validates operating-environment evidence (fixture interlock/sensor/operator declaration), and what is mandatory for `BENCH` drive eligibility. Do not infer fixture safety from a software mode switch alone.
+
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
