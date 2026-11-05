@@ -120,6 +120,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L user-approved A/B hybrid motor control (2026-11-05): direct Forma MCU control (A) and driver-assisted control (B) may coexist within a single Forma and vary by channel. Forma-local authorization/STOP and external K2 inhibit remain mandatory. Updated FORMA_MCU_SELECTION_REQUIREMENTS.md; no MCU/driver selected or tests performed. Next: channel capability descriptor and hardware inhibit test requirements.
 
+- Suite 66-L user-approved per-loop control ownership (2026-11-05): each motor channel may assign current, velocity and position loops independently to Forma MCU or capable driver/controller IC; mixed ownership within a channel is allowed, unsupported/conflicting assignments rejected without arming. Updated FORMA_MOTOR_CHANNEL_DESIGN.md. Descriptor details and numbered test cases remain proposals; no tests executed. Next decide explicit DISABLED representation for absent loops before schema freeze.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
