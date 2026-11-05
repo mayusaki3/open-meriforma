@@ -2,7 +2,7 @@ Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
 
 # Suite 66-L — Per-Forma motor channel descriptor (design proposal)
 
-Status: PROPOSAL / REVIEW REQUIRED (2026-11-05). The A/B hybrid allocation is approved; the field definitions and test expectations below are NOT yet approved.
+Status: PER-LOOP OWNERSHIP POLICY APPROVED (2026-11-05); remaining descriptor fields and test expectations are PROPOSALS. No implementation or test PASS.
 Parent: FORMA_MCU_SELECTION_REQUIREMENTS.md. Not a formal HLDocS v0.6.1 specification.
 
 ## 1. Scope and boundaries
@@ -23,7 +23,7 @@ Each Forma declares its own channel count and may combine:
 | control_mode | A_DIRECT or B_DRIVER_ASSISTED | explicit per channel |
 | actuator_kind | brushed DC, BLDC, stepper, servo, etc. | supported capability only; examples not selections |
 | command_capabilities | supported duty/current/velocity/position/torque requests | strict allowlist; not all drivers implement all |
-| control_loop_owner | Forma MCU or driver, **per loop** | distinguish current, velocity and position ownership |
+| control_loop_owner | Forma MCU or driver, **independently for current, velocity and position loops** | approved policy; reject unsupported driver capabilities or conflicting ownership |
 | pwm_timer_resources | timer outputs, complementary PWM, dead-time if needed | required only for actual chosen power stage |
 | feedback_resources | ADC current, encoder, Hall, absolute position, temperature, fault | state source, rate, resolution and fault validity |
 | driver_interface | PWM/GPIO, SPI, I2C, UART, other local interface | physical pin mapping separately verified |
@@ -64,9 +64,11 @@ Each Forma declares its own channel count and may combine:
 
 Unit-test coverage target: 100% of specified descriptor-validation branches, with separate instrumented integration and fault-injection evidence for electrical/mechanical stop. Test numbers are proposed, not PASS claims.
 
-## 5. Next design decision (approval requested)
+## 5. Approved decision and next design gate
 
-Should one Forma permit **different A/B control modes per channel** (the natural interpretation of the already approved hybrid policy), with loop ownership declared separately for current/velocity/position? This document proposes YES, while keeping actual motor counts and loop rates open. After approval, finalize schema requirements and prepare numbered tests before code.
+**Approved 2026-11-05:** Within each Forma, A/B control modes may differ per channel. Each channel independently declares ownership of its **current, velocity and position** control loops as Forma MCU or driver/controller IC, limited to the actual verified hardware capabilities. Mixed ownership within one channel is permitted (e.g., driver current loop, Forma MCU velocity and position loops). An unsupported, missing, ambiguous or conflicting loop owner must be rejected, without silent fallback or drive arming. No specific loop rates, motor counts, MCU or driver IC are approved.
+
+**Next gate:** determine whether optional/absent loops (e.g., open-loop motor control) are represented explicitly as `DISABLED` rather than requiring all three loops. Review this decision before freezing the descriptor schema or implementing tests.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
