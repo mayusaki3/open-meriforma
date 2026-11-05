@@ -2,7 +2,7 @@ Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
 
 # Suite 66-L — Per-Forma motor channel descriptor (design proposal)
 
-Status: PER-LOOP OWNERSHIP POLICY APPROVED (2026-11-05); remaining descriptor fields and test expectations are PROPOSALS. No implementation or test PASS.
+Status: PER-LOOP OWNERSHIP AND EXPLICIT DISABLED POLICY APPROVED (2026-11-05); remaining descriptor fields and test expectations are PROPOSALS. No implementation or test PASS.
 Parent: FORMA_MCU_SELECTION_REQUIREMENTS.md. Not a formal HLDocS v0.6.1 specification.
 
 ## 1. Scope and boundaries
@@ -23,7 +23,7 @@ Each Forma declares its own channel count and may combine:
 | control_mode | A_DIRECT or B_DRIVER_ASSISTED | explicit per channel |
 | actuator_kind | brushed DC, BLDC, stepper, servo, etc. | supported capability only; examples not selections |
 | command_capabilities | supported duty/current/velocity/position/torque requests | strict allowlist; not all drivers implement all |
-| control_loop_owner | Forma MCU or driver, **independently for current, velocity and position loops** | approved policy; reject unsupported driver capabilities or conflicting ownership |
+| control_loop_owner | `FORMA_MCU`, `DRIVER_IC`, or `DISABLED`, **independently for current, velocity and position loops** | approved policy; all three keys required, no implicit default; reject unsupported/conflicting ownership |
 | pwm_timer_resources | timer outputs, complementary PWM, dead-time if needed | required only for actual chosen power stage |
 | feedback_resources | ADC current, encoder, Hall, absolute position, temperature, fault | state source, rate, resolution and fault validity |
 | driver_interface | PWM/GPIO, SPI, I2C, UART, other local interface | physical pin mapping separately verified |
@@ -61,14 +61,19 @@ Each Forma declares its own channel count and may combine:
 | 66-L-CH-010 | Reboot or link recovery | Grants not restored; external inhibit remains engaged |
 | 66-L-CH-011 | Hardware watchdog timeout under stalled MCU | External inhibit engages (requires instrumented hardware test) |
 | 66-L-CH-012 | Inhibit command vs actual physical stop | Protocol ACK alone never reported as physical stop (hardware feedback test) |
+| 66-L-CH-013 | Explicitly DISABLED loop | Descriptor accepted only if requested command capabilities remain compatible; disabled loop receives no control request |
+| 66-L-CH-014 | Missing loop-owner field | Descriptor rejected; omission never defaults to DISABLED |
+| 66-L-CH-015 | Command targets DISABLED loop | Command rejected; no implicit fallback or drive enable |
 
 Unit-test coverage target: 100% of specified descriptor-validation branches, with separate instrumented integration and fault-injection evidence for electrical/mechanical stop. Test numbers are proposed, not PASS claims.
 
-## 5. Approved decision and next design gate
+## 5. Approved decisions and next design gate
 
 **Approved 2026-11-05:** Within each Forma, A/B control modes may differ per channel. Each channel independently declares ownership of its **current, velocity and position** control loops as Forma MCU or driver/controller IC, limited to the actual verified hardware capabilities. Mixed ownership within one channel is permitted (e.g., driver current loop, Forma MCU velocity and position loops). An unsupported, missing, ambiguous or conflicting loop owner must be rejected, without silent fallback or drive arming. No specific loop rates, motor counts, MCU or driver IC are approved.
 
-**Next gate:** determine whether optional/absent loops (e.g., open-loop motor control) are represented explicitly as `DISABLED` rather than requiring all three loops. Review this decision before freezing the descriptor schema or implementing tests.
+**Approved 2026-11-05:** An intentionally unused current, velocity or position loop is explicitly declared `DISABLED`. All three loop-owner fields must be present; an omitted field is an invalid descriptor, not an alias for `DISABLED`. A disabled loop must not accept a command for that control mode. A hardware driver may still implement internal protection or regulation not exposed as a selectable application control loop; this must be documented separately and must never bypass Forma safety checks.
+
+**Next gate:** specify which command modes remain valid when one or more loops are `DISABLED`, including open-loop requests, and define compatibility constraints between upstream/downstream loop ownership. Do not freeze schema or implement tests until this is reviewed.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
