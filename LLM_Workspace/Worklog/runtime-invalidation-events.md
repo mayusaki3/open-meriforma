@@ -126,6 +126,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L user-approved command-capability validation (2026-11-05): each command mode requires an explicitly supported and verified loop/drive path; commands targeting disabled/unsupported loops rejected at descriptor and runtime; no implicit fallback. Current loop DISABLED may be viable only with separately verified electrical protection/drive. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed compatibility matrix and 66-L-CH-016–018 (18 test proposals total). No tests executed. Next decide explicit allowlist plus derived capability intersection.
 
+- Suite 66-L approved environment/safety/channel separation (2026-11-06): BENCH/SUPPORTED/FREE_STANDING environment is independent of NORMAL/DEGRADED/PROTECTIVE_ACTION/INHIBITED Forma state and AVAILABLE/UNAVAILABLE/FAULTED channel state. Bench mode alone never bypasses fixture checks, grants or K2 inhibit. Earlier recommendation of mandatory entire-Forma rejection on any unsupported allowlisted command superseded; verified safe isolation needed. Updated FORMA_MOTOR_CHANNEL_DESIGN.md; proposed 66-L-CH-023–027 (27 total), no tests run. Next approve evidence requirements for bench fixture/support verification.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
