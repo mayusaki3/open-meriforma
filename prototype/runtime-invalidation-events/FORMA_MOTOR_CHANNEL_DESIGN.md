@@ -92,5 +92,13 @@ A command's primary loop is necessary but not sufficient. For cascaded loops, va
 
 **Next gate:** choose whether command capabilities are derived automatically from verified loop/driver capabilities, explicitly allowlisted in the descriptor, or require both (recommended: both, with mismatch rejected). No implementation or tests until the rule is approved.
 
+## 7. Approved command capability intersection (2026-11-06)
+
+A command mode is available only when it is explicitly present in the per-channel allowlist AND supported by verified hardware capabilities, including loop ownership, driver interfaces, feedback and protective mechanisms. Unsupported allowlisted commands and unlisted hardware-supported commands must not be enabled automatically. Hardware identity, firmware or descriptor changes require capability revalidation. Runtime authorization and K2 inhibit remain separate mandatory gates.
+
+Proposed test additions (not implemented): 66-L-CH-019 allowlisted but unsupported command rejected; 66-L-CH-020 supported but not allowlisted command rejected; 66-L-CH-021 runtime authorization revoked despite both gates passing; 66-L-CH-022 hardware change requires revalidation. Total proposed tests: 22.
+
+Next decision: should any unsupported allowlisted command invalidate the entire Forma descriptor, or only the affected channel? Recommended: entire descriptor, to avoid partial arming of an inconsistent configuration.
+
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
