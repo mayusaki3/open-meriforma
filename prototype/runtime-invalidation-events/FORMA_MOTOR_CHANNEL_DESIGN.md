@@ -2,7 +2,7 @@ Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
 
 # Suite 66-L — Per-Forma motor channel descriptor (design proposal)
 
-Status: PER-LOOP OWNERSHIP AND EXPLICIT DISABLED POLICY APPROVED (2026-11-05); remaining descriptor fields and test expectations are PROPOSALS. No implementation or test PASS.
+Status: PER-LOOP OWNERSHIP, EXPLICIT DISABLED, AND COMMAND-CAPABILITY VALIDATION POLICIES APPROVED (2026-11-05); detailed compatibility matrix and test expectations remain PROPOSALS. No implementation or test PASS.
 Parent: FORMA_MCU_SELECTION_REQUIREMENTS.md. Not a formal HLDocS v0.6.1 specification.
 
 ## 1. Scope and boundaries
@@ -64,6 +64,9 @@ Each Forma declares its own channel count and may combine:
 | 66-L-CH-013 | Explicitly DISABLED loop | Descriptor accepted only if requested command capabilities remain compatible; disabled loop receives no control request |
 | 66-L-CH-014 | Missing loop-owner field | Descriptor rejected; omission never defaults to DISABLED |
 | 66-L-CH-015 | Command targets DISABLED loop | Command rejected; no implicit fallback or drive enable |
+| 66-L-CH-016 | Position command with position loop DISABLED | Descriptor command capability rejected, and runtime position request rejected |
+| 66-L-CH-017 | Declared command capability exceeds driver or feedback support | Descriptor rejected before arming |
+| 66-L-CH-018 | Current loop DISABLED with independent verified drive/protection mechanism | Accept only when the chosen hardware provides documented compatible drive and protection; otherwise reject |
 
 Unit-test coverage target: 100% of specified descriptor-validation branches, with separate instrumented integration and fault-injection evidence for electrical/mechanical stop. Test numbers are proposed, not PASS claims.
 
@@ -73,7 +76,21 @@ Unit-test coverage target: 100% of specified descriptor-validation branches, wit
 
 **Approved 2026-11-05:** An intentionally unused current, velocity or position loop is explicitly declared `DISABLED`. All three loop-owner fields must be present; an omitted field is an invalid descriptor, not an alias for `DISABLED`. A disabled loop must not accept a command for that control mode. A hardware driver may still implement internal protection or regulation not exposed as a selectable application control loop; this must be documented separately and must never bypass Forma safety checks.
 
-**Next gate:** specify which command modes remain valid when one or more loops are `DISABLED`, including open-loop requests, and define compatibility constraints between upstream/downstream loop ownership. Do not freeze schema or implement tests until this is reviewed.
+**Approved 2026-11-05:** Every exposed command mode must have explicitly declared and verified supporting control capability. A command requiring a disabled or unsupported control loop is invalid at descriptor validation and must also be rejected at runtime. For example, a position command requires an enabled position loop. No implicit control-mode fallback is permitted. A disabled current loop does not by itself prohibit operation if an independent, documented and verified drive/protection mechanism meets the channel's electrical and safety requirements; absence of such evidence prohibits arming.
+
+## 6. Proposed command/loop compatibility model (not yet approved)
+
+| Requested command | Minimum logical requirement | Additional unresolved conditions |
+| --- | --- | --- |
+| Position | Position loop owner is FORMA_MCU or DRIVER_IC | Valid position feedback or supported estimator, downstream drive path and verified limits |
+| Velocity | Velocity loop owner is FORMA_MCU or DRIVER_IC | Valid speed feedback/estimator, downstream drive path and verified limits |
+| Current | Current loop owner is FORMA_MCU or DRIVER_IC | Verified current sensing/regulation and driver capability |
+| Duty / open-loop | Explicitly supported open-loop command path | Electrical limits, hardware protection and acceptable hazard behavior; not inferred from DISABLED loops |
+| Torque | Explicit torque-command capability and verified actuator-specific conversion/control | **Not** automatically equivalent to current control; torque sensing/estimation and calibration are open |
+
+A command's primary loop is necessary but not sufficient. For cascaded loops, validate that output of each upstream loop is consumable by the downstream loop or driver and that rates, feedback and fault propagation are compatible. Any unverified interface makes the command capability unavailable. Safety-critical hardware protection is separate from an application-exposed current loop.
+
+**Next gate:** choose whether command capabilities are derived automatically from verified loop/driver capabilities, explicitly allowlisted in the descriptor, or require both (recommended: both, with mismatch rejected). No implementation or tests until the rule is approved.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
