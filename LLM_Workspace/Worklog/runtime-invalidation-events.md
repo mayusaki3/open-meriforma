@@ -130,6 +130,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved BENCH fixture declaration option A (2026-11-07): operator explicitly declares BENCH via authenticated maintenance-style command; no mandatory hardware fixture detector. Declaration is context only, not physical proof, motor authorization or K2 bypass. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-028–031 (31 total, not executed). Next: agree BENCH declaration lifetime/revocation behavior.
 
+- Suite 66-L approved BENCH lifetime A+B (2026-11-07): operator declaration persists until explicit revocation but invalidates on Forma restart or termination of its maintenance session; no inheritance across sessions and no automatic rearm. Transient message delay alone does not revoke BENCH, while independent communication safety gates remain active. Updated FORMA_MOTOR_CHANNEL_DESIGN.md; proposed 66-L-CH-032–036 (36 total, none executed). Next: session-end evidence versus communication-loss policy.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
