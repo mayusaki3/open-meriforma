@@ -128,6 +128,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved environment/safety/channel separation (2026-11-06): BENCH/SUPPORTED/FREE_STANDING environment is independent of NORMAL/DEGRADED/PROTECTIVE_ACTION/INHIBITED Forma state and AVAILABLE/UNAVAILABLE/FAULTED channel state. Bench mode alone never bypasses fixture checks, grants or K2 inhibit. Earlier recommendation of mandatory entire-Forma rejection on any unsupported allowlisted command superseded; verified safe isolation needed. Updated FORMA_MOTOR_CHANNEL_DESIGN.md; proposed 66-L-CH-023–027 (27 total), no tests run. Next approve evidence requirements for bench fixture/support verification.
 
+- Suite 66-L approved BENCH fixture declaration option A (2026-11-07): operator explicitly declares BENCH via authenticated maintenance-style command; no mandatory hardware fixture detector. Declaration is context only, not physical proof, motor authorization or K2 bypass. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-028–031 (31 total, not executed). Next: agree BENCH declaration lifetime/revocation behavior.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
