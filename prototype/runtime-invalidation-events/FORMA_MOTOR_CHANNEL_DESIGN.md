@@ -126,7 +126,32 @@ Next decision: should any unsupported allowlisted command invalidate the entire 
 
 Total proposed channel test IDs: 27; none implemented or executed.
 
-**Next approval gate:** define who supplies and validates operating-environment evidence (fixture interlock/sensor/operator declaration), and what is mandatory for `BENCH` drive eligibility. Do not infer fixture safety from a software mode switch alone.
+**Decision recorded in Section 9:** operator-declared BENCH through maintenance-style authorized command; no mandatory hardware fixture detector. Declaration is not proof of mechanical safety.
+
+## 9. Approved operator-declared BENCH environment command (2026-11-07)
+
+**Approved: Option A.** BENCH fixture/support status is declared by an operator through an authenticated, explicitly authorized command following the existing maintenance-command authorization model. A physical fixture-detection switch is **not mandatory**. The declaration is an operator assertion, not measured proof that the robot is securely retained.
+
+Proposed command flow (details subject to later interface review):
+1. Operator physically checks fixture and hazard controls, then explicitly requests BENCH for the identified Forma or authorized group.
+2. Main routes an authenticated, scoped request. Each target Forma checks command source, current session, permission, replay protection, applicable maintenance policy and its own stop conditions.
+3. On acceptance, Forma records BENCH as declared operating context, with issuer, target and audit event. This does **not** itself arm drives or clear a stop latch.
+4. Any motor command still requires separate existing operation authorization, valid channel capability, relevant safe-isolation evidence and K2 inhibit eligibility.
+5. Changing or revoking BENCH must never automatically restore previously disabled channels, clear grants or release a latched stop.
+
+Open design points requiring explicit review: exact command name/payload, declaration lifetime and invalidation on reboot/session loss, whether the scope is one Forma or a group, and how to handle the operator withdrawing a declaration during motion. No default duration or implicit persistence is approved.
+
+**Risk boundary:** A software BENCH declaration is not an independent fixture interlock. For hazardous powered testing, physical restraint, travel/current limits, accessible emergency stop and an appropriate controlled test procedure remain necessary. An operator command alone cannot substantiate a safety claim.
+
+### Proposed tests (not implemented)
+- 66-L-CH-028: authorized BENCH declaration is accepted and audited, but does not enable a motor.
+- 66-L-CH-029: unauthorized, wrong-target or replayed BENCH command rejected.
+- 66-L-CH-030: BENCH declaration cannot bypass stop latch, unavailable channel, or K2 inhibit.
+- 66-L-CH-031: changing BENCH declaration does not automatically rearm previously disabled channels.
+
+Total proposed channel test IDs: 31; none implemented or executed.
+
+**Next approval gate:** decide BENCH declaration lifetime and revocation behavior (e.g., whether it expires on Forma restart or maintenance session end), without assuming the answer from the maintenance command design.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
