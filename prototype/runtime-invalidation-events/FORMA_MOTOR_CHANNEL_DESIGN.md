@@ -151,7 +151,35 @@ Open design points requiring explicit review: exact command name/payload, declar
 
 Total proposed channel test IDs: 31; none implemented or executed.
 
-**Next approval gate:** decide BENCH declaration lifetime and revocation behavior (e.g., whether it expires on Forma restart or maintenance session end), without assuming the answer from the maintenance command design.
+**Decision recorded in Section 10:** explicit revocation, Forma restart or maintenance-session termination invalidates BENCH.
+
+## 10. Approved BENCH lifetime: A+B combined (2026-11-07)
+
+**Approved:** An operator-declared BENCH context remains effective until explicitly revoked, **but is automatically invalidated** on either Forma restart or the end of the maintenance session that authorized the declaration. BENCH is scoped to that maintenance session and is not inherited by a new session. A fixed timeout is not part of this decision.
+
+| Event | BENCH context |
+| --- | --- |
+| Same active maintenance session, no revocation | Remains declared |
+| Explicit authorized revocation | Invalidated |
+| Maintenance session ends / is revoked | Invalidated |
+| Forma restart | Invalidated; new declaration required |
+| New maintenance session | No inheritance; new declaration required |
+| Transient message delay alone | Does not by itself invalidate declaration; existing communication safety gates still apply |
+
+BENCH invalidation triggers re-evaluation of any ongoing motor operation. Operations no longer meeting environmental or maintenance authorization requirements must not continue; the actual transition to controlled stop, protective action, or inhibit must follow separately approved and verified safety policies. No automatic rearm is permitted. A BENCH declaration never bypasses K2 inhibit or constitutes mechanical fixture proof.
+
+**Implementation detail still open:** exact authoritative session-end signal, handling of link loss versus confirmed session termination, multi-Forma propagation, and timing of in-flight command cancellation. These are not implied to be resolved by this lifetime decision.
+
+### Proposed tests (not implemented)
+- 66-L-CH-032: explicit BENCH revocation invalidates the declaration.
+- 66-L-CH-033: maintenance session end invalidates BENCH, including in-progress operation re-evaluation.
+- 66-L-CH-034: Forma restart invalidates BENCH and does not restore it from persistent configuration.
+- 66-L-CH-035: new maintenance session cannot inherit the previous BENCH declaration.
+- 66-L-CH-036: transient communication delay alone does not revoke BENCH, while independent communication watchdog remains effective.
+
+Total proposed channel test IDs: 36; none implemented or executed.
+
+**Next design gate:** define how Forma independently recognizes maintenance-session termination and how it treats communication loss without conflating it with confirmed session end.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
