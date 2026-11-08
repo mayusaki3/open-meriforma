@@ -179,7 +179,34 @@ BENCH invalidation triggers re-evaluation of any ongoing motor operation. Operat
 
 Total proposed channel test IDs: 36; none implemented or executed.
 
-**Next design gate:** define how Forma independently recognizes maintenance-session termination and how it treats communication loss without conflating it with confirmed session end.
+**Decision recorded in Section 11:** communication loss does not itself invalidate BENCH; independent watchdog constrains drive and confirmed session termination invalidates BENCH.
+
+## 11. Approved communication-loss behavior for BENCH (2026-11-09)
+
+**Approved:** Loss or delay of communication alone does not revoke an already accepted BENCH declaration. The existing Forma-local communication watchdog and other safety/authorization gates independently restrict or inhibit motor drive. A confirmed end, revocation or expiry of the maintenance session invalidates BENCH. Forma restart also invalidates BENCH under Section 10.
+
+| Event | BENCH declaration | Motor operation |
+| --- | --- | --- |
+| Transient communication delay | Retained | Subject to independent deadlines and safety gates |
+| Communication watchdog timeout | Retained unless session termination is independently confirmed | Restricted/stopped by existing watchdog policy; no automatic rearm |
+| Communication restored, same session demonstrably valid | May remain declared | Fresh required authorization and safety checks before operation; no restoration of old grants |
+| Session expiry/revocation/confirmed end | Invalidated | Maintenance-dependent operations lose eligibility; follow approved stop policy |
+| Forma reboot | Invalidated | Default inhibited until explicitly authorized |
+
+**Fail-safe distinction:** BENCH declaration retention is context retention, not retention of permission to drive. No received command, heartbeat or recovered link may override K2 inhibit, a latched stop, or invalid operation grants. The system must not infer session validity solely from successful link reconnection.
+
+**Open interface details:** authoritative evidence of session termination or expiry, local session validity checking during network partitions, loss-of-link timeout values, propagation of revocation to disconnected Forma units, and safe handling of in-flight commands. Until resolved, do not claim that a disconnected unit can reliably learn a remote session revocation immediately.
+
+### Proposed tests (not implemented)
+- 66-L-CH-037: communication timeout retains BENCH context while communication watchdog inhibits operation.
+- 66-L-CH-038: link recovery does not restore previous operation grants or automatically rearm.
+- 66-L-CH-039: authenticated confirmation of maintenance session expiry/revocation clears BENCH.
+- 66-L-CH-040: reconnect alone does not establish session validity.
+- 66-L-CH-041: session-end notification delayed by partition cannot be assumed delivered; drive remains constrained by independent watchdog.
+
+Total proposed channel test IDs: 41; none implemented or executed.
+
+**Next approval gate:** define the locally verifiable maintenance-session expiry/termination evidence and how it is synchronized across Forma units without allowing communication loss to masquerade as a valid session.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
