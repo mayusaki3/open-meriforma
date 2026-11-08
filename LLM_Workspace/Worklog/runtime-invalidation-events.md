@@ -132,6 +132,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved BENCH lifetime A+B (2026-11-07): operator declaration persists until explicit revocation but invalidates on Forma restart or termination of its maintenance session; no inheritance across sessions and no automatic rearm. Transient message delay alone does not revoke BENCH, while independent communication safety gates remain active. Updated FORMA_MOTOR_CHANNEL_DESIGN.md; proposed 66-L-CH-032–036 (36 total, none executed). Next: session-end evidence versus communication-loss policy.
 
+- Suite 66-L approved BENCH communication-loss behavior (2026-11-09): loss/delay alone retains BENCH context; Forma-local communication watchdog independently restricts drive, no automatic rearm after reconnect; confirmed maintenance session expiry/revocation/end clears BENCH, as does Forma reboot. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-037–041 (41 total, none implemented/executed). Open: locally verifiable session termination/expiry during partitions.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
