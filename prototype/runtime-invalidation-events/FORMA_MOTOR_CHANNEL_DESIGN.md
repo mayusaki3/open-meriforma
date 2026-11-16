@@ -206,7 +206,32 @@ Total proposed channel test IDs: 36; none implemented or executed.
 
 Total proposed channel test IDs: 41; none implemented or executed.
 
-**Next approval gate:** define the locally verifiable maintenance-session expiry/termination evidence and how it is synchronized across Forma units without allowing communication loss to masquerade as a valid session.
+**Decision recorded in Section 12:** Forma validates authenticated maintenance-session expiry locally even during communication loss; explicit authenticated revocation/end clears BENCH on receipt.
+
+## 12. Approved locally verifiable maintenance-session expiry (2026-11-16)
+
+**Approved:** On maintenance-session establishment, each participating Forma receives authenticated, locally verifiable session validity information including expiry. Forma must be able to determine expiry without receiving additional network messages. Authenticated explicit session end or revocation invalidates the session and its BENCH declaration immediately upon valid receipt. Session renewal requires authenticated verification before replacing the prior validity information. This adds an expiry boundary to the previously approved A+B lifetime policy; it does not authorize fixed indefinite retention.
+
+- On locally established expiry: invalidate the maintenance session and BENCH declaration, reject maintenance-dependent commands and re-evaluate active operations under the separately approved stop policy.
+- On authenticated revocation or end: invalidate immediately on receipt; do not rely on communication watchdog expiry.
+- During communication loss before expiry: retain BENCH context only; independent communication watchdog continues to restrict drive. Retention of BENCH does not preserve operation grants or authorize automatic rearm.
+- On communication recovery: do not infer session validity from connectivity; revalidate session evidence and operation authorization.
+- On Forma restart: invalidate BENCH regardless of any unexpired session evidence, per Section 10.
+- During a network partition, a revocation issued solely at Main cannot be known to Forma until delivered. This limitation is not a permission to keep moving; watchdog and K2 remain independent.
+
+**Design details not yet approved:** authoritative expiry representation (absolute time vs locally monotonic lease), trusted clock/reset behavior and clock drift, maximum lifetime/renewal window, key and issuer identity, anti-replay/epoch binding, renewal ordering, and group-wide propagation. No specific duration, clock, or wire format is selected. A local expiry mechanism must not be implemented using untrusted wall-clock assumptions.
+
+### Proposed tests (not implemented)
+- 66-L-CH-042: session expires locally during link loss; BENCH is invalidated without a new packet.
+- 66-L-CH-043: authenticated session-end or revocation invalidates BENCH on receipt.
+- 66-L-CH-044: valid authenticated renewal updates expiry; invalid/replayed renewal rejected.
+- 66-L-CH-045: reconnect does not restore an expired session or motor authorization.
+- 66-L-CH-046: Forma restart clears BENCH despite unexpired prior session evidence.
+- 66-L-CH-047: partitioned remote revocation cannot be assumed delivered; watchdog still constrains motor drive.
+
+Total proposed channel test IDs: 47; none implemented or executed.
+
+**Next approval gate:** choose how Forma measures the maintenance-session validity period independently of Main: trusted absolute expiry time, locally monotonic lease, or a carefully specified hybrid, including reboot behavior.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
