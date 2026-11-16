@@ -136,6 +136,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved locally verifiable maintenance-session expiry (2026-11-16): authenticated session validity/expiry delivered to Forma at establishment; local expiry works during link loss, authenticated end/revocation clears BENCH upon receipt, renewal requires validation, watchdog/K2 independent. No expiry duration or clock model selected. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-042–047 (47 total; none executed). Next choose monotonic lease vs absolute expiry and reset/clock assumptions.
 
+- Suite 66-L approved Forma-local monotonic maintenance lease option B (2026-11-17): authenticated duration measured from Forma acceptance using local monotonic time, no absolute clock synchronization; expiry invalidates session/BENCH, reboot discards lease, verified renewal only, clock-integrity failure fails closed, watchdog/K2 independent. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-048–053 (53 total; none implemented/executed). Next: lease duration bounds and renewal/drift policy.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
