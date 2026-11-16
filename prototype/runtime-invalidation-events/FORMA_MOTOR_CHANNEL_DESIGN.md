@@ -231,7 +231,32 @@ Total proposed channel test IDs: 41; none implemented or executed.
 
 Total proposed channel test IDs: 47; none implemented or executed.
 
-**Next approval gate:** choose how Forma measures the maintenance-session validity period independently of Main: trusted absolute expiry time, locally monotonic lease, or a carefully specified hybrid, including reboot behavior.
+**Decision recorded in Section 13:** use a Forma-local monotonic lease; restart discards the lease, and clock-integrity failure invalidates it.
+
+## 13. Approved Forma-local monotonic lease for maintenance session (2026-11-17)
+
+**Approved: Option B.** Each Forma measures an authenticated maintenance-session lease using its own local monotonic clock, starting from the point at which that Forma accepts the lease. No synchronization of Main and Forma absolute wall clocks is required.
+
+- The authenticated lease includes a bounded validity duration (exact maximum not yet selected), session identity and anti-replay/ordering evidence. Accepting a lease starts local elapsed-time accounting; merely receiving network traffic does not extend it.
+- On local expiry, invalidate the session and any BENCH declaration scoped to it. The existing stop/inhibit policy governs ongoing motion.
+- On Forma restart, discard the lease and BENCH context; do not restore either from persistent storage.
+- Renewal requires authenticated verification, session binding and replay/ordering validation before changing the deadline. An invalid, stale or replayed renewal cannot extend validity.
+- If monotonic-time integrity cannot be established (e.g. clock stops, rolls backward, or loses its trustworthy time base), fail closed: treat the lease as invalid rather than allowing indefinite extension.
+- Communication watchdog, operation authorization, STOP latch and K2 independent hardware inhibit remain separate mandatory checks.
+
+**Unresolved design details:** maximum/minimum lease duration, renewal window and rate limits, duration encoding/overflow, tick wraparound, oscillator drift and sleep behavior, monotonic-clock health evidence, trusted reset detection, session identifier/epoch binding and renewal race semantics. No numeric values, firmware mechanism or hardware safety certification is approved.
+
+### Proposed tests (not implemented)
+- 66-L-CH-048: locally monotonic lease expires without Main clock synchronization.
+- 66-L-CH-049: valid renewal changes expiry only after authenticated session and replay checks.
+- 66-L-CH-050: invalid, stale or replayed renewal cannot extend the lease.
+- 66-L-CH-051: Forma restart discards unexpired lease and BENCH declaration.
+- 66-L-CH-052: monotonic clock anomaly fails closed and cannot prolong authorization.
+- 66-L-CH-053: communication watchdog or K2 inhibit blocks drive despite an unexpired lease.
+
+Total proposed channel test IDs: 53; none implemented or executed.
+
+**Next approval gate:** choose lease duration bounds and renewal policy, including clock drift and safe timeout margin.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
