@@ -138,6 +138,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved Forma-local monotonic maintenance lease option B (2026-11-17): authenticated duration measured from Forma acceptance using local monotonic time, no absolute clock synchronization; expiry invalidates session/BENCH, reboot discards lease, verified renewal only, clock-integrity failure fails closed, watchdog/K2 independent. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-048–053 (53 total; none implemented/executed). Next: lease duration bounds and renewal/drift policy.
 
+- Suite 66-L approved configurable bounded maintenance lease option B (2026-11-18): operator-initiated explicit authenticated renewal only, configurable duration capped by system maximum, expired session cannot be revived, heartbeat does not extend, renewal cannot rearm motors or override STOP/K2. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-054–059 (59 total; none implemented/executed). Next decide renewal deadline calculation; numerical limits still open.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
