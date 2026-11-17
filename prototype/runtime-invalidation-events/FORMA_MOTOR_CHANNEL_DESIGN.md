@@ -256,7 +256,32 @@ Total proposed channel test IDs: 47; none implemented or executed.
 
 Total proposed channel test IDs: 53; none implemented or executed.
 
-**Next approval gate:** choose lease duration bounds and renewal policy, including clock drift and safe timeout margin.
+**Decision recorded in Section 14:** configurable bounded lease with explicit authenticated operator renewal; numerical limits remain open.
+
+## 14. Approved configurable bounded lease with explicit renewal (2026-11-18)
+
+**Approved: Option B.** The maintenance-session lease duration is configurable but must be bounded by a system-enforced maximum. Extension requires an explicit, authenticated operator-initiated renewal command, not passive heartbeat or automatic periodic refresh.
+
+- Each requested duration must pass validity, range and overflow checks against a configured maximum. The exact default, maximum, units and configuration authority remain open.
+- Forma measures each accepted lease against its local monotonic clock as approved in Section 13. An invalid, excessive or malformed duration cannot grant or extend validity.
+- Renewal is accepted only for the currently valid, authenticated session with appropriate operation authority and verified session identity, anti-replay and command ordering. A renewal accepted before expiry may establish a new bounded deadline; its exact calculation and race semantics remain open.
+- Once the lease has expired, renewal cannot resurrect it: a newly authorized maintenance session is required. Expiry also invalidates the BENCH declaration tied to that session.
+- Renewal does not rearm motors, restore previous operation grants, clear STOP latches, bypass the communication watchdog or override K2 hardware inhibit.
+- Explicit operator renewal is distinct from session heartbeat and communication liveness; receiving either must not silently prolong the lease.
+
+**Still open:** numerical maximum/default/minimum, clock drift and margin, whether renewal duration is measured from acceptance or prior deadline, behavior of simultaneous renewals, and configuration change effects on an active lease. No hardware safety evidence is claimed.
+
+### Proposed tests (not implemented)
+- 66-L-CH-054: valid configured lease duration at or below the maximum is accepted.
+- 66-L-CH-055: excessive, malformed, negative or overflowed lease duration is rejected.
+- 66-L-CH-056: authenticated explicit renewal extends only a currently valid session.
+- 66-L-CH-057: expired lease cannot be revived by renewal; new session required.
+- 66-L-CH-058: heartbeat or ordinary traffic does not extend the lease.
+- 66-L-CH-059: renewal cannot restore drive grants, clear STOP or bypass K2 inhibit.
+
+Total proposed channel test IDs: 59; none implemented or executed.
+
+**Next approval gate:** choose how the lease deadline is calculated on a valid renewal: from Forma acceptance time or from the existing deadline, with a strict maximum continuous lease boundary if appropriate.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
