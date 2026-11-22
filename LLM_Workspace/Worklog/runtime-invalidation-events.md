@@ -140,6 +140,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved configurable bounded maintenance lease option B (2026-11-18): operator-initiated explicit authenticated renewal only, configurable duration capped by system maximum, expired session cannot be revived, heartbeat does not extend, renewal cannot rearm motors or override STOP/K2. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-054–059 (59 total; none implemented/executed). Next decide renewal deadline calculation; numerical limits still open.
 
+- Suite 66-L approved lease renewal deadline option A (2026-11-22): authenticated renewal accepted before expiry sets new deadline to Forma monotonic acceptance time plus bounded duration, discarding unused prior lease; invalid/replayed renewals do not change deadline. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-060–064 (64 total, none implemented/executed). Next decide cumulative maximum session lifetime versus indefinite explicit renewals.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
