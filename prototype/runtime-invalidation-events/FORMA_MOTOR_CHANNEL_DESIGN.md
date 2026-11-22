@@ -281,7 +281,30 @@ Total proposed channel test IDs: 53; none implemented or executed.
 
 Total proposed channel test IDs: 59; none implemented or executed.
 
-**Next approval gate:** choose how the lease deadline is calculated on a valid renewal: from Forma acceptance time or from the existing deadline, with a strict maximum continuous lease boundary if appropriate.
+**Decision recorded in Section 15:** renewal deadline is calculated from Forma acceptance time, without carrying forward unused duration.
+
+## 15. Approved lease renewal deadline from Forma acceptance time (2026-11-22)
+
+**Approved: Option A.** When Forma successfully authenticates, authorizes and accepts an explicit renewal while the existing maintenance-session lease is still valid, the new local deadline is calculated as **Forma monotonic acceptance time + accepted bounded duration**. The previous remaining duration is discarded and never accumulated. Receipt of an unvalidated packet is not acceptance.
+
+Example: an initial 30-minute lease renewed after 20 minutes with a valid 30-minute duration expires 50 minutes after initial acceptance, not 60 minutes.
+
+- Expiry check must precede acceptance of a renewal: a renewal accepted after the old deadline cannot revive the session. Simultaneous expiry/renewal boundary behavior requires a precise atomic rule before implementation.
+- Duration must pass configured maximum, overflow and monotonic clock-integrity checks. Failed or replayed renewals do not change the existing deadline.
+- Only a successfully accepted renewal changes the deadline. No automatic renewal from heartbeat or ordinary traffic.
+- Renewing does not rearm motors, restore operation grants, clear STOP latches or bypass communication watchdog/K2 inhibit.
+- A configurable per-renewal maximum is not the same as a maximum cumulative session lifetime; whether a cumulative bound is needed remains a separate open policy decision.
+
+### Proposed tests (not implemented)
+- 66-L-CH-060: renewal at elapsed 20 minutes of a 30-minute lease with another 30-minute duration sets deadline at initial time + 50 minutes.
+- 66-L-CH-061: renewing early discards remaining time rather than accumulating it.
+- 66-L-CH-062: invalid/replayed renewal leaves existing deadline unchanged.
+- 66-L-CH-063: renewal after expiry is rejected and cannot recreate BENCH or operation authorization.
+- 66-L-CH-064: a valid renewal does not bypass watchdog, STOP latch or K2 inhibit.
+
+Total proposed channel test IDs: 64; none implemented or executed.
+
+**Next approval gate:** decide whether repeated valid renewals may keep one maintenance session alive indefinitely, or whether a separate cumulative maximum lifetime requires starting a new session.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
