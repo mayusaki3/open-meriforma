@@ -142,6 +142,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved lease renewal deadline option A (2026-11-22): authenticated renewal accepted before expiry sets new deadline to Forma monotonic acceptance time plus bounded duration, discarding unused prior lease; invalid/replayed renewals do not change deadline. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-060–064 (64 total, none implemented/executed). Next decide cumulative maximum session lifetime versus indefinite explicit renewals.
 
+- Suite 66-L approved no cumulative maintenance-session lifetime cap option A (2026-11-23): session may continue through repeated authenticated explicit renewals while each bounded lease remains valid; no cumulative session maximum. Expiry, revocation/end, Forma restart invalidate BENCH; watchdog/STOP/K2 and motor grants remain independent. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-065–069 (69 total; none implemented/executed). Next: who configures and distributes per-lease maximum/default duration.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
