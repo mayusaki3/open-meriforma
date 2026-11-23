@@ -94,3 +94,9 @@ Safety assessment must bound worst-case T_detect + T_inhibit + T_mechanical agai
 
 ## 8. Next design gate: 66-K
 Choose (a) physical topology and Receiver placement, (b) Forma controller/watchdog/inhibit hardware assumptions, (c) authentication/epoch trust anchor options. Only then define protocol encoding and formal HLDocS documents. No claim of verified STOP, authenticated wire authority, or real-time performance.
+
+## 9. Approved upper/lower state reconciliation (2026-11-24)
+
+Main is authoritative for Main-owned maintenance-session validity; Forma retains local environment declaration, clearance, final operation authorization and safety authority. Receiver routes and validates without overriding Forma. Distinguish maintenance session from authenticated transport session.
+
+Use the shared state reconciliation mechanism in 66-I Section 8 on continuity loss, reconnect, epoch change, restart or mismatch. Unknown upper-owned state cannot authorize dependent operations. A valid response reconciles context only; it cannot release STOP, restore grants or bypass independent watchdog/K2. No maintenance-specific lease or periodic operator renewal is required. Exact protocol and timing remain open.
