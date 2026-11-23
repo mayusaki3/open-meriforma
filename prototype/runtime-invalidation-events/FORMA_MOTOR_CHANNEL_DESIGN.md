@@ -208,124 +208,24 @@ Total proposed channel test IDs: 41; none implemented or executed.
 
 **Decision recorded in Section 12:** Forma validates authenticated maintenance-session expiry locally even during communication loss; explicit authenticated revocation/end clears BENCH on receipt.
 
-## 12. Approved locally verifiable maintenance-session expiry (2026-11-16)
+## 12. Maintenance-session lease simplification decision (2026-11-23)
 
-**Approved:** On maintenance-session establishment, each participating Forma receives authenticated, locally verifiable session validity information including expiry. Forma must be able to determine expiry without receiving additional network messages. Authenticated explicit session end or revocation invalidates the session and its BENCH declaration immediately upon valid receipt. Session renewal requires authenticated verification before replacing the prior validity information. This adds an expiry boundary to the previously approved A+B lifetime policy; it does not authorize fixed indefinite retention.
+**Approved after review of synthetic 66-A/C/D/E/F/G code:** the separate 66-L maintenance-session lease, monotonic expiry clock, renewal deadlines, per-lease configuration, and cumulative lifetime rules formerly documented in Sections 12–16 are **removed from the mandatory 66-L design**. They are not required to implement communication-loss safe stopping, which is a common safety mechanism independent of operating mode. The superseded text remains available in Git history.
 
-- On locally established expiry: invalidate the maintenance session and BENCH declaration, reject maintenance-dependent commands and re-evaluate active operations under the separately approved stop policy.
-- On authenticated revocation or end: invalidate immediately on receipt; do not rely on communication watchdog expiry.
-- During communication loss before expiry: retain BENCH context only; independent communication watchdog continues to restrict drive. Retention of BENCH does not preserve operation grants or authorize automatic rearm.
-- On communication recovery: do not infer session validity from connectivity; revalidate session evidence and operation authorization.
-- On Forma restart: invalidate BENCH regardless of any unexpired session evidence, per Section 10.
-- During a network partition, a revocation issued solely at Main cannot be known to Forma until delivered. This limitation is not a permission to keep moving; watchdog and K2 remain independent.
+**Existing synthetic mechanisms confirmed (not firmware/security guarantees):**
+- 66-A `FormaMaintenanceState`: maintenance enter/exit, local session/generation, clearance invalidation and reboot reset.
+- 66-C/D `PolicyGuardedOperations` and `FormaConcurrentOperations`: per-operation scope checking, one-shot grants, local stop latch.
+- 66-E `FormaReceiverIntegration`: maintenance transitions and unit invalidation.
+- 66-F `FormaTransportBoundary`: link disconnect invalidates unit authority and latches stop; request-id replay prevention is synthetic, not authenticated transport.
+- 66-G `FormaTimedRecovery`: logical-clock communication timeout and fresh-fixture recovery; not a physical watchdog.
 
-**Design details not yet approved:** authoritative expiry representation (absolute time vs locally monotonic lease), trusted clock/reset behavior and clock drift, maximum lifetime/renewal window, key and issuer identity, anti-replay/epoch binding, renewal ordering, and group-wide propagation. No specific duration, clock, or wire format is selected. A local expiry mechanism must not be implemented using untrusted wall-clock assumptions.
+**Preserved behavior:** Sections 9–11 BENCH declaration, scope and invalidation rules remain approved. Communication loss alone does not mean confirmed session termination; BENCH retention never permits continued motor drive after a watchdog stop. No reconnection auto-rearm. STOP latch and K2 hardware inhibit remain independent.
 
-### Proposed tests (not implemented)
-- 66-L-CH-042: session expires locally during link loss; BENCH is invalidated without a new packet.
-- 66-L-CH-043: authenticated session-end or revocation invalidates BENCH on receipt.
-- 66-L-CH-044: valid authenticated renewal updates expiry; invalid/replayed renewal rejected.
-- 66-L-CH-045: reconnect does not restore an expired session or motor authorization.
-- 66-L-CH-046: Forma restart clears BENCH despite unexpired prior session evidence.
-- 66-L-CH-047: partitioned remote revocation cannot be assumed delivered; watchdog still constrains motor drive.
+**Security boundary still OPEN:** a locally held session ID/generation does not establish cryptographic identity, remote revocation receipt while disconnected, or authorization validity after reconnection. Define authenticated session establishment, epoch/replay protection, termination evidence, and fresh reauthorization in the communication/security architecture (66-I/J/K) before claiming production safety. Do not silently substitute a new lease design.
 
-Total proposed channel test IDs: 47; none implemented or executed.
+**Retired, not implemented:** proposed test IDs 66-L-CH-042 through 66-L-CH-069 belonged solely to the removed lease design. They are retired and must not be counted as active test proposals or reused. Historical decisions and test text remain in Git history. Active proposed test IDs are 66-L-CH-001–041 and 66-L-CH-070–072 (44 total); none implemented or executed.
 
-**Decision recorded in Section 13:** use a Forma-local monotonic lease; restart discards the lease, and clock-integrity failure invalidates it.
-
-## 13. Approved Forma-local monotonic lease for maintenance session (2026-11-17)
-
-**Approved: Option B.** Each Forma measures an authenticated maintenance-session lease using its own local monotonic clock, starting from the point at which that Forma accepts the lease. No synchronization of Main and Forma absolute wall clocks is required.
-
-- The authenticated lease includes a bounded validity duration (exact maximum not yet selected), session identity and anti-replay/ordering evidence. Accepting a lease starts local elapsed-time accounting; merely receiving network traffic does not extend it.
-- On local expiry, invalidate the session and any BENCH declaration scoped to it. The existing stop/inhibit policy governs ongoing motion.
-- On Forma restart, discard the lease and BENCH context; do not restore either from persistent storage.
-- Renewal requires authenticated verification, session binding and replay/ordering validation before changing the deadline. An invalid, stale or replayed renewal cannot extend validity.
-- If monotonic-time integrity cannot be established (e.g. clock stops, rolls backward, or loses its trustworthy time base), fail closed: treat the lease as invalid rather than allowing indefinite extension.
-- Communication watchdog, operation authorization, STOP latch and K2 independent hardware inhibit remain separate mandatory checks.
-
-**Unresolved design details:** maximum/minimum lease duration, renewal window and rate limits, duration encoding/overflow, tick wraparound, oscillator drift and sleep behavior, monotonic-clock health evidence, trusted reset detection, session identifier/epoch binding and renewal race semantics. No numeric values, firmware mechanism or hardware safety certification is approved.
-
-### Proposed tests (not implemented)
-- 66-L-CH-048: locally monotonic lease expires without Main clock synchronization.
-- 66-L-CH-049: valid renewal changes expiry only after authenticated session and replay checks.
-- 66-L-CH-050: invalid, stale or replayed renewal cannot extend the lease.
-- 66-L-CH-051: Forma restart discards unexpired lease and BENCH declaration.
-- 66-L-CH-052: monotonic clock anomaly fails closed and cannot prolong authorization.
-- 66-L-CH-053: communication watchdog or K2 inhibit blocks drive despite an unexpired lease.
-
-Total proposed channel test IDs: 53; none implemented or executed.
-
-**Decision recorded in Section 14:** configurable bounded lease with explicit authenticated operator renewal; numerical limits remain open.
-
-## 14. Approved configurable bounded lease with explicit renewal (2026-11-18)
-
-**Approved: Option B.** The maintenance-session lease duration is configurable but must be bounded by a system-enforced maximum. Extension requires an explicit, authenticated operator-initiated renewal command, not passive heartbeat or automatic periodic refresh.
-
-- Each requested duration must pass validity, range and overflow checks against a configured maximum. The exact default, maximum, units and configuration authority remain open.
-- Forma measures each accepted lease against its local monotonic clock as approved in Section 13. An invalid, excessive or malformed duration cannot grant or extend validity.
-- Renewal is accepted only for the currently valid, authenticated session with appropriate operation authority and verified session identity, anti-replay and command ordering. A renewal accepted before expiry may establish a new bounded deadline; its exact calculation and race semantics remain open.
-- Once the lease has expired, renewal cannot resurrect it: a newly authorized maintenance session is required. Expiry also invalidates the BENCH declaration tied to that session.
-- Renewal does not rearm motors, restore previous operation grants, clear STOP latches, bypass the communication watchdog or override K2 hardware inhibit.
-- Explicit operator renewal is distinct from session heartbeat and communication liveness; receiving either must not silently prolong the lease.
-
-**Still open:** numerical maximum/default/minimum, clock drift and margin, whether renewal duration is measured from acceptance or prior deadline, behavior of simultaneous renewals, and configuration change effects on an active lease. No hardware safety evidence is claimed.
-
-### Proposed tests (not implemented)
-- 66-L-CH-054: valid configured lease duration at or below the maximum is accepted.
-- 66-L-CH-055: excessive, malformed, negative or overflowed lease duration is rejected.
-- 66-L-CH-056: authenticated explicit renewal extends only a currently valid session.
-- 66-L-CH-057: expired lease cannot be revived by renewal; new session required.
-- 66-L-CH-058: heartbeat or ordinary traffic does not extend the lease.
-- 66-L-CH-059: renewal cannot restore drive grants, clear STOP or bypass K2 inhibit.
-
-Total proposed channel test IDs: 59; none implemented or executed.
-
-**Decision recorded in Section 15:** renewal deadline is calculated from Forma acceptance time, without carrying forward unused duration.
-
-## 15. Approved lease renewal deadline from Forma acceptance time (2026-11-22)
-
-**Approved: Option A.** When Forma successfully authenticates, authorizes and accepts an explicit renewal while the existing maintenance-session lease is still valid, the new local deadline is calculated as **Forma monotonic acceptance time + accepted bounded duration**. The previous remaining duration is discarded and never accumulated. Receipt of an unvalidated packet is not acceptance.
-
-Example: an initial 30-minute lease renewed after 20 minutes with a valid 30-minute duration expires 50 minutes after initial acceptance, not 60 minutes.
-
-- Expiry check must precede acceptance of a renewal: a renewal accepted after the old deadline cannot revive the session. Simultaneous expiry/renewal boundary behavior requires a precise atomic rule before implementation.
-- Duration must pass configured maximum, overflow and monotonic clock-integrity checks. Failed or replayed renewals do not change the existing deadline.
-- Only a successfully accepted renewal changes the deadline. No automatic renewal from heartbeat or ordinary traffic.
-- Renewing does not rearm motors, restore operation grants, clear STOP latches or bypass communication watchdog/K2 inhibit.
-- A configurable per-renewal maximum is not the same as a maximum cumulative session lifetime; whether a cumulative bound is needed remains a separate open policy decision.
-
-### Proposed tests (not implemented)
-- 66-L-CH-060: renewal at elapsed 20 minutes of a 30-minute lease with another 30-minute duration sets deadline at initial time + 50 minutes.
-- 66-L-CH-061: renewing early discards remaining time rather than accumulating it.
-- 66-L-CH-062: invalid/replayed renewal leaves existing deadline unchanged.
-- 66-L-CH-063: renewal after expiry is rejected and cannot recreate BENCH or operation authorization.
-- 66-L-CH-064: a valid renewal does not bypass watchdog, STOP latch or K2 inhibit.
-
-Total proposed channel test IDs: 64; none implemented or executed.
-
-**Decision recorded in Section 16:** no cumulative maximum session lifetime; repeated valid explicit renewals may continue the session.
-
-## 16. Approved no cumulative maximum maintenance-session lifetime (2026-11-23)
-
-**Approved: Option A.** No independent cumulative maximum duration is imposed on a maintenance session. The same session may continue through repeated, explicit, authenticated renewals, provided every renewal is accepted while the existing bounded lease remains valid.
-
-- Each renewal is subject to the configured per-lease maximum, session binding, authorization, replay/ordering checks and Forma-local monotonic clock validation described in Sections 13–15.
-- If the lease expires, renewal is no longer permitted and a new authorized maintenance session is required. A session also terminates on explicit authenticated end/revocation; Forma reboot invalidates its local lease and BENCH declaration.
-- The absence of a cumulative session maximum does not imply an unlimited individual lease, automatic renewal, persistent motor grants or indefinite drive permission.
-- Communication watchdog, STOP latch, independent K2 hardware inhibit and all channel safety gates remain mandatory. Renewal cannot rearm or clear them.
-- No numeric lease maximum, renewal window or timing budget has yet been approved.
-
-### Proposed tests (not implemented)
-- 66-L-CH-065: repeated valid explicit renewals can extend one session beyond any single-lease duration without a cumulative lifetime cap.
-- 66-L-CH-066: each renewal independently enforces the configured per-lease maximum.
-- 66-L-CH-067: renewal after local expiry is rejected even when earlier renewals were successful.
-- 66-L-CH-068: session end, revocation or Forma restart invalidates BENCH despite a history of successful renewals.
-- 66-L-CH-069: repeated renewals do not extend motor-operation grants or bypass watchdog, STOP latch or K2 inhibit.
-
-Total proposed channel test IDs: 69; none implemented or executed.
-
-**Review gate moved to Section 17:** reconcile lease details against existing session/authorization lifecycle before deciding further configuration rules.
+**Next approval gate:** determine minimal authenticated session/reconnection evidence in 66-I/J/K; do not introduce new lease requirements unless an independently demonstrated gap requires them.
 
 ## 17. Approved common communication-loss safety behavior; lease simplification review (2026-11-23)
 
@@ -335,15 +235,15 @@ Total proposed channel test IDs: 69; none implemented or executed.
 - Communication recovery alone never automatically rearms or restarts motion. Existing operation authorization, capability checks, stop-latch recovery and K2 external inhibit remain mandatory.
 - Maintenance session controls maintenance permissions and BENCH declaration. It must not override the common watchdog, STOP latch or K2 hardware inhibit.
 - Session termination/remote revocation and link loss are distinct: a disconnected Forma may not immediately learn a remote revocation. This is an authorization-validity concern, not justification for duplicating motor-stop logic.
-- **Sections 12–16 are under design review for duplication with existing session/authorization mechanisms.** Their earlier lease decisions are preserved as historical approvals pending reconciliation; this decision **does not yet approve deleting the lease, its tests, or its authorization protections**. In particular, a watchdog alone does not prove that a session remains authorized after reconnection.
-- Proposed test IDs 66-L-CH-042–069 remain proposals and should be reviewed for consolidation before test specification approval; none has been implemented or executed.
+- **Lease simplification approved in Section 12:** former Sections 12–16 were removed as mandatory 66-L requirements after checking the existing synthetic lifecycle. Authentication and disconnected revocation remain open in 66-I/J/K; a watchdog alone does not prove session validity after reconnection.
+- Former lease test IDs 66-L-CH-042–069 are retired (never implemented); common-safety checks 66-L-CH-070–072 remain active proposals.
 
 ### Proposed review checks (not implemented)
 - 66-L-CH-070: identical communication-loss safety gate applies in NORMAL and maintenance/BENCH contexts.
 - 66-L-CH-071: restored connectivity in either context does not automatically resume motor motion.
 - 66-L-CH-072: BENCH declaration cannot bypass watchdog, STOP latch or K2 inhibit.
 
-**Next design gate:** inspect the existing maintenance-session and authorization lifecycle in the latest code/specification; identify which lease rules in Sections 12–16 are genuinely required for disconnected authorization revocation and which duplicate existing controls. Propose minimal changes before deleting or replacing approved sections.
+**Next design gate:** specify the minimal authenticated session/reconnection evidence in 66-I/J/K, without duplicating the shared communication-loss safety stop.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
