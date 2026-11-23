@@ -148,6 +148,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L lease simplification approved and applied (2026-11-23): reviewed current develop synthetic 66-A maintenance state, 66-C/D grants/stop, 66-E receiver, 66-F link invalidation/replay, and 66-G logical timeout. Removed former mandatory design Sections 12–16 lease/renewal rules from FORMA_MOTOR_CHANNEL_DESIGN.md, replaced with Section 12 reconciliation and retained Section 17 common safety policy. Retired never-implemented 66-L-CH-042–069 (IDs not reusable); 44 active proposed IDs remain (001–041, 070–072), none implemented/executed. Authentication, disconnected remote revocation and reconnection authority are OPEN 66-I/J/K security/interface work, not proven by synthetic code or watchdog.
 
+- Approved shared upper/lower state reconciliation (2026-11-24): 66-I §8, 66-J §9, 66-L §18 updated. Main owns maintenance-session validity; Forma queries upper authority on detected message gaps, reconnect, epoch change, restart or mismatch. Unconfirmed dependent authority fails closed; local safety and STOP recovery remain independent. No separate lease. 44 active 66-L proposed tests unchanged; common protocol tests to be specified in 66-I/J. Next review existing continuity/ordering design for minimal gap detection and reconciliation scope; no implementation.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
