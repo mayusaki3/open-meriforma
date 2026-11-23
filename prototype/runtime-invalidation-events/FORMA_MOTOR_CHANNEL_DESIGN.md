@@ -304,7 +304,28 @@ Example: an initial 30-minute lease renewed after 20 minutes with a valid 30-min
 
 Total proposed channel test IDs: 64; none implemented or executed.
 
-**Next approval gate:** decide whether repeated valid renewals may keep one maintenance session alive indefinitely, or whether a separate cumulative maximum lifetime requires starting a new session.
+**Decision recorded in Section 16:** no cumulative maximum session lifetime; repeated valid explicit renewals may continue the session.
+
+## 16. Approved no cumulative maximum maintenance-session lifetime (2026-11-23)
+
+**Approved: Option A.** No independent cumulative maximum duration is imposed on a maintenance session. The same session may continue through repeated, explicit, authenticated renewals, provided every renewal is accepted while the existing bounded lease remains valid.
+
+- Each renewal is subject to the configured per-lease maximum, session binding, authorization, replay/ordering checks and Forma-local monotonic clock validation described in Sections 13–15.
+- If the lease expires, renewal is no longer permitted and a new authorized maintenance session is required. A session also terminates on explicit authenticated end/revocation; Forma reboot invalidates its local lease and BENCH declaration.
+- The absence of a cumulative session maximum does not imply an unlimited individual lease, automatic renewal, persistent motor grants or indefinite drive permission.
+- Communication watchdog, STOP latch, independent K2 hardware inhibit and all channel safety gates remain mandatory. Renewal cannot rearm or clear them.
+- No numeric lease maximum, renewal window or timing budget has yet been approved.
+
+### Proposed tests (not implemented)
+- 66-L-CH-065: repeated valid explicit renewals can extend one session beyond any single-lease duration without a cumulative lifetime cap.
+- 66-L-CH-066: each renewal independently enforces the configured per-lease maximum.
+- 66-L-CH-067: renewal after local expiry is rejected even when earlier renewals were successful.
+- 66-L-CH-068: session end, revocation or Forma restart invalidates BENCH despite a history of successful renewals.
+- 66-L-CH-069: repeated renewals do not extend motor-operation grants or bypass watchdog, STOP latch or K2 inhibit.
+
+Total proposed channel test IDs: 69; none implemented or executed.
+
+**Next approval gate:** determine the configuration authority and distribution/validation rules for the per-lease maximum and default duration; numerical values remain undecided.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
