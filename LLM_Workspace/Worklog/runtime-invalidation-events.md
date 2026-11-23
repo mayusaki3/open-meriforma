@@ -144,6 +144,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Suite 66-L approved no cumulative maintenance-session lifetime cap option A (2026-11-23): session may continue through repeated authenticated explicit renewals while each bounded lease remains valid; no cumulative session maximum. Expiry, revocation/end, Forma restart invalidate BENCH; watchdog/STOP/K2 and motor grants remain independent. Updated FORMA_MOTOR_CHANNEL_DESIGN.md with proposed 66-L-CH-065–069 (69 total; none implemented/executed). Next: who configures and distributes per-lease maximum/default duration.
 
+- Suite 66-L approved common communication-loss safety behavior (2026-11-23): normal and maintenance/BENCH modes share Forma-local communication watchdog and validated safe-stop policy; recovery never automatically rearms. Maintenance is an authorization/environment concern, not a separate communications safety mechanism. Sections 12–16 lease design flagged for duplication review against existing session/authorization lifecycle; no lease removal approved. Updated FORMA_MOTOR_CHANNEL_DESIGN.md; proposed 66-L-CH-070–072 (72 total; none implemented/executed). Next inspect current session code/spec and propose simplification.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
