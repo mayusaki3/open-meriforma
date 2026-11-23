@@ -325,7 +325,25 @@ Total proposed channel test IDs: 64; none implemented or executed.
 
 Total proposed channel test IDs: 69; none implemented or executed.
 
-**Next approval gate:** determine the configuration authority and distribution/validation rules for the per-lease maximum and default duration; numerical values remain undecided.
+**Review gate moved to Section 17:** reconcile lease details against existing session/authorization lifecycle before deciding further configuration rules.
+
+## 17. Approved common communication-loss safety behavior; lease simplification review (2026-11-23)
+
+**Approved:** Normal operation and maintenance/BENCH operation use the same foundational Forma-local communication-loss detection and safety-stop mechanisms. Maintenance state changes operation authorization and environment context; it does not define a separate communications-failure safety mechanism.
+
+- The communication watchdog acts independently of maintenance mode. A communication fault triggers the validated safe response for the actuator and mechanism; indiscriminate removal of holding torque is not assumed safe for gravity-loaded joints.
+- Communication recovery alone never automatically rearms or restarts motion. Existing operation authorization, capability checks, stop-latch recovery and K2 external inhibit remain mandatory.
+- Maintenance session controls maintenance permissions and BENCH declaration. It must not override the common watchdog, STOP latch or K2 hardware inhibit.
+- Session termination/remote revocation and link loss are distinct: a disconnected Forma may not immediately learn a remote revocation. This is an authorization-validity concern, not justification for duplicating motor-stop logic.
+- **Sections 12–16 are under design review for duplication with existing session/authorization mechanisms.** Their earlier lease decisions are preserved as historical approvals pending reconciliation; this decision **does not yet approve deleting the lease, its tests, or its authorization protections**. In particular, a watchdog alone does not prove that a session remains authorized after reconnection.
+- Proposed test IDs 66-L-CH-042–069 remain proposals and should be reviewed for consolidation before test specification approval; none has been implemented or executed.
+
+### Proposed review checks (not implemented)
+- 66-L-CH-070: identical communication-loss safety gate applies in NORMAL and maintenance/BENCH contexts.
+- 66-L-CH-071: restored connectivity in either context does not automatically resume motor motion.
+- 66-L-CH-072: BENCH declaration cannot bypass watchdog, STOP latch or K2 inhibit.
+
+**Next design gate:** inspect the existing maintenance-session and authorization lifecycle in the latest code/specification; identify which lease rules in Sections 12–16 are genuinely required for disconnected authorization revocation and which duplicate existing controls. Propose minimal changes before deleting or replacing approved sections.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
