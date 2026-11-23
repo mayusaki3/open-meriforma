@@ -77,3 +77,14 @@ No encoding, bit width, CAN-FD frame fragmentation, cryptographic primitive, key
 
 ## 7. Next
 66-J should be a **design gate**, not automatic implementation: decide transport/topology, authenticated session ownership and watchdog/STOP responsibilities first. No physical safety or cryptographic security claim from 98/98 synthetic PASS.
+
+## 8. Approved shared state reconciliation (2026-11-24)
+
+When continuity or consistency of upper-owned state cannot be established, the lower unit queries its authoritative upper controller. Triggers include detected message gaps (using authenticated sequence/continuity evidence), link recovery, upper epoch change, local restart and detected state mismatch. This is shared by normal and maintenance operation, not a maintenance-specific lease.
+
+- Mark affected state unconfirmed and deny dependent operations until authenticated reconciliation completes. Invalidate affected grants and re-evaluate running operations under the existing local safety policy; if impact cannot be isolated, apply the existing conservative stop policy. A gap is not automatically equivalent to a watchdog timeout.
+- Query/response must be authenticated, fresh, correlated and bound to the applicable peer, epoch and state scope. Missing/invalid/stale responses cannot establish validity. Reconciliation must not accept a stale snapshot over a newer change.
+- State reconciliation does not reset STOP, restore old grants, bypass K2 or replace watchdog enforcement. No user-driven periodic renewal is required.
+- Message scope, sequence-gap semantics, response versioning, concurrent changes, retries and encoding remain open design details.
+
+Maintenance example: Main owns session validity; Forma queries it when uncertain. Same confirmed session may retain BENCH; ended/replaced session clears old BENCH. Forma restart never restores old BENCH. Local clearance and final operation authorization remain Forma-local.
