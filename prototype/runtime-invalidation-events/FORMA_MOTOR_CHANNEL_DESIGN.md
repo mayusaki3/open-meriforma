@@ -243,7 +243,13 @@ Total proposed channel test IDs: 41; none implemented or executed.
 - 66-L-CH-071: restored connectivity in either context does not automatically resume motor motion.
 - 66-L-CH-072: BENCH declaration cannot bypass watchdog, STOP latch or K2 inhibit.
 
-**Next design gate:** specify the minimal authenticated session/reconnection evidence in 66-I/J/K, without duplicating the shared communication-loss safety stop.
+**Decision recorded in Section 18:** use common upper/lower state reconciliation defined in 66-I/J.
+
+## 18. Approved shared state reconciliation for maintenance (2026-11-24)
+
+Apply 66-I Section 8 and 66-J Section 9. Main owns maintenance-session validity; Forma queries Main through the common reconciliation mechanism when message continuity, reconnect, epoch, restart or state mismatch makes upper-owned state uncertain. Same confirmed session may retain BENCH; ended or replaced session clears old BENCH; Forma restart never restores old BENCH. Until confirmation, dependent operations are denied and affected grants invalidated. Local clearance, watchdog, STOP and K2 remain independent; reconciliation never automatically rearms. No separate lease.
+
+Common protocol tests belong to 66-I/J; existing 44 active 66-L proposals remain, with no implementation or execution. Exact wire protocol remains open.
 
 ---
 Open MeriForma > Runtime Invalidation Events > Suite 66-L > Motor Channel Design
