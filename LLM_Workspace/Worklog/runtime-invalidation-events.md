@@ -154,6 +154,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved heartbeat continuity evidence option B (2026-11-25): 66-I §9/§10 and 66-J §11 updated. Individual authenticated heartbeat carries latest transmitted sequence watermarks for relevant logical destination scopes, including group/broadcast. Terminal gaps trigger common reconciliation; no mandatory separate heartbeat per scope or ACK per state change. Next resolve ordering and initial/group membership baseline; payload and timing open. No implementation or test execution.
 
+- Approved initial sequence baseline option A (2026-11-25): 66-I §11 and 66-J §12 updated. Shared reconciliation obtains authoritative current state and corresponding sequence baseline on startup, reconnect, group entry, gap or epoch change; no separate initialization notification or first-message baseline inference. Dependent operations denied until confirmed. Next resolve snapshot/notification ordering and concurrent changes; no implementation or test execution.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
