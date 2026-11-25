@@ -120,7 +120,3 @@ Apply 66-I Section 12 (option A): consistent authoritative snapshot and sequence
 ## 14. Approved reconciliation retry policy (2026-11-25)
 
 Apply 66-I Section 13 (option B): progressively increase retry intervals to a bounded maximum and continue at that interval while reconciliation is needed. No retry-count cutoff. Preserve independent watchdog/STOP/K2 and dependent-operation restrictions; no automatic rearm. Numerical timing and scheduling remain open.
-
-## 14. Approved reconciliation retry policy (2026-11-26)
-
-Apply 66-I Section 13 (option B): automatic retries with increasing intervals capped at a maximum, continuing while reconciliation is required and communication is available. No retry-count cutoff or operator intervention. Dependent-operation restrictions and independent safety enforcement remain active; no automatic rearm. Quantitative timing and scheduling bounds remain open.
