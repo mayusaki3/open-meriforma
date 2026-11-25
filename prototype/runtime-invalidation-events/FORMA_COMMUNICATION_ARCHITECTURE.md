@@ -48,7 +48,7 @@ Receiver ACCEPT/ACK is only a protocol decision; a separate sensor or drive feed
 - The Forma must not accept a generation asserted by Main as authentic without local verification. Boot epochs must be unique and rollback-resistant within the threat model; the protected monotonic witness in suites 58–61 is an unimplemented hardware dependency.
 - A session handshake must bind both peers' identities, protocol version, fresh nonces/epochs, negotiated capabilities, and authorization policy to authenticated messages. Cryptographic mechanism and key lifecycle are OPEN; no algorithm selected.
 - Reboot, peer identity change, timeout, bus-off, generation change, or detected rollback invalidates outstanding grants and enters STOP/inhibited mode.
-- Request IDs and sequence numbers are per authenticated sender+session, bounded; exhaustion or wrap without approved rollover handshake **fails closed**.
+- Request IDs are per authenticated sender+session; sequence numbers are per authenticated sender+logical destination+session/epoch (approved 66-I Section 9). Both are bounded; exhaustion or wrap without approved rollover handshake **fails closed**.
 - Session establishment means *communication ready*, not *drive authorized*. Clearance and each operation authorization remain separate.
 
 ## 4. Forma-local safety state proposal
@@ -100,3 +100,7 @@ Choose (a) physical topology and Receiver placement, (b) Forma controller/watchd
 Main is authoritative for Main-owned maintenance-session validity; Forma retains local environment declaration, clearance, final operation authorization and safety authority. Receiver routes and validates without overriding Forma. Distinguish maintenance session from authenticated transport session.
 
 Use the shared state reconciliation mechanism in 66-I Section 8 on continuity loss, reconnect, epoch change, restart or mismatch. Unknown upper-owned state cannot authorize dependent operations. A valid response reconciles context only; it cannot release STOP, restore grants or bypass independent watchdog/K2. No maintenance-specific lease or periodic operator renewal is required. Exact protocol and timing remain open.
+
+## 10. Approved sequence scope (2026-11-25)
+
+Apply 66-I Section 9 (option B): independent directional sequence scopes for each authenticated sender/logical destination/session-epoch combination, including distinct group and broadcast destinations. No per-message-type subdivision. Group membership/baseline and continuity evidence remain open.
