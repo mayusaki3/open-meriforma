@@ -160,10 +160,7 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved reconciliation retry option B (2026-11-25): 66-I §13 and 66-J §14 updated. Progressively increase retry intervals to a bounded maximum, then continue while reconciliation is necessary; no retry-count cutoff. Maintain dependent-operation restrictions and independent watchdog/STOP/K2; no automatic rearm. Numerical timing remains open. Next review cross-scope consistency and heartbeat/data ordering; no implementation or test execution.
 
-- Approved reconciliation retry option B (2026-11-26): 66-I §13 and 66-J §14 updated. Automatic retry with increasing intervals capped at a maximum, no retry-count cutoff or operator intervention; dependent operations remain restricted and watchdog/STOP/K2 independent. Quantitative timing and scheduling bounds remain open. No implementation or test execution.
-
 ## Next action
-1. Read this Worklog and the latest code/VALIDATION.md from develop.
-2. Preserve suite 47 PASS and the regression evidence.
-3. Review and approve 66-K topology, independent watchdog/drive-inhibit and trusted epoch options before 66-L quantitative electrical/interface requirements; preserve mandatory normal group and maintenance gates.
-4. Continue HLDocS spec/testspec preparation after checking templates/prompts; keep synthetic and hardware validation separate.
+1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
+2. Review cross-scope consistency and heartbeat/data ordering; resolve remaining protocol decisions before implementation.
+3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
