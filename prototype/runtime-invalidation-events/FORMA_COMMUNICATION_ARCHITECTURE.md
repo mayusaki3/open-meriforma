@@ -116,3 +116,7 @@ Apply 66-I Section 11 (option A): establish current authoritative state and corr
 ## 13. Approved reconciliation during concurrent state changes (2026-11-25)
 
 Apply 66-I Section 12 (option A): consistent authoritative snapshot and sequence baseline(s), compare with observed notifications in matching scopes, reject inconsistent or stale reconciliation and query again. Dependent operations remain restricted until consistency is established. No mandatory dedicated notification buffer or suspension of upper state changes. Local safety and fresh authorization remain independent.
+
+## 14. Approved reconciliation retry policy (2026-11-25)
+
+Apply 66-I Section 13 (option B): progressively increase retry intervals to a bounded maximum and continue at that interval while reconciliation is needed. No retry-count cutoff. Preserve independent watchdog/STOP/K2 and dependent-operation restrictions; no automatic rearm. Numerical timing and scheduling remain open.
