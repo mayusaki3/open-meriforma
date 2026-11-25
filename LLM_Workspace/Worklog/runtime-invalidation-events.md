@@ -156,6 +156,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved initial sequence baseline option A (2026-11-25): 66-I §11 and 66-J §12 updated. Shared reconciliation obtains authoritative current state and corresponding sequence baseline on startup, reconnect, group entry, gap or epoch change; no separate initialization notification or first-message baseline inference. Dependent operations denied until confirmed. Next resolve snapshot/notification ordering and concurrent changes; no implementation or test execution.
 
+- Approved concurrent state reconciliation option A (2026-11-25): 66-I §12 and 66-J §13 updated. Obtain consistent authoritative state/baseline(s), compare with observed notifications in matching scopes, reject inconsistent/stale snapshots and query again while dependent operations remain restricted. No mandatory dedicated notification buffer or upper-state freeze. Cross-scope consistency, retry bounds and timing remain open; no implementation or test execution.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
