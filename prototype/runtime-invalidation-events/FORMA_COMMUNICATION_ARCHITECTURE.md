@@ -108,3 +108,7 @@ Apply 66-I Section 9 (option B): independent directional sequence scopes for eac
 ## 11. Approved heartbeat continuity evidence (2026-11-25)
 
 Apply 66-I Section 10 (option B): individual authenticated heartbeat carries latest transmitted sequence watermarks for relevant logical destinations, allowing detection of terminal gaps without a separate heartbeat per destination. State reconciliation remains independent of STOP recovery and operation authorization. Ordering, membership/baseline and payload/timing details remain open.
+
+## 12. Approved initial sequence baseline (2026-11-25)
+
+Apply 66-I Section 11 (option A): establish current authoritative state and corresponding sequence baseline through shared reconciliation on startup, reconnect, group entry, gap or epoch change. No separate initialization mechanism or first-message baseline inference. Dependent operations remain denied until confirmed; local safety and operation authorization remain independent. Snapshot ordering and membership transition details remain open.
