@@ -150,6 +150,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved shared upper/lower state reconciliation (2026-11-24): 66-I §8, 66-J §9, 66-L §18 updated. Main owns maintenance-session validity; Forma queries upper authority on detected message gaps, reconnect, epoch change, restart or mismatch. Unconfirmed dependent authority fails closed; local safety and STOP recovery remain independent. No separate lease. 44 active 66-L proposed tests unchanged; common protocol tests to be specified in 66-I/J. Next review existing continuity/ordering design for minimal gap detection and reconciliation scope; no implementation.
 
+- Approved sequence scope option B (2026-11-25): 66-I §2/§9 and 66-J §3/§10 updated. Independent authenticated sender + logical destination + session/epoch sequence scopes, including group/broadcast; no message-type subdivision. Request-ID scope unchanged. Next resolve continuity evidence for terminal gaps across scopes and initial/group membership baseline; no implementation or test execution.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
