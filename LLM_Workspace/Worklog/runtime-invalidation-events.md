@@ -152,6 +152,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved sequence scope option B (2026-11-25): 66-I §2/§9 and 66-J §3/§10 updated. Independent authenticated sender + logical destination + session/epoch sequence scopes, including group/broadcast; no message-type subdivision. Request-ID scope unchanged. Next resolve continuity evidence for terminal gaps across scopes and initial/group membership baseline; no implementation or test execution.
 
+- Approved heartbeat continuity evidence option B (2026-11-25): 66-I §9/§10 and 66-J §11 updated. Individual authenticated heartbeat carries latest transmitted sequence watermarks for relevant logical destination scopes, including group/broadcast. Terminal gaps trigger common reconciliation; no mandatory separate heartbeat per scope or ACK per state change. Next resolve ordering and initial/group membership baseline; payload and timing open. No implementation or test execution.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
