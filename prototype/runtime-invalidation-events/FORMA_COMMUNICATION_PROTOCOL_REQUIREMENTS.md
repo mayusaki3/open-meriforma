@@ -18,7 +18,7 @@ Reference: HLDocS v0.6.1; this review note is **not** a formal HLDocS specificat
 | boot_epoch / session_generation | separate restart and link generations | unique, authenticated, rollback-resistant lifecycle |
 | message_type | heartbeat, maintenance entry/exit, clearance, authorize/start/finish, stop, ack, fault | strict allowlist; mode-specific |
 | request_id | correlate one-shot request and response | unique per sender+epoch, bounded history |
-| sequence | anti-replay/order | monotonic per authenticated sender+epoch; rollover policy required |
+| sequence | anti-replay/order | monotonic per authenticated sender + logical destination + session/epoch; rollover policy required (Section 9) |
 | operation_id, scope | scoped authorization | target/mode/bounds; policy-specific additional constraints |
 | deadline / freshness | reject delayed commands | monotonic local receive clock; bounded skew assumptions |
 | authorization_reference | bind start to issued approval | binds Forma, epoch, session, clearance revision, operation and scope |
@@ -88,3 +88,9 @@ When continuity or consistency of upper-owned state cannot be established, the l
 - Message scope, sequence-gap semantics, response versioning, concurrent changes, retries and encoding remain open design details.
 
 Maintenance example: Main owns session validity; Forma queries it when uncertain. Same confirmed session may retain BENCH; ended/replaced session clears old BENCH. Forma restart never restores old BENCH. Local clearance and final operation authorization remain Forma-local.
+
+## 9. Approved sequence scope (option B, 2026-11-25)
+
+Sequence continuity is managed independently per authenticated sender, logical destination and applicable session/epoch. Opposite directions are independent. Unicast, group and broadcast logical destinations have distinct sequence scopes; message types do not subdivide a scope. A message to another destination must not create a false gap. Apply Section 8 when continuity is lost. Request-ID uniqueness remains unchanged.
+
+Initial sequence baseline, group membership changes, terminal missing messages, heartbeat continuity evidence, wrap/exhaustion, and exact gap/reordering semantics remain open; a heartbeat in another scope alone cannot prove continuity. No wire encoding or implementation is approved here.
