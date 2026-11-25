@@ -104,3 +104,7 @@ Use the shared state reconciliation mechanism in 66-I Section 8 on continuity lo
 ## 10. Approved sequence scope (2026-11-25)
 
 Apply 66-I Section 9 (option B): independent directional sequence scopes for each authenticated sender/logical destination/session-epoch combination, including distinct group and broadcast destinations. No per-message-type subdivision. Group membership/baseline and continuity evidence remain open.
+
+## 11. Approved heartbeat continuity evidence (2026-11-25)
+
+Apply 66-I Section 10 (option B): individual authenticated heartbeat carries latest transmitted sequence watermarks for relevant logical destinations, allowing detection of terminal gaps without a separate heartbeat per destination. State reconciliation remains independent of STOP recovery and operation authorization. Ordering, membership/baseline and payload/timing details remain open.
