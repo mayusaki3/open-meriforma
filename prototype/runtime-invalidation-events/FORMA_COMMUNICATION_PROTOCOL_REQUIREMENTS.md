@@ -93,4 +93,10 @@ Maintenance example: Main owns session validity; Forma queries it when uncertain
 
 Sequence continuity is managed independently per authenticated sender, logical destination and applicable session/epoch. Opposite directions are independent. Unicast, group and broadcast logical destinations have distinct sequence scopes; message types do not subdivide a scope. A message to another destination must not create a false gap. Apply Section 8 when continuity is lost. Request-ID uniqueness remains unchanged.
 
-Initial sequence baseline, group membership changes, terminal missing messages, heartbeat continuity evidence, wrap/exhaustion, and exact gap/reordering semantics remain open; a heartbeat in another scope alone cannot prove continuity. No wire encoding or implementation is approved here.
+Initial sequence baseline, group membership changes, terminal missing messages and heartbeat continuity evidence (resolved in principle by Section 10), wrap/exhaustion, and exact gap/reordering semantics remain open; a heartbeat in another scope alone cannot prove continuity. No wire encoding or implementation is approved here.
+
+## 10. Approved heartbeat continuity evidence (option B, 2026-11-25)
+
+Reuse the individual authenticated heartbeat to carry the latest transmitted sequence watermark for each relevant logical destination scope (including group and broadcast). Compare against the receiver's established continuity state for the same scope/session/epoch. Evidence of a missing message triggers the shared reconciliation mechanism in Section 8, including when no further message is sent in that scope. Separate periodic heartbeat per logical destination and acknowledgement of every state-change notification are not mandatory.
+
+A watermark is evidence of sender progress, not proof of receipt or state validity. A stale watermark cannot roll back receiver state or establish reconciliation. Scope membership, initial baseline, ordering between heartbeat and data, precise watermark semantics, bounded payload and timing remain open. Authentication, local watchdog and STOP/K2 requirements remain unchanged. No implementation or test execution.
