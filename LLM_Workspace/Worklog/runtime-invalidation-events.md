@@ -158,6 +158,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved concurrent state reconciliation option A (2026-11-25): 66-I §12 and 66-J §13 updated. Obtain consistent authoritative state/baseline(s), compare with observed notifications in matching scopes, reject inconsistent/stale snapshots and query again while dependent operations remain restricted. No mandatory dedicated notification buffer or upper-state freeze. Cross-scope consistency, retry bounds and timing remain open; no implementation or test execution.
 
+- Approved reconciliation retry option B (2026-11-25): 66-I §13 and 66-J §14 updated. Progressively increase retry intervals to a bounded maximum, then continue while reconciliation is necessary; no retry-count cutoff. Maintain dependent-operation restrictions and independent watchdog/STOP/K2; no automatic rearm. Numerical timing remains open. Next review cross-scope consistency and heartbeat/data ordering; no implementation or test execution.
+
 ## Next action
 1. Read this Worklog and the latest code/VALIDATION.md from develop.
 2. Preserve suite 47 PASS and the regression evidence.
