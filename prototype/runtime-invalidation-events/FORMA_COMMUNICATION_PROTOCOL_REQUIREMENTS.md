@@ -112,7 +112,3 @@ The upper authority obtains a consistent snapshot of current state and correspon
 ## 13. Approved reconciliation retry policy (option B, 2026-11-25)
 
 Progressively increase the reconciliation retry interval up to a bounded maximum, then continue at that interval while reconciliation remains necessary. No retry-count cutoff or operator action is required for context reconciliation itself. Maintain dependent-operation restrictions until consistency is established; watchdog, STOP and K2 remain independent. Reconciliation never automatically rearms drive. Initial interval, increase algorithm, maximum interval and quantitative timing remain subject to communication performance and safety validation. No implementation or test execution.
-
-## 13. Approved reconciliation retry policy (option B, 2026-11-26)
-
-While reconciliation is required and communication is available, automatically retry unsuccessful reconciliation with progressively increasing retry intervals up to a bounded maximum interval, then continue at that interval without a retry-count cutoff or operator intervention. Maintain dependent-operation restrictions until consistency is established. Independent watchdog, STOP and K2 remain effective; reconciliation never automatically rearms. Initial interval, progression, maximum interval, response timeout and scheduling/resource bounds remain open pending communication performance validation. No implementation or test execution.
