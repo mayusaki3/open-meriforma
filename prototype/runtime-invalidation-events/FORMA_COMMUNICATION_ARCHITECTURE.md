@@ -112,3 +112,7 @@ Apply 66-I Section 10 (option B): individual authenticated heartbeat carries lat
 ## 12. Approved initial sequence baseline (2026-11-25)
 
 Apply 66-I Section 11 (option A): establish current authoritative state and corresponding sequence baseline through shared reconciliation on startup, reconnect, group entry, gap or epoch change. No separate initialization mechanism or first-message baseline inference. Dependent operations remain denied until confirmed; local safety and operation authorization remain independent. Snapshot ordering and membership transition details remain open.
+
+## 13. Approved reconciliation during concurrent state changes (2026-11-25)
+
+Apply 66-I Section 12 (option A): consistent authoritative snapshot and sequence baseline(s), compare with observed notifications in matching scopes, reject inconsistent or stale reconciliation and query again. Dependent operations remain restricted until consistency is established. No mandatory dedicated notification buffer or suspension of upper state changes. Local safety and fresh authorization remain independent.
