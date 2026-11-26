@@ -112,3 +112,7 @@ The upper authority obtains a consistent snapshot of current state and correspon
 ## 13. Approved reconciliation retry policy (option B, 2026-11-25)
 
 Progressively increase the reconciliation retry interval up to a bounded maximum, then continue at that interval while reconciliation remains necessary. No retry-count cutoff or operator action is required for context reconciliation itself. Maintain dependent-operation restrictions until consistency is established; watchdog, STOP and K2 remain independent. Reconciliation never automatically rearms drive. Initial interval, increase algorithm, maximum interval and quantitative timing remain subject to communication performance and safety validation. No implementation or test execution.
+
+## 14. Approved deferral of generic state revision (option A, 2026-11-27)
+
+Do not introduce a generic state revision at this stage. Preserve existing clearance revision, session, epoch, generation, sequence and request-ID responsibilities. Use existing local mode/authorization gates and shared reconciliation for uncertainty. Reconsider a state revision only when a concrete functional requirement cannot be satisfied by existing mechanisms. Cross-destination sequence numbers are not directly comparable; this decision does not establish ordering of conflicting writes across destinations. Such cases require explicit functional design before being allowed. No implementation or test execution.
