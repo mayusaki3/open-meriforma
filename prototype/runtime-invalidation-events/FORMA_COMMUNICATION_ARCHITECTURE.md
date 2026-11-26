@@ -120,3 +120,7 @@ Apply 66-I Section 12 (option A): consistent authoritative snapshot and sequence
 ## 14. Approved reconciliation retry policy (2026-11-25)
 
 Apply 66-I Section 13 (option B): progressively increase retry intervals to a bounded maximum and continue at that interval while reconciliation is needed. No retry-count cutoff. Preserve independent watchdog/STOP/K2 and dependent-operation restrictions; no automatic rearm. Numerical timing and scheduling remain open.
+
+## 15. Approved deferral of generic state revision (2026-11-27)
+
+Apply 66-I Section 14 (option A): no generic state revision at this stage; retain existing local authorization context and communication continuity/reconciliation mechanisms. Reconsider only for a demonstrated functional requirement. Cross-destination conflicting state updates are not assumed resolved by independent sequence numbers.
