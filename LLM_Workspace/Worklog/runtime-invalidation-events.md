@@ -160,6 +160,8 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved reconciliation retry option B (2026-11-25): 66-I §13 and 66-J §14 updated. Progressively increase retry intervals to a bounded maximum, then continue while reconciliation is necessary; no retry-count cutoff. Maintain dependent-operation restrictions and independent watchdog/STOP/K2; no automatic rearm. Numerical timing remains open. Next review cross-scope consistency and heartbeat/data ordering; no implementation or test execution.
 
+- Approved generic state revision deferral option A (2026-11-27): 66-I §14 and 66-J §15 updated. Existing clearance revision/session/epoch/generation/sequence/request-ID mechanisms retained; introduce generic state revision only for a concrete unmet requirement. Cross-destination conflicting writes remain a functional design concern, not proven resolved. Next review heartbeat/data ordering and scope membership. No implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
 2. Review cross-scope consistency and heartbeat/data ordering; resolve remaining protocol decisions before implementation.
