@@ -168,7 +168,9 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved sequence exhaustion policy option A (2026-11-27): 66-I §17 and 66-J §18 updated. Renew authenticated session before exhaustion, prohibit same-session wrap, use existing reconciliation and fresh authorization. Width/threshold and group/broadcast session transition details remain open. No implementation or test execution.
 
+- Approved logical destination session scope option B (2026-11-27): 66-I §18 and 66-J §19 updated. Individual Forma/group/broadcast sessions independently managed; renewal scope distinct from safety impact. Group/broadcast authentication and establishment remain open. No implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
-2. Review group/broadcast session renewal scope, request-ID scope and remaining protocol details before implementation.
+2. Review request-ID scope consistency, group/broadcast authentication and remaining protocol details before implementation.
 3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
