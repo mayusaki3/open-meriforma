@@ -164,7 +164,9 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved heartbeat/data ordering option B (2026-11-27): 66-I §15 and 66-J §16 updated. Immediately restrict dependent operations on heartbeat watermark mismatch, allow bounded short wait for in-flight data, query if consistency is not established. Independent watchdog/STOP/K2 and grant invalidation remain effective. Timing open; no implementation or test execution.
 
+- Approved group membership ownership option A (2026-11-27): 66-I §16 and 66-J §17 updated. Main owns membership, Forma retains confirmed membership; shared reconciliation establishes membership and sequence baseline, departure invalidates dependent grants. Membership does not grant drive. No implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
-2. Review logical destination scope membership transitions and remaining protocol decisions before implementation.
+2. Review sequence exhaustion/rollover and remaining membership transition and protocol details before implementation.
 3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
