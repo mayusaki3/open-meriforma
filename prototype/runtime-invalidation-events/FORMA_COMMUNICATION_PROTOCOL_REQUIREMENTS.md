@@ -128,3 +128,7 @@ Main owns group membership information; Forma retains confirmed membership for i
 ## 17. Approved sequence exhaustion policy (option A, 2026-11-27)
 
 Renew the authenticated communication session before sequence exhaustion and establish a new sequence baseline through shared reconciliation. Never wrap a sequence within the same session; no dedicated sequence generation field is introduced. Preserve existing session-transition grant invalidation, reconciliation and fresh authorization requirements. If renewal fails or exhaustion is reached, fail closed for affected operations. Uninterrupted drive during session renewal is not guaranteed. Sequence width and renewal threshold remain open pending CAN-FD payload design; exact group/broadcast session transition mechanics remain open. No implementation or test execution.
+
+## 18. Approved logical destination session scope (option B, 2026-11-27)
+
+Manage communication sessions per logical destination: individual Forma, group, or broadcast scope. Session renewal is limited to the target logical destination; safety and authorization dependencies may require wider operation restrictions under existing local safety rules. Preserve authenticated session binding, sequence continuity, grant invalidation and reconciliation requirements. Group/broadcast authentication and session establishment mechanics remain open. No implementation or test execution.
