@@ -162,7 +162,9 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved generic state revision deferral option A (2026-11-27): 66-I §14 and 66-J §15 updated. Existing clearance revision/session/epoch/generation/sequence/request-ID mechanisms retained; introduce generic state revision only for a concrete unmet requirement. Cross-destination conflicting writes remain a functional design concern, not proven resolved. Next review heartbeat/data ordering and scope membership. No implementation or test execution.
 
+- Approved heartbeat/data ordering option B (2026-11-27): 66-I §15 and 66-J §16 updated. Immediately restrict dependent operations on heartbeat watermark mismatch, allow bounded short wait for in-flight data, query if consistency is not established. Independent watchdog/STOP/K2 and grant invalidation remain effective. Timing open; no implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
-2. Review cross-scope consistency and heartbeat/data ordering; resolve remaining protocol decisions before implementation.
+2. Review logical destination scope membership transitions and remaining protocol decisions before implementation.
 3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
