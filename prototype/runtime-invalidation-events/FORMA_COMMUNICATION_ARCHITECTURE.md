@@ -136,3 +136,7 @@ Apply 66-I Section 16 (option A): Main owns group membership; Forma retains conf
 ## 18. Approved sequence exhaustion policy (2026-11-27)
 
 Apply 66-I Section 17 (option A): renew authenticated communication session before sequence exhaustion, establish a fresh baseline, prohibit same-session wrap and retain existing grant invalidation and fresh authorization. No separate sequence generation field. Failed renewal/exhaustion fails closed. Width, threshold and group/broadcast transition details remain open; no guarantee of uninterrupted drive.
+
+## 19. Approved logical destination session scope (2026-11-27)
+
+Apply 66-I Section 18 (option B): independent communication session management per individual Forma, group or broadcast logical destination. Renewal is scoped to that destination, while safety impact follows actual operation dependencies. Group/broadcast authentication and establishment remain open.
