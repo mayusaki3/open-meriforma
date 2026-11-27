@@ -166,7 +166,9 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved group membership ownership option A (2026-11-27): 66-I §16 and 66-J §17 updated. Main owns membership, Forma retains confirmed membership; shared reconciliation establishes membership and sequence baseline, departure invalidates dependent grants. Membership does not grant drive. No implementation or test execution.
 
+- Approved sequence exhaustion policy option A (2026-11-27): 66-I §17 and 66-J §18 updated. Renew authenticated session before exhaustion, prohibit same-session wrap, use existing reconciliation and fresh authorization. Width/threshold and group/broadcast session transition details remain open. No implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
-2. Review sequence exhaustion/rollover and remaining membership transition and protocol details before implementation.
+2. Review group/broadcast session renewal scope, request-ID scope and remaining protocol details before implementation.
 3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
