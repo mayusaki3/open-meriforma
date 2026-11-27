@@ -128,3 +128,7 @@ Apply 66-I Section 14 (option A): no generic state revision at this stage; retai
 ## 16. Approved heartbeat/data ordering (2026-11-27)
 
 Apply 66-I Section 15 (option B): immediately restrict dependent operations on heartbeat continuity mismatch, allow a bounded short wait for in-flight data, and query if consistency is not established. Independent safety enforcement remains active; no restoration of invalidated grants or automatic rearm. Timing remains open.
+
+## 17. Approved group membership ownership (2026-11-27)
+
+Apply 66-I Section 16 (option A): Main owns group membership; Forma retains confirmed local membership and uses shared reconciliation for entry, departure, re-entry and uncertainty. Group membership and group drive authorization remain distinct; mandatory local authorization and independent safety enforcement remain unchanged.
