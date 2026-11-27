@@ -124,3 +124,7 @@ Apply 66-I Section 13 (option B): progressively increase retry intervals to a bo
 ## 15. Approved deferral of generic state revision (2026-11-27)
 
 Apply 66-I Section 14 (option A): no generic state revision at this stage; retain existing local authorization context and communication continuity/reconciliation mechanisms. Reconsider only for a demonstrated functional requirement. Cross-destination conflicting state updates are not assumed resolved by independent sequence numbers.
+
+## 16. Approved heartbeat/data ordering (2026-11-27)
+
+Apply 66-I Section 15 (option B): immediately restrict dependent operations on heartbeat continuity mismatch, allow a bounded short wait for in-flight data, and query if consistency is not established. Independent safety enforcement remains active; no restoration of invalidated grants or automatic rearm. Timing remains open.
