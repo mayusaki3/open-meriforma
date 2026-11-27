@@ -132,3 +132,7 @@ Apply 66-I Section 15 (option B): immediately restrict dependent operations on h
 ## 17. Approved group membership ownership (2026-11-27)
 
 Apply 66-I Section 16 (option A): Main owns group membership; Forma retains confirmed local membership and uses shared reconciliation for entry, departure, re-entry and uncertainty. Group membership and group drive authorization remain distinct; mandatory local authorization and independent safety enforcement remain unchanged.
+
+## 18. Approved sequence exhaustion policy (2026-11-27)
+
+Apply 66-I Section 17 (option A): renew authenticated communication session before sequence exhaustion, establish a fresh baseline, prohibit same-session wrap and retain existing grant invalidation and fresh authorization. No separate sequence generation field. Failed renewal/exhaustion fails closed. Width, threshold and group/broadcast transition details remain open; no guarantee of uninterrupted drive.
