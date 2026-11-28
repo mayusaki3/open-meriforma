@@ -144,3 +144,7 @@ Apply 66-I Section 18 (option B): independent communication session management p
 ## 20. Approved request-ID scope (2026-11-28)
 
 Apply 66-I Section 19 (option B): request-ID uniqueness per authenticated sender/logical destination/communication session, aligned with sequence scope. Retired-session history may be discarded only with continued rejection of old-session requests. No automatic cross-session re-execution; existing operation authorization remains mandatory. Allocation and bounded ledger details remain open.
+
+## 21. Approved bounded request-ID history (2026-11-28)
+
+Apply 66-I Section 20 (option B): monotonic request-ID allocation, bounded duplicate history with rejection of IDs below the retained window, no duplicate execution or same-session wrap, and session renewal before exhaustion. Avoid redundant storage with sequence tracking where correctness permits. Resource sizing and exact retry/response behavior remain open.
