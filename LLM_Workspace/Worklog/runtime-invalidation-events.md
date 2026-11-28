@@ -172,7 +172,9 @@ Status: active technical validation; this Worklog is the authoritative work-stat
 
 - Approved request-ID scope option B (2026-11-28): 66-I §2/§19 and 66-J §3/§20 aligned. Authenticated sender/logical destination/communication session uniqueness; retired-session history discard conditional on old-session rejection. No automatic cross-session re-execution. Allocation and bounded ledger details remain open. No implementation or test execution.
 
+- Approved bounded request-ID history option B (2026-11-28): 66-I §20 and 66-J §21 updated. Monotonic allocation, bounded history and rejection boundary, no duplicate execution or same-session wrap, renew before exhaustion. Share sequence tracking storage where correctness permits. Sizing and exact retry/response behavior open. No implementation or test execution.
+
 ## Next action
 1. Read latest develop design notes and VALIDATION.md; preserve existing regression evidence.
-2. Review bounded request-ID ledger and group/broadcast authentication and remaining protocol details before implementation.
+2. Review group/broadcast authentication and remaining protocol details before implementation.
 3. Keep hardware/security validation separate from synthetic results and prepare HLDocS specification/testspec after design approval.
