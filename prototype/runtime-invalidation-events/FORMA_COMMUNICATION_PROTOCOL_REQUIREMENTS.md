@@ -17,7 +17,7 @@ Reference: HLDocS v0.6.1; this review note is **not** a formal HLDocS specificat
 | source_id, destination_forma_id | explicit routing/identity | authenticated and bound to configured peer |
 | boot_epoch / session_generation | separate restart and link generations | unique, authenticated, rollback-resistant lifecycle |
 | message_type | heartbeat, maintenance entry/exit, clearance, authorize/start/finish, stop, ack, fault | strict allowlist; mode-specific |
-| request_id | correlate one-shot request and response | unique per sender+epoch, bounded history |
+| request_id | correlate one-shot request and response | unique per authenticated sender+logical destination+communication session, bounded history |
 | sequence | anti-replay/order | monotonic per authenticated sender + logical destination + session/epoch; rollover policy required (Section 9) |
 | operation_id, scope | scoped authorization | target/mode/bounds; policy-specific additional constraints |
 | deadline / freshness | reject delayed commands | monotonic local receive clock; bounded skew assumptions |
@@ -132,3 +132,7 @@ Renew the authenticated communication session before sequence exhaustion and est
 ## 18. Approved logical destination session scope (option B, 2026-11-27)
 
 Manage communication sessions per logical destination: individual Forma, group, or broadcast scope. Session renewal is limited to the target logical destination; safety and authorization dependencies may require wider operation restrictions under existing local safety rules. Preserve authenticated session binding, sequence continuity, grant invalidation and reconciliation requirements. Group/broadcast authentication and session establishment mechanics remain open. No implementation or test execution.
+
+## 19. Approved request-ID scope (option B, 2026-11-28)
+
+Request-ID uniqueness is scoped to authenticated sender, logical destination and communication session, aligned with the sequence scope and its authenticated epoch binding. Request IDs correlate requests/responses and prevent duplicate request processing; sequence numbers retain their independent continuity role. Independent allocation per destination is permitted. Retired-session duplicate history may be discarded only when old-session requests remain rejected. Existing operation authorization governs cross-session operation validity; never automatically re-execute old-session requests in a new session. Allocation, bounded ledger retention and exhaustion details remain open. No implementation or test execution.
