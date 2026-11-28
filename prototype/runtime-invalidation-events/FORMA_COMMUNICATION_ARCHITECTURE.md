@@ -48,7 +48,7 @@ Receiver ACCEPT/ACK is only a protocol decision; a separate sensor or drive feed
 - The Forma must not accept a generation asserted by Main as authentic without local verification. Boot epochs must be unique and rollback-resistant within the threat model; the protected monotonic witness in suites 58–61 is an unimplemented hardware dependency.
 - A session handshake must bind both peers' identities, protocol version, fresh nonces/epochs, negotiated capabilities, and authorization policy to authenticated messages. Cryptographic mechanism and key lifecycle are OPEN; no algorithm selected.
 - Reboot, peer identity change, timeout, bus-off, generation change, or detected rollback invalidates outstanding grants and enters STOP/inhibited mode.
-- Request IDs are per authenticated sender+session; sequence numbers are per authenticated sender+logical destination+session/epoch (approved 66-I Section 9). Both are bounded; exhaustion or wrap without approved rollover handshake **fails closed**.
+- Request IDs are per authenticated sender+logical destination+communication session (approved 66-I Section 19); sequence numbers are per authenticated sender+logical destination+session/epoch (approved 66-I Section 9). Both are bounded; exhaustion or wrap without approved rollover handshake **fails closed**.
 - Session establishment means *communication ready*, not *drive authorized*. Clearance and each operation authorization remain separate.
 
 ## 4. Forma-local safety state proposal
@@ -140,3 +140,7 @@ Apply 66-I Section 17 (option A): renew authenticated communication session befo
 ## 19. Approved logical destination session scope (2026-11-27)
 
 Apply 66-I Section 18 (option B): independent communication session management per individual Forma, group or broadcast logical destination. Renewal is scoped to that destination, while safety impact follows actual operation dependencies. Group/broadcast authentication and establishment remain open.
+
+## 20. Approved request-ID scope (2026-11-28)
+
+Apply 66-I Section 19 (option B): request-ID uniqueness per authenticated sender/logical destination/communication session, aligned with sequence scope. Retired-session history may be discarded only with continued rejection of old-session requests. No automatic cross-session re-execution; existing operation authorization remains mandatory. Allocation and bounded ledger details remain open.
